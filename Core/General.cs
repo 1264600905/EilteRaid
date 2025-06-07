@@ -96,12 +96,12 @@ namespace EliteRaid
             int enhancedCount = 0;
             if (EliteRaidMod.useCompressionRatio&&EliteRaidMod.displayMessageValue)
             {
-                Log.Message($"压缩后人数（压缩率{EliteRaidMod.compressionRatio}）：{enhancePawnNumber}");
+              //  Log.Message($"压缩后人数（压缩率{EliteRaidMod.compressionRatio}）：{enhancePawnNumber}");
             } else
             {
-                Log.Message("最终输出人数" + enhancePawnNumber);
+             //   Log.Message("最终输出人数" + enhancePawnNumber);
             }
-           
+            Log.Message($"压缩后人数（压缩率{EliteRaidMod.compressionRatio}）：{enhancePawnNumber}");
             for (int i = 0; i < pawns.Count; i++)
             {
                 Pawn pawn = pawns[i];

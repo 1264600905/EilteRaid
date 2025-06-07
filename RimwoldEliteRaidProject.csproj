@@ -78,6 +78,7 @@
     <Compile Include="Core\Patches\BodySizePatch.cs" />
     <Compile Include="Core\Utils\PawnStateChecker.cs" />
     <Compile Include="Core\Utils\PawnWeaponChager.cs" />
+    <Compile Include="DifficultyConfig.cs" />
     <Compile Include="EliteLevelManager.cs" />
     <Compile Include="Core\ImpovePawn\DrugDefs.cs" />
     <Compile Include="Core\PowerUp\CR_Powerup.cs" />

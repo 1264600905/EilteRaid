@@ -160,7 +160,7 @@ namespace EliteRaid
 
                 // 包含Level=0的敌人（CR=1）
                 List<EliteLevelConfig> validConfigs = availableConfigsForDifficulty
-                    .Where(c => c.Level <= 7 && c.CompressionRatio > 0 && baseProbabilities.ContainsKey(c.Level))
+                    .Where(c => c.Level <= EliteRaidMod.maxAllowLevel && c.CompressionRatio > 0 && baseProbabilities.ContainsKey(c.Level))
                     .ToList();
 
                 if (!validConfigs.Any())
@@ -208,7 +208,7 @@ namespace EliteRaid
 
                 // 阶段3: 降级高等级精英以调整数量
                 currentElites = DowngradeElitesToAdjustCount(validConfigs, currentLevelDistribution, currentSlotsFilled, originalCount, currentElites, targetMinElites, targetMaxElites);
-             //   Log.Message($"[EliteRaid] After downgrade: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots.");
+                Log.Message($"[EliteRaid] After downgrade: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots.");
 
                 // 限制数量不超过上限
                 if (currentElites > targetMaxElites)
@@ -261,7 +261,7 @@ namespace EliteRaid
                 }
 
 
-                Log.Message($"[EliteRaid] Attempt {attempt} results: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots, utilization {utilization:P2}");
+               // Log.Message($"[EliteRaid] Attempt {attempt} results: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots, utilization {utilization:P2}");
 
                 // 记录最佳结果
                 if (utilization > bestUtilization)
@@ -466,9 +466,9 @@ namespace EliteRaid
             {
                 // 寻找可以升级的最低等级
                 var upgradeCandidates = validConfigs
-                    .Where(c => c.Level > 0 && c.Level <= 3) // 限制升级范围
-                    .OrderBy(c => c.Level)
-                    .ToList();
+      .Where(c => levelDistribution.ContainsKey(c) && levelDistribution[c] > 0 && c.Level < EliteRaidMod.maxAllowLevel)
+      .OrderByDescending(c => c.CompressionRatio)
+      .ToList();
 
                 foreach (var candidate in upgradeCandidates)
                 {
@@ -499,8 +499,8 @@ namespace EliteRaid
 
                 // 寻找最佳升级目标（最大化空间利用）
                 var possibleTargets = validConfigs
-                    .Where(c => c.Level > sourceLevel && c.Level <= 7)
-                    .ToList();
+          .Where(c => c.Level > sourceLevel && c.Level <= EliteRaidMod.maxAllowLevel)
+          .ToList();
 
                 foreach (var targetConfig in possibleTargets)
                 {

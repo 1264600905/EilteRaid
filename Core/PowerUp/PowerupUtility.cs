@@ -31,7 +31,7 @@ namespace EliteRaid
                 // 如果CE启用，护甲值乘以10
                 if (ceActive)
                 {
-                    armorValue *= 20f;
+                    armorValue *= 10f;
                 }
                 yield return new StatModifier
                 {

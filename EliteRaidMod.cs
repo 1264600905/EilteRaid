@@ -15,21 +15,7 @@ using static Verse.Widgets;
 
 namespace EliteRaid
 {
-    // 新增：总难度枚举（建议放在EliteRaidDifficulty同级）
-    public enum TotalDifficultyLevel
-    {
-        Knight,         // 骑士
-        Justiciar,     // 法务官
-        Lord,          // 领主
-        Governor,      // 执政总督（原索引4，现索引3）
-        Viceroy,       // 总督（原索引3，现索引4）
-        Duke,          // 都督
-        Despot,        // 专制公
-        GrandDuke,     // 大公
-        General,       // 将军
-        GalaxyDominator// 星系主宰
-    }
-
+  
     public class EliteRaidMod : Mod
     {
         //显示部分日志
@@ -53,6 +39,8 @@ namespace EliteRaid
         public static int maxRaidPoint = 10000; // 新增：最大袭击点数上限（默认10000）
         public static bool showDetailConfig = false;
         public static float raidScale = 1.0f;  //游戏内袭击倍率
+
+        public static TotalDifficultyLevel CurrentDifficulty { get; set; } = TotalDifficultyLevel.Knight;
         //植入体强化
         // 新增：全局词条开关（与EliteLevel中的开关对应）
         public static bool AllowAddBioncis = true;   
@@ -70,54 +58,30 @@ namespace EliteRaid
         public static bool AllowConsciousnessEnhance = true;
 
 
-        // 新增：难度配置数据（建议在EliteRaidMod类中声明为静态）
-        private static readonly Dictionary<int, (float compressionRatio, int maxRaidPoint, EliteRaidDifficulty difficulty)> DifficultyConfig =
-            new Dictionary<int, (float, int, EliteRaidDifficulty)>
-            {
-        {0, (3f, 10000, EliteRaidDifficulty.Normal)},
-        {1, (3f, 10000, EliteRaidDifficulty.Hard)},
-        {2, (3f, 10000, EliteRaidDifficulty.Extreme)},
-        {3, (3f, 20000, EliteRaidDifficulty.Normal)},
-        {4, (3f, 15000, EliteRaidDifficulty.Extreme)},
-        {5, (3f, 30000, EliteRaidDifficulty.Hard)},
-        {6, (4f, 40000, EliteRaidDifficulty.Extreme)},
-        {7, (6f, 60000, EliteRaidDifficulty.Extreme)},
-        {8, (8f, 80000, EliteRaidDifficulty.Extreme)},
-        {9, (10f, 100000, EliteRaidDifficulty.Extreme)}
-            };
+        private int lastSelectedDifficultyIndex = -1;
 
-        private static List<string> DifficultyOptions= new List<string>
+        private static List<string> DifficultyOptions = new List<string>
 {
-    "<color=#39FF14>骑士</color> 难度系数1",
-    "<color=#FFA500>法务官</color> 难度系数1.3",
-    "<color=#B0E2FF>领主</color> 难度系数1.6",
-    "<color=#FF6EC7>执政总督</color> 难度系数2", // 原索引4，现索引3
-    "<color=#00FFFF>总督</color> 难度系数2.4", // 原索引3，现索引4
-    "<color=#FF3030>都督</color> 难度系数3.9",
-    "<color=#1E90FF>专制公</color> 难度系数6.4",
-    "<color=#7FFF00>大公</color> 难度系数10",
-    "<color=#FFD700>将军</color> 难度系数13",
-    "<color=#FF6347>星系主宰</color> 难度系数16" 
+    "<color=#39FF14>修士</color> 难度系数0.4",
+    "<color=#FFA500>扈从</color> 难度系数0.7",
+    "<color=#B0E2FF>骑士</color> 难度系数1",
+    "<color=#00FFFF>法务官</color> 难度系数1.3",
+
+    "<color=#FF6EC7>领主</color> 难度系数1.6",
+    "<color=#FF3030>总督</color> 难度系数2",
+    "<color=#1E90FF>执政总督</color> 难度系数2.4",
+    "<color=#7FFF00>都督</color> 难度系数3.9",
+
+    "<color=#FFD700>专制公</color> 难度系数6.4",
+    "<color=#FF6347>大公</color> 难度系数10",
+    "<color=#39FF14>执政官</color> 难度系数16",
+    "<color=#FFA500>将军</color> 难度系数32",
+
+    "<color=#B0E2FF>近卫总长</color> 难度系数54",
+    "<color=#00FFFF>星系主宰</color> 难度系数72",
+    "<color=#FF6EC7>至高星主</color> 难度系数100",
+    "<color=#FF3030>星海皇帝</color> 难度系数200"
 };
-
-        // 更新难度选项列表生成方法
-        private static List<string> GenerateDifficultyOptions()
-        {
-            return new List<string>
-    {
-        "<color=#39FF14>" + "Difficulty_Knight".Translate() + "</color> " + "DifficultyFactor_1".Translate(),
-        "<color=#FFA500>" + "Difficulty_Justiciar".Translate() + "</color> " + "DifficultyFactor_1_3".Translate(),
-        "<color=#B0E2FF>" + "Difficulty_Lord".Translate() + "</color> " + "DifficultyFactor_1_6".Translate(),
-        "<color=#00FFFF>" + "Difficulty_Viceroy".Translate() + "</color> " + "DifficultyFactor_2_4".Translate(),
-        "<color=#FF6EC7>" + "Difficulty_Governor".Translate() + "</color> " + "DifficultyFactor_2".Translate(),
-        "<color=#FF3030>" + "Difficulty_Duke".Translate() + "</color> " + "DifficultyFactor_3_9".Translate(),
-        "<color=#1E90FF>" + "Difficulty_Despot".Translate() + "</color> " + "DifficultyFactor_6_4".Translate(),
-        "<color=#7FFF00>" + "Difficulty_GrandDuke".Translate() + "</color> " + "DifficultyFactor_10".Translate(),
-        "<color=#FFD700>" + "Difficulty_General".Translate() + "</color> " + "DifficultyFactor_13".Translate(),
-        "<color=#FF6347>" + "Difficulty_GalaxyDominator".Translate() + "</color> " + "DifficultyFactor_16".Translate()
-    };
-        }
-
 
         public static bool AllowCompress(Pawn pawn, bool isDropPodRaid = false)
         {
@@ -338,31 +302,34 @@ namespace EliteRaid
                 settings.silverDropPerLevel = (int)silverDropFloat;
             }
 
-            // 新增：总难度（标签+下拉框 同行显示）
             float labelWidth = 120f;
-            Rect labelRect = new Rect(0, y, labelWidth, ROW_HEIGHT);
-            Widgets.Label(labelRect, "TotalDifficulty".Translate());
+            float doubleRowHeight = ROW_HEIGHT * 2; // 双行高度
+            Rect labelRect = new Rect(0, y, labelWidth, doubleRowHeight);
+            Widgets.Label(labelRect, "TotalDifficulty".Translate()); // 显示标签
 
             Rect dropdownRect = new Rect(labelRect.x + labelWidth + GAP_SMALL, y, viewRect.width - labelWidth - GAP_SMALL, ROW_HEIGHT);
-            string currentLabel = DifficultyOptions[settings.currentDifficultyIndex];
+            // 总难度下拉框
+            var translatedOptions = GetTranslatedDifficultyOptions();
+            string currentLabel = translatedOptions[settings.currentDifficultyIndex];
 
             // 确保索引有效
             int currentIndex = settings.currentDifficultyIndex;
-            if (currentIndex < 0 || currentIndex >= DifficultyOptions.Count)
+            if (currentIndex < 0 || currentIndex >= translatedOptions.Count)
             {
                 settings.currentDifficultyIndex = currentIndex = 0;
-                currentLabel = DifficultyOptions[currentIndex];
+                currentLabel = translatedOptions[currentIndex];
             }
 
             Widgets.Dropdown(
                 dropdownRect,
                 currentIndex,
-                index => DifficultyConfig[index],
+                index => (TotalDifficultyLevel)index,
                 index => GenerateDifficultyMenu(index),
                 buttonLabel: currentLabel,
                 buttonIcon: null,
                 dragLabel: "DragToSelectDifficulty".Translate()
             );
+
 
             y += ROW_HEIGHT + GAP_LARGE;
 
@@ -436,6 +403,171 @@ namespace EliteRaid
            
         }
 
+        // 在EliteRaidMod类中添加以下方法
+        // 修改GenerateDifficultyMenu方法，确保选项文本正确
+        // 修改 GenerateDifficultyMenu 方法，只生成存在配置的菜单项
+        private static IEnumerable<DropdownMenuElement<TotalDifficultyLevel>> GenerateDifficultyMenu(int currentIndex)
+        {
+            var mod = (EliteRaidMod)LoadedModManager.GetMod<EliteRaidMod>();
+            var translatedOptions = mod.GetTranslatedDifficultyOptions();
+
+            // 只生成存在配置的难度级别
+            foreach (var kvp in DifficultyConfig.myDifficultyConfig)
+            {
+                TotalDifficultyLevel level = kvp.Key;
+                int index = (int)level;
+
+                // 确保索引在有效范围内
+                if (index >= 0 && index < translatedOptions.Count)
+                {
+                    yield return new DropdownMenuElement<TotalDifficultyLevel>
+                    {
+                        payload = level,
+                        option = new FloatMenuOption(
+                            translatedOptions[index], // 使用翻译后的文本
+                            () => SetDifficultyLevel(index),
+                            null,
+                            null,
+                            true
+                        )
+                    };
+                } else
+                {
+                    Log.Error($"[EliteRaid] 难度级别 {level} 的索引 {index} 超出范围");
+                }
+            }
+        }
+
+
+
+        private List<string> GetTranslatedDifficultyOptions()
+        {
+            return new List<string>
+    {
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.Novice, "Difficulty_Novice", "DifficultyFactor_0_4"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.Retainer, "Difficulty_Retainer", "DifficultyFactor_0_7"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.Knight, "Difficulty_Knight", "DifficultyFactor_1"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.Justiciar, "Difficulty_Justiciar", "DifficultyFactor_1_3"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.Lord, "Difficulty_Lord", "DifficultyFactor_1_6"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.Viceroy, "Difficulty_Viceroy", "DifficultyFactor_2"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.Governor, "Difficulty_Governor", "DifficultyFactor_2_4"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.Duke, "Difficulty_Duke", "DifficultyFactor_3_9"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.Despot, "Difficulty_Despot", "DifficultyFactor_6_4"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.GrandDuke, "Difficulty_GrandDuke", "DifficultyFactor_10"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.Consul, "Difficulty_Consul", "DifficultyFactor_16"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.General, "Difficulty_General", "DifficultyFactor_32"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.GuardCommander, "Difficulty_GuardCommander", "DifficultyFactor_54"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.GalaxyLord, "Difficulty_GalaxyLord", "DifficultyFactor_72"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.StarOverlord, "Difficulty_StarOverlord", "DifficultyFactor_100"),
+        GetDifficultyLabelWithColor(TotalDifficultyLevel.GalaxyEmperor, "Difficulty_GalaxyEmperor", "DifficultyFactor_200"),
+    };
+        }
+
+        // 辅助方法：获取带颜色标签的难度选项文本
+        private string GetDifficultyLabelWithColor(TotalDifficultyLevel level, string nameKey, string factorKey)
+        {
+            string colorTag = GetDifficultyColorTag(level);
+            return $"{colorTag}{nameKey.Translate()}</color> {factorKey.Translate()}";
+        }
+
+        // 辅助方法：根据难度级别获取颜色标签
+        private static string GetDifficultyColorTag(TotalDifficultyLevel level)
+        {
+            switch (level)
+            {
+                case TotalDifficultyLevel.Novice: return "<color=#39FF14>";       // 浅绿色
+                case TotalDifficultyLevel.Retainer: return "<color=#FFA500>";      // 橙色
+                case TotalDifficultyLevel.Knight: return "<color=#B0E2FF>";        // 浅蓝色
+                case TotalDifficultyLevel.Justiciar: return "<color=#00FFFF>";     // 青色
+                case TotalDifficultyLevel.Lord: return "<color=#FF6EC7>";          // 粉色
+                case TotalDifficultyLevel.Viceroy: return "<color=#FF3030>";       // 亮红色
+                case TotalDifficultyLevel.Governor: return "<color=#1E90FF>";      // 天蓝色
+                case TotalDifficultyLevel.Duke: return "<color=#7FFF00>";          // 黄绿色
+                case TotalDifficultyLevel.Despot: return "<color=#FFD700>";        // 金色
+                case TotalDifficultyLevel.GrandDuke: return "<color=#FF6347>";     // 珊瑚色
+                case TotalDifficultyLevel.Consul: return "<color=#39FF14>";        // 浅绿色（与新手区分）
+                case TotalDifficultyLevel.General: return "<color=#FFA500>";       // 橙色（与扈从区分）
+                case TotalDifficultyLevel.GuardCommander: return "<color=#B0E2FF>"; // 浅蓝色（与骑士区分）
+                case TotalDifficultyLevel.GalaxyLord: return "<color=#00FFFF>";    // 青色（与法务官区分）
+                case TotalDifficultyLevel.StarOverlord: return "<color=#FF6EC7>";  // 粉色（与领主区分）
+                case TotalDifficultyLevel.GalaxyEmperor: return "<color=#FF3030>"; // 亮红色（与总督区分）
+                default: return "<color=white>";
+            }
+        }
+
+        private static void SetDifficultyLevel(int index)
+        {
+            var mod = (EliteRaidMod)LoadedModManager.GetMod<EliteRaidMod>();
+
+            // 只有当选择的索引与上次不同时才应用难度
+            if (index != mod.lastSelectedDifficultyIndex)
+            {
+                mod.lastSelectedDifficultyIndex = index;
+                mod.settings.currentDifficultyIndex = index;
+                mod.ApplySelectedDifficulty();
+                mod.settings.Write();
+            }
+        }
+        // 修改ApplySelectedDifficulty方法，更新UI显示
+        // 修改 ApplySelectedDifficulty 方法，确保只应用存在的配置
+        private void ApplySelectedDifficulty()
+        {
+            int index = settings.currentDifficultyIndex;
+
+            // 确保索引有效
+            if (index < 0 || index >= DifficultyOptions.Count)
+            {
+                Log.Error($"[EliteRaid] 无效的难度索引 {index}，重置为0");
+                settings.currentDifficultyIndex = index = 0;
+                settings.Write();
+                return;
+            }
+
+            TotalDifficultyLevel level = (TotalDifficultyLevel)index;
+
+            // 检查配置是否存在
+            if (DifficultyConfig.myDifficultyConfig.ContainsKey(level))
+            {
+                DifficultyConfig config = DifficultyConfig.myDifficultyConfig[level];
+
+                // 应用难度配置到游戏设置
+                eliteRaidDifficulty = config.EliteDifficulty;
+                compressionRatio = config.CompressionRatio;
+                maxRaidPoint = config.MaxRaidPoint;
+                raidScale = config.RaidScale/100f;
+                maxAllowLevel = config.MaxEliteLevel;
+
+                // 同步配置值到设置对象
+                settings.eliteRaidDifficulty = eliteRaidDifficulty;
+                settings.compressionRatio = compressionRatio;
+                settings.maxRaidPoint = maxRaidPoint;
+                settings.raidScale = raidScale;
+                settings.maxAllowLevel = maxAllowLevel;
+
+            //    Log.Message($"[EliteRaid] 应用难度配置: {config.Name} (系数: {config.DifficultyFactor})");
+            } else
+            {
+                Log.Error($"[EliteRaid] 缺少难度级别 {level} 的配置，使用默认配置");
+
+                // 使用默认配置或第一个配置作为备选
+                if (DifficultyConfig.myDifficultyConfig.Count > 0)
+                {
+                    var firstConfig = DifficultyConfig.myDifficultyConfig.First().Value;
+                    eliteRaidDifficulty = firstConfig.EliteDifficulty;
+                    compressionRatio = firstConfig.CompressionRatio;
+                    maxRaidPoint = firstConfig.MaxRaidPoint;
+                    raidScale = firstConfig.RaidScale;
+                    maxAllowLevel = firstConfig.MaxEliteLevel;
+                } else
+                {
+                    Log.Error($"[EliteRaid] 没有可用的难度配置!");
+                }
+            }
+
+            // 更新当前难度
+            CurrentDifficulty = level;
+        }
+
 
         // 新增：跟踪当前难度索引
         private int currentDifficultyIndex = 0;
@@ -447,7 +579,7 @@ namespace EliteRaid
             {
                 Find.Storyteller.difficulty.threatScale = EliteRaidMod.raidScale;
                 needApplyRaidScale = false;
-                Log.Message($"[EliteRaid] 应用袭击缩放倍率: {EliteRaidMod.raidScale}");
+              //  Log.Message($"[EliteRaid] 应用袭击缩放倍率: {EliteRaidMod.raidScale}");
             }
         }
         private void SyncSettingsToStaticFields()
@@ -473,45 +605,67 @@ namespace EliteRaid
             EliteRaidMod.maxRaidPoint = settings.maxRaidPoint;
             EliteRaidMod.allowDropPodRaidValue = settings.allowDropPodRaidValue;
             showDetailConfig = settings.showDetailConfig;
-            raidScale= settings.raidScale;
+           
             ApplyRaidScaleIfNeeded();
             // 验证难度索引
-            int index = settings.currentDifficultyIndex;
-            int maxIndex = DifficultyOptions.Count - 1;
+            int index = settings.currentDifficultyIndex; // 不要减1！
+            int maxIndex = DifficultyOptions.Count - 1; // 修正最大索引计算
             if (index < 0 || index > maxIndex)
             {
                 Log.Error($"[EliteRaid] 无效的难度索引 {index}，范围应为 0-{maxIndex}");
                 settings.currentDifficultyIndex = index = 0;
             }
+            TotalDifficultyLevel level = (TotalDifficultyLevel)index;
+            if (!DifficultyConfig.myDifficultyConfig.ContainsKey(level))
+            {
+                Log.Error($"[EliteRaid] 索引 {index} 对应的难度级别 {level} 没有配置");
 
+                // 尝试找到第一个有配置的级别
+                foreach (var kvp in DifficultyConfig.myDifficultyConfig)
+                {
+                    int validIndex = (int)kvp.Key;
+                    if (validIndex >= 0 && validIndex <= maxIndex)
+                    {
+                        settings.currentDifficultyIndex = index = validIndex;
+                        settings.Write();
+                        break;
+                    }
+                }
+            }
+
+            // 更新当前难度
+            CurrentDifficulty = (TotalDifficultyLevel)index;
 
 
             // 保存当前难度索引，用于检测变化
             int previousDifficultyIndex = currentDifficultyIndex;
             currentDifficultyIndex = index;
 
-            // 只有当用户首次加载、重置设置或更改总难度时，才应用难度配置
-            if (settings.isFirstLoad || settings.wasReset || previousDifficultyIndex != index)
+            // 只有当用户首次加载、重置设置时，才应用难度配置
+            // 移除 previousDifficultyIndex 比较，避免重复应用
+            if (settings.isFirstLoad || settings.wasReset)
             {
-                if (DifficultyConfig.TryGetValue(index, out var config))
+                if (DifficultyConfig.myDifficultyConfig.TryGetValue(CurrentDifficulty, out var config))
                 {
-                    useCompressionRatio = true;
-                    compressionRatio = config.compressionRatio;
-                    maxRaidPoint = config.maxRaidPoint;
-                    eliteRaidDifficulty = config.difficulty;
+                    eliteRaidDifficulty = config.EliteDifficulty;
+                    compressionRatio = config.CompressionRatio;
+                    maxRaidPoint = config.MaxRaidPoint;
+                    raidScale = config.RaidScale / 100f;
+                    maxAllowLevel = config.MaxEliteLevel;
 
-                    // 同步到settings字段
-                    settings.compressionRatio = compressionRatio;
-                    settings.maxRaidPoint = maxRaidPoint;
-                    settings.eliteRaidDifficulty = eliteRaidDifficulty;
-                   
-                  //  Log.Message($"[EliteRaid] 应用难度配置: 压缩比={compressionRatio}, 最大袭击点数={maxRaidPoint}, 难度={eliteRaidDifficulty}");
+                    // 同步到设置文件
+                    settings.eliteRaidDifficulty = config.EliteDifficulty;
+                    settings.compressionRatio = config.CompressionRatio;
+                    settings.maxRaidPoint = config.MaxRaidPoint;
+                    settings.raidScale = config.RaidScale / 100f;
+                    settings.maxRaidPoint = config.MaxRaidPoint;
                 }
 
                 // 重置标志
                 settings.isFirstLoad = false;
                 settings.wasReset = false;
             }
+
             needApplyRaidScale = true;
         }
         // ========== 布局辅助方法 ==========
@@ -531,41 +685,6 @@ namespace EliteRaid
                 TooltipHandler.TipRegion(rect, tooltip);
             y += ROW_HEIGHT + GAP_SMALL;
         }
-
-        private static IEnumerable<DropdownMenuElement<(float, int, EliteRaidDifficulty)>> GenerateDifficultyMenu(int currentIndex)
-        {
-            for (int i = 0; i < DifficultyOptions.Count; i++)
-            {
-                string optionLabel = DifficultyOptions[i];
-                var config = DifficultyConfig[i];
-
-                // 捕获当前循环的索引，避免闭包问题
-                int captureIndex = i;
-
-                yield return new DropdownMenuElement<(float, int, EliteRaidDifficulty)>
-                {
-                    payload = config,
-                    option = new FloatMenuOption(
-                        optionLabel,
-                        () => SetDifficultyIndex(currentIndex, captureIndex),
-                        null,
-                        null,
-                        true
-                    )
-                };
-            }
-        }
-
-        private static void SetDifficultyIndex(int oldIndex, int newIndex)
-        {
-            if (oldIndex != newIndex && newIndex >= 0 && newIndex < DifficultyOptions.Count)
-            {
-                var mod = (EliteRaidMod)LoadedModManager.GetMod<EliteRaidMod>();
-                mod.settings.currentDifficultyIndex = newIndex;
-                mod.SyncSettingsToStaticFields(); // 同步配置
-            } 
-        }
-
 
         private void DrawDifficultySlider(ref float y, float width, string label,
     ref EliteRaidDifficulty difficulty, string tooltip)
