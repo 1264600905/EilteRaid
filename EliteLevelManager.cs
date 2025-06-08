@@ -87,49 +87,199 @@ namespace EliteRaid
             difficultyConfigs[EliteRaidDifficulty.Normal] = new List<EliteLevelConfig>
 {
     new EliteLevelConfig { Level=0, DamageFactor=1f, MoveSpeedFactor=1.0f, ScaleFactor=1.0f, MaxTraits=0, IsBoss=false, CompressionRatio=1 },
-    new EliteLevelConfig { Level=1, DamageFactor=0.77f, MoveSpeedFactor=1.0f, ScaleFactor=1.0f, MaxTraits=1, IsBoss=false, CompressionRatio=2 },
-    new EliteLevelConfig { Level=2, DamageFactor=0.51f, MoveSpeedFactor=1f, ScaleFactor=1.0f, MaxTraits=1, IsBoss=false, CompressionRatio=3 },
-    new EliteLevelConfig { Level=3, DamageFactor=0.39f, MoveSpeedFactor=0.7f, ScaleFactor=1.2f, MaxTraits=2, IsBoss=false, CompressionRatio=4 },
-    new EliteLevelConfig { Level=4, DamageFactor=0.31f, MoveSpeedFactor=0.7f, ScaleFactor=1.35f, MaxTraits=2, IsBoss=false, CompressionRatio=5 },
-    new EliteLevelConfig { Level=5, DamageFactor=0.25f, MoveSpeedFactor=0.5f, ScaleFactor=1.55f, MaxTraits=3, IsBoss=false, CompressionRatio=6 },
-    new EliteLevelConfig { Level=6, DamageFactor=0.19f, MoveSpeedFactor=0.5f, ScaleFactor=1.65f, MaxTraits=3, IsBoss=false, CompressionRatio=8 },
-    new EliteLevelConfig { Level=7, DamageFactor=0.15f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=4, IsBoss=true, CompressionRatio=10 },
+    new EliteLevelConfig { Level=1, DamageFactor=0.88f, MoveSpeedFactor=1.0f, ScaleFactor=1.0f, MaxTraits=1, IsBoss=false, CompressionRatio=2 },
+    new EliteLevelConfig { Level=2, DamageFactor=0.67f, MoveSpeedFactor=1f, ScaleFactor=1.0f, MaxTraits=1, IsBoss=false, CompressionRatio=3 },
+    new EliteLevelConfig { Level=3, DamageFactor=0.48f, MoveSpeedFactor=0.7f, ScaleFactor=1.2f, MaxTraits=2, IsBoss=false, CompressionRatio=4 },
+    new EliteLevelConfig { Level=4, DamageFactor=0.39f, MoveSpeedFactor=0.7f, ScaleFactor=1.35f, MaxTraits=2, IsBoss=false, CompressionRatio=5 },
+    new EliteLevelConfig { Level=5, DamageFactor=0.32f, MoveSpeedFactor=0.5f, ScaleFactor=1.55f, MaxTraits=3, IsBoss=false, CompressionRatio=6 },
+    new EliteLevelConfig { Level=6, DamageFactor=0.25f, MoveSpeedFactor=0.5f, ScaleFactor=1.65f, MaxTraits=3, IsBoss=false, CompressionRatio=8 },
+    new EliteLevelConfig { Level=7, DamageFactor=0.18f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=4, IsBoss=true, CompressionRatio=10 },
 };
 
             difficultyConfigs[EliteRaidDifficulty.Hard] = new List<EliteLevelConfig>
 {
-    new EliteLevelConfig { Level=0, DamageFactor=1f, MoveSpeedFactor=1.0f, ScaleFactor=1.0f, MaxTraits=0, IsBoss=false, CompressionRatio=1 },
-    new EliteLevelConfig { Level=1, DamageFactor=0.67f, MoveSpeedFactor=1.0f, ScaleFactor=1.1f, MaxTraits=1, IsBoss=false, CompressionRatio=2 },
-    new EliteLevelConfig { Level=2, DamageFactor=0.45f, MoveSpeedFactor=1.0f, ScaleFactor=1.1f, MaxTraits=2, IsBoss=false, CompressionRatio=3 },
-    new EliteLevelConfig { Level=3, DamageFactor=0.34f, MoveSpeedFactor=0.7f, ScaleFactor=1.3f, MaxTraits=2, IsBoss=false, CompressionRatio=4 },
-    new EliteLevelConfig { Level=4, DamageFactor=0.27f, MoveSpeedFactor=0.7f, ScaleFactor=1.45f, MaxTraits=3, IsBoss=false, CompressionRatio=5 },
-    new EliteLevelConfig { Level=5, DamageFactor=0.22f, MoveSpeedFactor=0.5f, ScaleFactor=1.65f, MaxTraits=3, IsBoss=false, CompressionRatio=6 },
-    new EliteLevelConfig { Level=6, DamageFactor=0.17f, MoveSpeedFactor=0.5f, ScaleFactor=1.75f, MaxTraits=4, IsBoss=false, CompressionRatio=8 },
-    new EliteLevelConfig { Level=7, DamageFactor=0.14f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=5, IsBoss=true, CompressionRatio=10 },
+    new EliteLevelConfig { Level=0, DamageFactor=1f, MoveSpeedFactor=1.0f, ScaleFactor=1.1f, MaxTraits=1, IsBoss=false, CompressionRatio=2 },
+    new EliteLevelConfig { Level=1, DamageFactor=0.78f, MoveSpeedFactor=1.0f, ScaleFactor=1.1f, MaxTraits=2, IsBoss=false, CompressionRatio=3 },
+    new EliteLevelConfig { Level=2, DamageFactor=0.58f, MoveSpeedFactor=1.0f, ScaleFactor=1.15f, MaxTraits=2, IsBoss=false, CompressionRatio=4 },
+    new EliteLevelConfig { Level=3, DamageFactor=0.44f, MoveSpeedFactor=0.7f, ScaleFactor=1.35f, MaxTraits=2, IsBoss=false, CompressionRatio=5 },
+    new EliteLevelConfig { Level=4, DamageFactor=0.36f, MoveSpeedFactor=0.7f, ScaleFactor=1.5f, MaxTraits=3, IsBoss=false, CompressionRatio=6 },
+    new EliteLevelConfig { Level=5, DamageFactor=0.29f, MoveSpeedFactor=0.5f, ScaleFactor=1.7f, MaxTraits=3, IsBoss=false, CompressionRatio=7 },
+    new EliteLevelConfig { Level=6, DamageFactor=0.22f, MoveSpeedFactor=0.5f, ScaleFactor=1.8f, MaxTraits=4, IsBoss=false, CompressionRatio=9 },
+    new EliteLevelConfig { Level=7, DamageFactor=0.16f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=5, IsBoss=true, CompressionRatio=10 },
 };
 
             difficultyConfigs[EliteRaidDifficulty.Extreme] = new List<EliteLevelConfig>
 {
     new EliteLevelConfig { Level=0, DamageFactor=1f, MoveSpeedFactor=1.0f, ScaleFactor=1.0f, MaxTraits=0, IsBoss=false, CompressionRatio=1 },
-    new EliteLevelConfig { Level=1, DamageFactor=0.57f, MoveSpeedFactor=1.0f, ScaleFactor=1.2f, MaxTraits=1, IsBoss=false, CompressionRatio=2 },
-    new EliteLevelConfig { Level=2, DamageFactor=0.43f, MoveSpeedFactor=1.0f, ScaleFactor=1.2f, MaxTraits=2, IsBoss=false, CompressionRatio=3 },
-    new EliteLevelConfig { Level=3, DamageFactor=0.35f, MoveSpeedFactor=0.7f, ScaleFactor=1.4f, MaxTraits=3, IsBoss=false, CompressionRatio=4 },
-    new EliteLevelConfig { Level=4, DamageFactor=0.26f, MoveSpeedFactor=0.7f, ScaleFactor=1.55f, MaxTraits=4, IsBoss=false, CompressionRatio=5 },
-    new EliteLevelConfig { Level=5, DamageFactor=0.21f, MoveSpeedFactor=0.5f, ScaleFactor=1.75f, MaxTraits=4, IsBoss=false, CompressionRatio=6 },
-    new EliteLevelConfig { Level=6, DamageFactor=0.16f, MoveSpeedFactor=0.5f, ScaleFactor=1.85f, MaxTraits=5, IsBoss=false, CompressionRatio=8 },
-    new EliteLevelConfig { Level=7, DamageFactor=0.12f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=6, IsBoss=true, CompressionRatio=10 },
+    new EliteLevelConfig { Level=1, DamageFactor=0.67f, MoveSpeedFactor=1.0f, ScaleFactor=1.2f, MaxTraits=1, IsBoss=false, CompressionRatio=2 },
+    new EliteLevelConfig { Level=2, DamageFactor=0.48f, MoveSpeedFactor=1.0f, ScaleFactor=1.2f, MaxTraits=2, IsBoss=false, CompressionRatio=3 },
+    new EliteLevelConfig { Level=3, DamageFactor=0.39f, MoveSpeedFactor=0.7f, ScaleFactor=1.4f, MaxTraits=3, IsBoss=false, CompressionRatio=4 },
+    new EliteLevelConfig { Level=4, DamageFactor=0.32f, MoveSpeedFactor=0.7f, ScaleFactor=1.55f, MaxTraits=4, IsBoss=false, CompressionRatio=5 },
+    new EliteLevelConfig { Level=5, DamageFactor=0.25f, MoveSpeedFactor=0.5f, ScaleFactor=1.75f, MaxTraits=4, IsBoss=false, CompressionRatio=6 },
+    new EliteLevelConfig { Level=6, DamageFactor=0.18f, MoveSpeedFactor=0.5f, ScaleFactor=1.85f, MaxTraits=5, IsBoss=false, CompressionRatio=8 },
+    new EliteLevelConfig { Level=7, DamageFactor=0.14f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=6, IsBoss=true, CompressionRatio=10 },
 };
             Console.WriteLine($"[EliteRaid] EliteLevelManager Initialized with {difficultyConfigs.Count} difficulty settings.");
         }
 
+        // 添加辅助函数：判断是否应该使用简化生成策略
+        private static bool ShouldUseSimplifiedGeneration(int originalCount)
+        {
+            // 获取当前难度配置
+            if (!difficultyConfigs.TryGetValue(EliteRaidMod.eliteRaidDifficulty, out List<EliteLevelConfig> configs))
+            {
+                return false;
+            }
+
+            // 获取允许的最高等级配置
+            EliteLevelConfig maxLevelConfig = configs
+                .Where(c => c.Level <= EliteRaidMod.maxAllowLevel)
+                .OrderByDescending(c => c.Level)
+                .FirstOrDefault();
+
+            if (maxLevelConfig == null)
+            {
+                return false;
+            }
+
+            // 计算最大可能的精英数量
+            int maxPossibleElites = EliteRaidMod.useCompressionRatio
+                ? Math.Max(EliteRaidMod.maxRaidEnemy, (int)(originalCount / EliteRaidMod.compressionRatio))
+                : EliteRaidMod.maxRaidEnemy;
+
+            // 计算最高等级精英所需的原始人数
+            int requiredOriginalCount = maxLevelConfig.CompressionRatio * maxPossibleElites;
+
+            // 如果原始人数已经足够满足最高等级精英的最大数量，使用简化策略
+            return originalCount >= requiredOriginalCount;
+        }
+
+        // 添加简化生成函数：直接生成最高等级的精英分布
+        private static void GenerateSimplifiedLevelDistribution(int originalCount)
+        {
+            Console.WriteLine($"[EliteRaid] 使用简化生成策略：直接生成最高等级精英分布。");
+
+            currentLevelDistribution.Clear();
+            lastResortConfig = null;
+
+            // 获取当前难度配置
+            if (!difficultyConfigs.TryGetValue(EliteRaidMod.eliteRaidDifficulty, out List<EliteLevelConfig> configs))
+            {
+                Console.WriteLine($"[EliteRaid] 找不到当前难度的配置，无法生成简化分布。");
+                return;
+            }
+
+            // 获取允许的最高等级配置
+            EliteLevelConfig maxLevelConfig = configs
+                .Where(c => c.Level <= EliteRaidMod.maxAllowLevel)
+                .OrderByDescending(c => c.Level)
+                .FirstOrDefault();
+
+            if (maxLevelConfig == null)
+            {
+                Console.WriteLine($"[EliteRaid] 找不到符合条件的最高等级配置，无法生成简化分布。");
+                return;
+            }
+
+            // 计算最大可能的精英数量
+            int maxPossibleElites = EliteRaidMod.useCompressionRatio
+                ? Math.Max(EliteRaidMod.maxRaidEnemy, (int)(originalCount / EliteRaidMod.compressionRatio))
+                : EliteRaidMod.maxRaidEnemy;
+
+            // 计算实际可以生成的精英数量
+            int eliteCount = Math.Min(maxPossibleElites, originalCount / maxLevelConfig.CompressionRatio);
+
+            // 设置分布
+            currentLevelDistribution[maxLevelConfig] = eliteCount;
+            lastResortConfig = maxLevelConfig;
+
+            // 计算占用的原始人数
+            int slotsFilled = eliteCount * maxLevelConfig.CompressionRatio;
+
+            Console.WriteLine($"[EliteRaid] 简化生成结果：{eliteCount} 个等级 {maxLevelConfig.Level} 的精英，占用 {slotsFilled}/{originalCount} 个原始名额。");
+        }
+
+        // 检查是否只有一种有效配置
+        private static bool HasSingleValidConfig()
+        {
+            if (!difficultyConfigs.TryGetValue(EliteRaidMod.eliteRaidDifficulty, out var configs))
+                return false;
+
+            var validConfigs = configs
+                .Where(c => c.Level <= EliteRaidMod.maxAllowLevel && c.CompressionRatio > 0)
+                .ToList();
+
+            return validConfigs.Count == 1;
+        }
+
+        // 生成单一配置分布
+        private static void GenerateSingleConfigDistribution(int originalCount)
+        {
+            Console.WriteLine($"[EliteRaid] 使用单一配置分布策略。");
+
+            currentLevelDistribution.Clear();
+            lastResortConfig = null;
+
+            if (!difficultyConfigs.TryGetValue(EliteRaidMod.eliteRaidDifficulty, out var configs))
+                return;
+
+            var validConfig = configs
+                .Where(c => c.Level <= EliteRaidMod.maxAllowLevel && c.CompressionRatio > 0)
+                .FirstOrDefault();
+
+            if (validConfig == null)
+                return;
+
+            // 计算可生成的最大数量
+            int maxPossible = Math.Min(
+                originalCount / validConfig.CompressionRatio,
+                EliteRaidMod.useCompressionRatio
+                    ? (int)(originalCount / EliteRaidMod.compressionRatio)
+                    : StaticVariables.DEFAULT_MAX_ENEMY
+            );
+
+            if (maxPossible > 0)
+            {
+                currentLevelDistribution[validConfig] = maxPossible;
+                lastResortConfig = validConfig;
+            }
+        }
+
         public static void GenerateLevelDistribution(int originalCount)
         {
-          //  Log.Message($"[EliteRaid] Generating level distribution for originalCount: {originalCount}. MaxAllowedLevel: {7}, TargetMaxRaidEnemy: {20}, Difficulty: {EliteRaidMod.eliteRaidDifficulty}");
-            int maxRaidEnemy = EliteRaidMod.maxRaidEnemy;
+            // 特殊情况1: 原始数量为0
+            if (originalCount <= 0)
+            {
+                currentLevelDistribution.Clear();
+                Console.WriteLine($"[EliteRaid] 原始数量为0，生成空分布");
+                return;
+            }
+
+            // 特殊情况2: 使用简化生成策略（最高等级）
+            if (ShouldUseSimplifiedGeneration(originalCount))
+            {
+                GenerateSimplifiedLevelDistribution(originalCount);
+                return;
+            }
+            //特殊情况4：最大精英等级是0
+            if (EliteRaidMod.maxAllowLevel==0)
+            {
+                return;
+            }
+
+            // 特殊情况3: 只有一种有效配置
+            if (HasSingleValidConfig())
+            {
+                GenerateSingleConfigDistribution(originalCount);
+                return;
+            }
+
+            //  Log.Message($"[EliteRaid] Generating level distribution for originalCount: {originalCount}. MaxAllowedLevel: {7}, TargetMaxRaidEnemy: {20}, Difficulty: {EliteRaidMod.eliteRaidDifficulty}");
+            int maxRaidEnemy = StaticVariables.DEFAULT_MAX_ENEMY;
             if (EliteRaidMod.useCompressionRatio&&originalCount>maxRaidEnemy)
             {
                 int temp = (int)(originalCount / EliteRaidMod.compressionRatio);
-                maxRaidEnemy =Math.Max(temp,EliteRaidMod.maxRaidEnemy);
+                maxRaidEnemy =Math.Max(temp,StaticVariables.DEFAULT_MAX_ENEMY);
             } 
             const double minUtilizationThreshold = 0.80; // 80%的利用率阈值
             const int maxAttempts = 20; // 最大尝试次数
@@ -762,6 +912,10 @@ namespace EliteRaid
 
         public static EliteLevel GetRandomEliteLevel()
         {
+            if (EliteRaidMod.maxAllowLevel == 0)
+            {
+                return new EliteLevel(0, 1, 1, 1, 0, false);
+            }
             var availableToPick = currentLevelDistribution.Where(kvp => kvp.Value > 0).ToList();
 
             if (!availableToPick.Any())
@@ -836,6 +990,10 @@ namespace EliteRaid
 
         public static int getCurrentLevelDistributionNum()
         {
+            if (EliteRaidMod.maxAllowLevel == 0)
+            {
+                return 0;
+            }
             int totalElites = 0;
             if (currentLevelDistribution != null)
             {

@@ -347,12 +347,12 @@ namespace EliteRaid
                 // 最大精英等级（滑动条）
                 float maxLevelFloat = settings.maxAllowLevel;
                 DrawSlider(ref y, viewRect.width, "maxAllowLevel", "maxAllowLevel".Translate(),
-                    ref maxLevelFloat, "maxAllowLevelDesc".Translate(), 1, 7);
+                    ref maxLevelFloat, "maxAllowLevelDesc".Translate(), 0, 7);
                 settings.maxAllowLevel = (int)maxLevelFloat;
 
-                // 压缩倍率切换开关
-                //DrawCheckbox(ref y, viewRect.width, "useCompressionRatio", "useCompressionRatio".Translate(),
-                //    ref settings.useCompressionRatio, "useCompressionRatioDesc".Translate());
+              //  压缩倍率切换开关
+                DrawCheckbox(ref y, viewRect.width, "useCompressionRatio", "useCompressionRatio".Translate(),
+                    ref settings.useCompressionRatio, "useCompressionRatioDesc".Translate());
 
                 // 根据勾选状态显示不同控件
                 if (settings.useCompressionRatio)
@@ -365,7 +365,7 @@ namespace EliteRaid
                 {
                     float maxEnemyFloat = settings.maxRaidEnemy;
                     DrawSlider(ref y, viewRect.width, "maxRaidEnemy", "maxRaidEnemy".Translate(),
-                        ref maxEnemyFloat, "maxRaidEnemyDesc".Translate(), 20, 100);
+                        ref maxEnemyFloat, "maxRaidEnemyDesc".Translate(), 1, 200);
                     settings.maxRaidEnemy = (int)maxEnemyFloat;
                 }
 
@@ -575,11 +575,10 @@ namespace EliteRaid
 
         private void ApplyRaidScaleIfNeeded()
         {
-            if (needApplyRaidScale && EliteRaidMod.modEnabled && Find.Storyteller != null)
+            if (EliteRaidMod.modEnabled && Find.Storyteller != null)
             {
                 Find.Storyteller.difficulty.threatScale = EliteRaidMod.raidScale;
-                needApplyRaidScale = false;
-              //  Log.Message($"[EliteRaid] 应用袭击缩放倍率: {EliteRaidMod.raidScale}");
+                //Log.Message($"[EliteRaid] 应用袭击缩放倍率: {EliteRaidMod.raidScale}");
             }
         }
         private void SyncSettingsToStaticFields()
@@ -606,6 +605,7 @@ namespace EliteRaid
             EliteRaidMod.allowDropPodRaidValue = settings.allowDropPodRaidValue;
             showDetailConfig = settings.showDetailConfig;
            
+            EliteRaidMod.raidScale = settings.raidScale;
             ApplyRaidScaleIfNeeded();
             // 验证难度索引
             int index = settings.currentDifficultyIndex; // 不要减1！
@@ -686,6 +686,14 @@ namespace EliteRaid
             y += ROW_HEIGHT + GAP_SMALL;
         }
 
+        // 添加这个方法到EliteRaidMod类中
+        public override void WriteSettings()
+        {
+            base.WriteSettings();
+            // 确保在设置保存时应用袭击缩放倍率
+            ApplyRaidScaleIfNeeded();
+        }
+
         private void DrawDifficultySlider(ref float y, float width, string label,
     ref EliteRaidDifficulty difficulty, string tooltip)
         {
@@ -721,7 +729,7 @@ namespace EliteRaid
         }
 
         // 为其他滑动条添加相同的逻辑
-        // 修改后的DrawSlider方法，支持百分比显示
+        // 修改DrawSlider方法，当修改raidScale时标记需要应用更改
         private void DrawSlider(ref float y, float width, string key, string label,
             ref float value, string tooltip, float min, float max, bool isPercentage = false)
         {
@@ -744,6 +752,9 @@ namespace EliteRaid
                 28
             );
 
+            // 保存原始值用于比较
+            float originalValue = value;
+
             value = Widgets.HorizontalSlider(
                 sliderRect,
                 value,
@@ -755,6 +766,12 @@ namespace EliteRaid
                 rightAlignedLabel: isPercentage ? $"{max * 100}%" : max.ToString("F1"),
                 roundTo: 0.1f
             );
+
+            // 如果是raidScale且值发生了变化，标记需要应用
+            if (key == "raidScale" && Math.Abs(value - originalValue) > 0.01f)
+            {
+                needApplyRaidScale = true;
+            }
 
             if (!string.IsNullOrEmpty(tooltip))
                 TooltipHandler.TipRegion(sliderRect, tooltip);

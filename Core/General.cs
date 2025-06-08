@@ -241,9 +241,10 @@ namespace EliteRaid
           
                 if (enhancedCount > 0)
                 {
+                int finalNum = GetenhancePawnNumber(baseNum,enhancePawnNumber);
                 Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum
-                 , enhancePawnNumber, GetcompressionRatio(baseNum, maxPawnNum)
-                 , enhancePawnNumber), MessageTypeDefOf.NeutralEvent, true);
+                 , finalNum, GetcompressionRatio(baseNum, maxPawnNum)
+                 , finalNum), MessageTypeDefOf.NeutralEvent, true);
             } else
                 {
                    // Messages.Message(String.Format("CR_RaidCompressedMassageNotEnhanced".Translate(), baseNum * EliteRaidMod.multipleRaid, maxPawnNum), MessageTypeDefOf.NeutralEvent, true);
@@ -260,13 +261,24 @@ namespace EliteRaid
                     return EliteRaidMod.compressionRatio;
                 } else
                 {
-                    return compressionRatio;
+                    return compressionRatio>EliteRaidMod.compressionRatio?EliteRaidMod.compressionRatio:compressionRatio;
                 }
             } else
             {
                 return compressionRatio;
             }
         }
+
+        public static int GetenhancePawnNumber(int baseNum,int enhancePawnNumber)
+        {
+            int tempNum =(int) (baseNum / EliteRaidMod.compressionRatio);
+            if (EliteRaidMod.useCompressionRatio&&tempNum<enhancePawnNumber)
+            {
+               return tempNum;
+            }
+            return enhancePawnNumber;
+        }
+
         internal static void GeneratePawns_Impl(PawnGroupMakerParms parms, List<Pawn> pawns)
         {
             if ((pawns?.EnumerableNullOrEmpty() ?? true) || parms?.groupKind == null)

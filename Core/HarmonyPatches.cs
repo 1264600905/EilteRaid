@@ -575,7 +575,7 @@ namespace EliteRaid
             int baseNum = (animalCount > 0) ? animalCount : AggressiveAnimalIncidentUtility.GetAnimalsCount(animalKind, points);
             int maxPawnNum = EliteRaidMod.maxRaidEnemy;
 
-            if (EliteRaidMod.useCompressionRatio && baseNum > EliteRaidMod.maxRaidEnemy)
+            if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
             {
                 int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
                 maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
@@ -669,7 +669,7 @@ namespace EliteRaid
                 int maxPawnNum = EliteRaidMod.maxRaidEnemy;
                 int baseNum = __result.Count;
 
-                if (EliteRaidMod.useCompressionRatio && baseNum > EliteRaidMod.maxRaidEnemy)
+                if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
                 {
                     int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
                     maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
@@ -856,9 +856,10 @@ namespace EliteRaid
        
                 if ( enhancedCount > 0)
                 {
+                int finalNum = GetenhancePawnNumber(baseNum, enhancePawnNumber);
                 Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum
-                 , enhancePawnNumber, GetcompressionRatio(baseNum, maxPawnNum)
-                 , enhancePawnNumber), MessageTypeDefOf.NeutralEvent, true);
+                 , finalNum, GetcompressionRatio(baseNum, maxPawnNum)
+                 , finalNum), MessageTypeDefOf.NeutralEvent, true);
             } else
                 {
                    // Messages.Message(String.Format("CR_RaidCompressedMassageNotEnhanced".Translate(), baseNum, maxPawnNum), MessageTypeDefOf.NeutralEvent, true);
@@ -867,7 +868,15 @@ namespace EliteRaid
 
             return false;
         }
-
+        public static int GetenhancePawnNumber(int baseNum, int enhancePawnNumber)
+        {
+            int tempNum = (int)(baseNum / EliteRaidMod.compressionRatio);
+            if (EliteRaidMod.useCompressionRatio && tempNum < enhancePawnNumber)
+            {
+                return tempNum;
+            }
+            return enhancePawnNumber;
+        }
         public static float GetcompressionRatio(int baseNum,int maxPawnNum)
         {
             float compressionRatio = (float)(Math.Ceiling((double)(baseNum / maxPawnNum)));
@@ -875,7 +884,7 @@ namespace EliteRaid
             {
                 if(baseNum > maxPawnNum)
                 {
-                    return EliteRaidMod.compressionRatio;
+                    return compressionRatio > EliteRaidMod.compressionRatio ? EliteRaidMod.compressionRatio : compressionRatio;
                 } else
                 {
                     return compressionRatio;
@@ -963,7 +972,7 @@ namespace EliteRaid
                 }
            
 
-                if (EliteRaidMod.useCompressionRatio && baseNum > EliteRaidMod.maxRaidEnemy)
+                if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
                 {
                     int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
                     maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);

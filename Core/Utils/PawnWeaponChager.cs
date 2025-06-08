@@ -73,7 +73,7 @@ namespace RimwoldEliteRaidProject.Core
         // 判断是否为目标武器
         private static bool IsTargetWeapon(ThingWithComps weapon)
         {
-            if (weapon == null || weapon.def == null)
+            if (weapon == null || weapon.def == null|| string.IsNullOrEmpty(weapon.def.defName))
             {
               //  Log.Message($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}][EliteRaid][IsTargetWeapon] 武器或其def为空, 结果=false");
                 return false;
@@ -149,7 +149,22 @@ namespace RimwoldEliteRaidProject.Core
 
                 // 检查是否成功生成武器
                 ThingWithComps newWeapon = pawn.equipment.Primary;
-
+                if (newWeapon == null)
+                {
+                    Log.Error($"{logPrefix} 生成武器失败，尝试使用保底武器（突击步枪）");
+                    ThingDef fallbackDef = DefDatabase<ThingDef>.GetNamed("Gun_AssaultRifle", false);
+                    if (fallbackDef != null)
+                    {
+                        newWeapon = (ThingWithComps)ThingMaker.MakeThing(fallbackDef);
+                        pawn.equipment.AddEquipment(newWeapon);
+                    } else
+                    {
+                        Log.Error($"{logPrefix} 保底武器（突击步枪）也不存在，无法替换");
+                        // 恢复原武器
+                        pawn.equipment.AddEquipment(oldWeapon);
+                        return;
+                    }
+                }
                 // 保底逻辑：如果新武器仍然是目标武器，强制替换为速射机枪
                 if (newWeapon != null && IsTargetWeapon(newWeapon))
                 {

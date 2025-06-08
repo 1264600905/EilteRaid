@@ -64,7 +64,7 @@ namespace EliteRaid
             int baseNum = options.Count();
 
             // 新增压缩率计算（确保 baseNum >= compressionRatio 时才压缩）
-            if (EliteRaidMod.useCompressionRatio && baseNum >= EliteRaidMod.maxRaidEnemy)
+            if (EliteRaidMod.useCompressionRatio && baseNum >= StaticVariables.DEFAULT_MAX_ENEMY)
             {
                 int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
                 maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
@@ -170,7 +170,7 @@ namespace EliteRaid
                 int baseNum = normalOptions.Count;
                 int maxPawnNum = EliteRaidMod.maxRaidEnemy;
 
-                if (EliteRaidMod.useCompressionRatio && baseNum > EliteRaidMod.maxRaidEnemy)
+                if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
                 {
                     int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
                     maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
@@ -260,7 +260,7 @@ namespace EliteRaid
             }
             int maxPawnNum = EliteRaidMod.maxRaidEnemy;
             // 新增压缩率计算（确保 baseNum >= compressionRatio 时才压缩）
-            if (EliteRaidMod.useCompressionRatio && baseNum >= EliteRaidMod.maxRaidEnemy)
+            if (EliteRaidMod.useCompressionRatio && baseNum >= StaticVariables.DEFAULT_MAX_ENEMY)
             {
                 int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
                 maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
@@ -342,7 +342,7 @@ namespace EliteRaid
 
             int maxPawnNum = EliteRaidMod.maxRaidEnemy;
             // 新增压缩率计算（确保 baseNum >= compressionRatio 时才压缩）
-            if (EliteRaidMod.useCompressionRatio && baseNum >= EliteRaidMod.maxRaidEnemy)
+            if (EliteRaidMod.useCompressionRatio && baseNum >= StaticVariables.DEFAULT_MAX_ENEMY)
             {
                 int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
                 maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);

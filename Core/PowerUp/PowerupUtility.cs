@@ -71,7 +71,7 @@ namespace EliteRaid
 
 
             // 远程攻速（乘算）
-            if (eliteLevel.rangedSpeedEnhance || eliteLevel.meleeEnhance)
+            if (eliteLevel.Level>0)
             {
                 float cooldownFactor = CalculateCooldownFactor(eliteLevel);
                 yield return new StatModifier
@@ -89,6 +89,18 @@ namespace EliteRaid
                 };
             }
 
+            ////在拥有VEFcore下更改体型
+            //TODO
+            //bool hasVEFCore = ModLister.GetActiveModWithIdentifier("oskarpotocki.vanillafactionsexpanded.core") != null;
+            //if (eliteLevel.Level >= 5 && hasVEFCore)
+            //{
+            //    float sizeFactor = eliteLevel.ScaleFactor;
+            //    yield return new StatModifier
+            //    {
+            //        stat = DefDatabase<StatDef>.GetNamedSilentFail("VEF_CosmeticBodySize_Multiplier"), // VEF 体型参数
+            //        value = sizeFactor,
+            //    };
+            //}
 
             // 移速强化（乘算）
             if (eliteLevel.moveSpeedEnhance)
@@ -123,15 +135,33 @@ namespace EliteRaid
             };
 
             // 移速降低抵抗（乘算）
+           
             if (eliteLevel.moveSpeedResist)
             {
                 float staggerFactor = CalculateStaggerFactor(eliteLevel);
+                // 减速持续时间抵抗（原逻辑）
                 yield return new StatModifier
                 {
                     stat = StatDefOf.StaggerDurationFactor,
-                    value = staggerFactor,
-
+                    value = staggerFactor // 例如：0.5 表示减速持续时间变为50%
                 };
+            }
+           
+            // 新增：压制抗性（通过降低Suppressability实现）
+            bool ceActive = ModLister.GetActiveModWithIdentifier("ceteam.combatextended") != null;
+            if (ceActive)
+            {
+                // CE的压制属性为Suppressability（可压制性），数值越低越难被压制
+                StatDef suppressionStat = DefDatabase<StatDef>.GetNamed("Suppressability");
+                float suppressability =eliteLevel.moveSpeedResist? -0.9f : -eliteLevel.Level*0.1f;
+                if (suppressionStat != null)
+                {
+                    yield return new StatModifier
+                    {
+                        stat = suppressionStat,
+                        value = suppressability // 负数表示降低可压制性
+                    };
+                }
             }
 
             // 新增：boss级精英敌人的心灵敏感度处理
@@ -143,20 +173,82 @@ namespace EliteRaid
                     value = 0f // 心灵敏感度乘0%，完全免疫心灵效果
                 };
             }
+
         }
 
-        // 计算冷却时间系数（近战/远程通用）
+        // 计算痛觉降低系数（5级开始生效）
+        private static void SetPainReduction(EliteLevel eliteLevel,Hediff hediff)
+        {
+            // 假设gainStatValue为精英等级（5~7）
+            if (eliteLevel.Level >= 5)
+            {
+                float painRatio = 1f;
+                if (eliteLevel.Level >= 5) painRatio = 0.8f; // 5级
+                if (eliteLevel.Level >= 6) painRatio = 0.6f; // 6级
+                if (eliteLevel.Level >= 7) painRatio = 0.4f; // 7级及以上
+                hediff.CurStage.painFactor = painRatio;
+            }
+        }
+
+        // 计算冷却时间系数（远程）
         private static float CalculateCooldownFactor(EliteLevel eliteLevel)
         {
-            float speedIncreasePercent = 0.3f + (eliteLevel.Level * 0.05f);
-            return Math.Max(1f - speedIncreasePercent, 0.2f); // 最低0.1倍冷却时间
+            // 基础攻速加成（无攻击强化）
+            float baseSpeedBonus = 0f;
+            switch (eliteLevel.Level)
+            {
+                case 1: baseSpeedBonus = 0.2f; break;  // 1级20%攻速加成
+                case 2: baseSpeedBonus = 0.3f; break;
+                case 3: baseSpeedBonus = 0.4f; break;  // 补全3级（原需求缺失）
+                case 4: baseSpeedBonus = 0.5f; break;
+                case 5: baseSpeedBonus = 0.8f; break;
+                case 6: baseSpeedBonus = 1.0f; break;
+                case 7: baseSpeedBonus = 1.5f; break;
+                default: baseSpeedBonus = 0f; break;  // 超出等级范围默认0加成
+            }
+
+            // 攻击强化词条加成（独立倍率）
+            float enhancedSpeedBonus = 0f;
+            switch (eliteLevel.Level)
+            {
+                case 1: enhancedSpeedBonus = 0.5f; break;  // 1级带词条50%攻速加成
+                case 2: enhancedSpeedBonus = 0.6f; break;
+                case 3: enhancedSpeedBonus = 0.7f; break;  // 补全3级
+                case 4: enhancedSpeedBonus = 1.0f; break;
+                case 5: enhancedSpeedBonus = 1.3f; break;  // 注意：原需求可能为130%而非1300%
+                case 6: enhancedSpeedBonus = 1.5f; break;
+                case 7: enhancedSpeedBonus = 2.0f; break;
+                default: enhancedSpeedBonus = 0f; break;
+            }
+
+            // 最终加成：根据是否有词条选择对应倍率
+            float totalSpeedBonus = eliteLevel.rangedSpeedEnhance || eliteLevel.meleeEnhance
+                ? enhancedSpeedBonus
+                : baseSpeedBonus;
+
+            // 计算冷却系数：1/(1+加成)，最低0.2倍冷却
+            float cooldownFactor = 1f / Math.Max(1f + totalSpeedBonus, 1f);
+            return Math.Max(cooldownFactor, 0.2f);
         }
-        // 计算近战冷却时间系数（增加60%效果限制）
+
+        // 近战冷却系数：远程加成×70%，最低0.35倍冷却
         private static float CalculateMeleeCooldownFactor(EliteLevel eliteLevel)
         {
-            float baseSpeedIncrease = 0.3f + (eliteLevel.Level * 0.05f);
-            float adjustedSpeedIncrease = baseSpeedIncrease * 0.7f; // 近战效果只生效70%
-            return Math.Max(1f - adjustedSpeedIncrease, 0.2f); // 最低0.2倍冷却时间
+            float remoteSpeedBonus;
+
+            // 处理7级时的特殊情况（冷却系数0.4对应150%加成）
+            float remoteCooldown = CalculateCooldownFactor(eliteLevel);
+            if (remoteCooldown == 0.2f)
+            {
+                remoteSpeedBonus = 1.5f;
+            } else
+            {
+                remoteSpeedBonus = (1f / remoteCooldown) - 1f; // 反推远程加成
+            }
+
+            float meleeSpeedBonus = remoteSpeedBonus * 0.7f; // 近战加成=远程70%
+            float cooldownFactor = 1f / Math.Max(1f + meleeSpeedBonus, 1f);
+            return Math.Max(cooldownFactor, 0.35f);
         }
 
         // 计算移速抵抗系数
@@ -165,6 +257,49 @@ namespace EliteRaid
             float reduction = 0.3f + (eliteLevel.Level * 0.1f);
             return Math.Max(1f - reduction, 0.01f); // 最低0.01倍减速持续时间
         }
+
+
+        // 计算部位血量倍数（5级开始生效，每级提升血量）
+        private static float CalculateBodyPartHPFactor(EliteLevel eliteLevel)
+        {
+            if (eliteLevel.Level == 5)
+            {
+                return 1.2f;
+            }
+            if (eliteLevel.Level == 6)
+            {
+                return 1.5f;
+            }
+            if (eliteLevel.Level == 7)
+            {
+                return 2f;
+            }
+            return 1f;
+        }
+
+        //遍历修改部位血量
+        // TODO
+        private static void SetBodyPartHP(Hediff hediff, EliteLevel eliteLevel)
+        {
+            //if (eliteLevel.Level < 5) return;
+
+            //Pawn pawn = hediff.pawn;
+            //float hpFactor = CalculateBodyPartHPFactor(eliteLevel);
+
+            //// 获取所有部位，包括已缺失的（用于恢复已损坏部位的血量上限）
+            //foreach (BodyPartRecord part in pawn.RaceProps.body.AllParts)
+            //{
+            //    // 跳过已移除的部位
+            //    if (pawn.health.hediffSet.PartIsMissing(part))
+            //        continue;
+
+            //    // 计算新的最大血量增加值（注意：这里使用绝对值而非乘数）
+            //    float maxHealthOffset = part.def.hitPoints * (hpFactor - 1);
+
+
+            //}
+        }
+
 
         public static bool TrySetStatModifierToHediff(Hediff hediff, EliteLevel eliteLevel)
         {
@@ -177,6 +312,11 @@ namespace EliteRaid
             // 初始化加算和乘算列表
             hediff.CurStage.statOffsets = new List<StatModifier>(); // 加算
             hediff.CurStage.statFactors = new List<StatModifier>(); // 乘算
+            //设置痛觉
+            SetPainReduction(eliteLevel, hediff);
+            //设置部位血量
+            SetBodyPartHP(hediff, eliteLevel);
+            //设置体型
 
             // 填充加算属性（type=Flat）
             foreach (var sm in GetAdditiveStatModifiers(eliteLevel))
@@ -214,7 +354,9 @@ namespace EliteRaid
                     offset = Math.Min(totalPercent, 1.0f) // 限制最大值为200%（可根据需求调整）
                 };
             }
+
             yield break;
+
         }
 
 
