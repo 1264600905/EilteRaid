@@ -32,6 +32,7 @@ public class EliteRaidSettings : ModSettings
         public float raidScale = StaticVariables.DEFAULT_RAID_SCALE; // 新增默认值
         public bool isFirstLoad = true;
         public bool wasReset = false;
+        public bool allowModBionicsAndDrugs = StaticVariables.DEFAULT_ALLOW_MOD_BIONICS_AND_DRUGS; // 新增
         public override void ExposeData()
     {
         base.ExposeData();
@@ -58,6 +59,8 @@ public class EliteRaidSettings : ModSettings
             Scribe_Values.Look(ref isFirstLoad, "isFirstLoad", true);
             Scribe_Values.Look(ref wasReset, "wasReset", false);
             Scribe_Values.Look(ref raidScale, "raidScale", StaticVariables.DEFAULT_RAID_SCALE);
+            // 在 ExposeData 方法中添加序列化逻辑（找到 Scribe_Values 部分）
+            Scribe_Values.Look(ref allowModBionicsAndDrugs, "allowModBionicsAndDrugs", StaticVariables.DEFAULT_ALLOW_MOD_BIONICS_AND_DRUGS); // 新增
         }
 
     public void Reset()
@@ -83,6 +86,7 @@ public class EliteRaidSettings : ModSettings
             allowDropPodRaidValue = StaticVariables.DEFAULT_ALLOW_DROP_POD_RAID; // 新增
             raidScale = StaticVariables.DEFAULT_RAID_SCALE; // 重置袭击缩放倍率
             wasReset = true;
+            allowModBionicsAndDrugs = StaticVariables.DEFAULT_ALLOW_MOD_BIONICS_AND_DRUGS;
         }
 }
 
@@ -90,6 +94,8 @@ public class EliteRaidSettings : ModSettings
 // ========== 静态默认值 ==========
 public static class StaticVariables
 {
+        // 在 StaticVariables 类中添加（与其他默认值并列）
+        public const bool DEFAULT_ALLOW_MOD_BIONICS_AND_DRUGS = true; // 新增
         public const bool DEFAULT_USE_COMPRESSION_RATIO = true; // 新增默认值
         public const float DEFAULT_COMPRESSION_RATIO = 3.0f;
         public const bool DEFAULT_ENABLE_SILVER_DROP = true;

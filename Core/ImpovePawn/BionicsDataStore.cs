@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 using RimWorld;
+using System.Security.Cryptography;
 
 namespace EliteRaid
 {
@@ -104,6 +105,18 @@ namespace EliteRaid
                 if (hediffDef == null || hediffDef.isBad || !hediffDef.countsAsAddedPartOrImplant || hediffDef.addedPartProps == null || !hediffDef.addedPartProps.solid || (hediffDef.addedPartProps.partEfficiency < 1f && !hediffDef.addedPartProps.betterThanNatural))
                 {
                     return false;
+                }
+                //限制模组的药物使用
+                bool isModContent = x.modContentPack != null &&
+                x.modContentPack.Name != "ludeon.rimworld"&&
+                x.modContentPack.Name != "ludeon.rimworld.royalty"&&
+                x.modContentPack.Name != "ludeon.rimworld.ideology" &&
+                x.modContentPack.Name != "ludeon.rimworld.biotech"&&
+                 x.modContentPack.Name != "ludeon.rimworld.anomaly";
+              //  Log.Message("植入体信息:drug.modContentPack" + x.modContentPack + "名字" + x.defName);
+                if (isModContent && !EliteRaidMod.AllowModBionicsAndDrugs)
+                {
+                    return false; // 不允许模组内容时跳过
                 }
                 return true;
             }))

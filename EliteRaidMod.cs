@@ -40,8 +40,9 @@ namespace EliteRaid
         public static int maxRaidPoint = 10000; // 新增：最大袭击点数上限（默认10000）
         public static bool showDetailConfig = false;
         public static float raidScale = 1.0f;  //游戏内袭击倍率
-
         public static TotalDifficultyLevel CurrentDifficulty { get; set; } = TotalDifficultyLevel.Knight;
+        // 在 EliteRaidMod 类顶部添加（与其他静态字段并列）
+        public static bool AllowModBionicsAndDrugs = true; // 新增：允许模组药物和仿生体
         //植入体强化
         // 新增：全局词条开关（与EliteLevel中的开关对应）
         public static bool AllowAddBioncis = true;   
@@ -247,7 +248,7 @@ namespace EliteRaid
             float contentHeight = CalculateContentHeight(inRect.width);
 
             // 使用计算出的内容高度创建滚动视图
-            Rect viewRect = new Rect(0, 0, inRect.width - 40f, contentHeight+200);
+            Rect viewRect = new Rect(0, 0, inRect.width - 40f, contentHeight+400);
             Widgets.BeginScrollView(inRect, ref settings.scrollPosition, viewRect);
 
             float y = 15f;
@@ -312,6 +313,13 @@ namespace EliteRaid
                     ref silverDropFloat, "silverDropPerLevelDesc".Translate(), 20, 100);
                 settings.silverDropPerLevel = (int)silverDropFloat;
             }
+           
+            y += GAP_SMALL; // 间隔
+
+            // 新增：允许模组药物和仿生体
+            DrawCheckbox(ref y, viewRect.width, "allowModBionicsAndDrugs", "AllowModBionicsAndDrugs".Translate(),
+                ref settings.allowModBionicsAndDrugs, "AllowModBionicsAndDrugsDesc".Translate()); // 需添加翻译键
+
 
             float labelWidth = 120f;
             float doubleRowHeight = ROW_HEIGHT * 2; // 双行高度
@@ -573,7 +581,10 @@ namespace EliteRaid
         private void ApplySelectedDifficulty()
         {
             int index = settings.currentDifficultyIndex;
-
+            maxRaidEnemy = 20;
+            useCompressionRatio = true;
+            settings.maxRaidEnemy = 20;
+            settings.useCompressionRatio = useCompressionRatio;
             // 确保索引有效
             if (index < 0 || index >= DifficultyOptions.Count)
             {
@@ -641,6 +652,7 @@ namespace EliteRaid
                 //Log.Message($"[EliteRaid] 应用袭击缩放倍率: {EliteRaidMod.raidScale}");
             }
         }
+        private static bool lastAllowModBionicsAndDrug = EliteRaidMod.AllowModBionicsAndDrugs;
         private void SyncSettingsToStaticFields()
         {
             // 先同步用户设置到静态字段
@@ -664,7 +676,7 @@ namespace EliteRaid
             EliteRaidMod.maxRaidPoint = settings.maxRaidPoint;
             EliteRaidMod.allowDropPodRaidValue = settings.allowDropPodRaidValue;
             showDetailConfig = settings.showDetailConfig;
-           
+            EliteRaidMod.AllowModBionicsAndDrugs = settings.allowModBionicsAndDrugs;
             EliteRaidMod.raidScale = settings.raidScale;
             ApplyRaidScaleIfNeeded();
             // 验证难度索引
@@ -712,13 +724,16 @@ namespace EliteRaid
                     maxRaidPoint = config.MaxRaidPoint;
                     raidScale = config.RaidScale / 100f;
                     maxAllowLevel = config.MaxEliteLevel;
-
+                    maxRaidEnemy = 20;
+                    useCompressionRatio = true;
                     // 同步到设置文件
                     settings.eliteRaidDifficulty = config.EliteDifficulty;
                     settings.compressionRatio = config.CompressionRatio;
                     settings.maxRaidPoint = config.MaxRaidPoint;
                     settings.raidScale = config.RaidScale / 100f;
                     settings.maxRaidPoint = config.MaxRaidPoint;
+                    settings.maxRaidEnemy = 20;
+                    settings.useCompressionRatio= useCompressionRatio;
                 }
 
                 // 重置标志

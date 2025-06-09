@@ -8,6 +8,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using RimWorld;
 using Verse;
+using static EliteRaid.EliteLevelData;
 
 namespace EliteRaid
 {
@@ -275,10 +276,11 @@ namespace EliteRaid
         }
         private void RestoreData()
         {
+          //  Log.Message($"[EliteRaid] RestoreData() 开始执行，Pawn: {pawn?.def.defName ?? "null"}, m_SaveDataField:" + m_SaveDataField?.Length);
 
             if (string.IsNullOrEmpty(m_SaveDataField))
             {
-                Log.Warning($"[EliteRaid] 尝试恢复空的精英数据，移除Hediff, Pawn: {pawn?.Name}");
+             //   Log.Warning($"[EliteRaid] 尝试恢复空的精英数据，移除Hediff, Pawn: {pawn?.Name}");
                 RemoveThis();
                 return;
             }
@@ -288,14 +290,19 @@ namespace EliteRaid
 
             try
             {
+               // Log.Message($"[EliteRaid] 开始解析保存数据，格式检查: {m_SaveDataField.Contains("|data:")}");
+
                 if (!m_SaveDataField.Contains("|data:"))
                 {
                     Log.Error($"[EliteRaid] 无效的保存数据格式：{m_SaveDataField}");
                     RemoveThis();
                     return;
                 }
+
                 // 拆分 pawnID 和 JSON 数据
                 string[] parts = m_SaveDataField.Split(new[] { "|data:" }, 2, StringSplitOptions.None);
+              //  Log.Message($"[EliteRaid] 数据拆分完成，parts 长度: {parts.Length}");
+
                 if (parts.Length != 2)
                 {
                     Log.Error($"[EliteRaid] 保存数据格式错误: {m_SaveDataField}");
@@ -306,6 +313,8 @@ namespace EliteRaid
                 string pawnId = parts[0].Replace("pawnId:", "");
                 string jsonData = parts[1];
 
+         //       Log.Message($"[EliteRaid] 解析 pawnId: {pawnId}, 当前 Pawn ID: {pawn?.thingIDNumber}, JSON 长度: {jsonData.Length}");
+
                 // 验证 pawnID 是否匹配当前 pawn
                 if (pawnId != pawn.thingIDNumber.ToString())
                 {
@@ -315,7 +324,10 @@ namespace EliteRaid
                 }
 
                 // 反序列化为 EliteLevelData 对象
+              //  Log.Message($"[EliteRaid] 开始反序列化 JSON 数据...");
                 data = JsonHelper.Deserialize<EliteLevelData>(jsonData);
+              //  Log.Message($"[EliteRaid] 反序列化完成，data 是否为空: {data == null}");
+
                 if (data == null)
                 {
                     Log.Error("[EliteRaid] 反序列化 EliteLevelData 失败，数据为空");
@@ -325,7 +337,26 @@ namespace EliteRaid
 
                 shouldLog = true; // 数据有效时标记日志输出
 
-                // 修复：使用当前Hediff的CurStage，不再创建新的Stage对象
+             //   Log.Message($"[EliteRaid] 反序列化成功，等级: {data.Level}, 伤害系数: {data.DamageFactor}, 移动速度系数: {data.MoveSpeedFactor}");
+             //   Log.Message($"[EliteRaid] StatOffsets 数量: {data.StatOffsets?.Count ?? 0}, StatFactors 数量: {data.StatFactors?.Count ?? 0}, CapMods 数量: {data.CapMods?.Count ?? 0}");
+                //if (this.CurStage == null)
+                //{
+                //    Log.Message($"[EliteRaid] CurStage 初始化完成，是否成功: {this.CurStage != null}");
+                //}
+                // 检查 CurStage 是否为 null
+             //   Log.Message($"[EliteRaid] 检查 CurStage 是否为 null: {this.CurStage == null}");
+
+
+                // 清空原有属性，重新添加
+              //  Log.Message($"[EliteRaid] 清空 CurStage 属性，statOffsets: {this.CurStage.statOffsets?.Count ?? 0}, statFactors: {this.CurStage.statFactors?.Count ?? 0}, capMods: {this.CurStage.capMods?.Count ?? 0}");
+                // 确保集合已初始化
+                if (this.CurStage.statOffsets == null)
+                    this.CurStage.statOffsets = new List<StatModifier>();
+                if (this.CurStage.statFactors == null)
+                    this.CurStage.statFactors = new List<StatModifier>();
+                if (this.CurStage.capMods == null)
+                    this.CurStage.capMods = new List<PawnCapacityModifier>();
+
                 // 清空原有属性，重新添加
                 this.CurStage.statOffsets.Clear();
                 this.CurStage.statFactors.Clear();
@@ -342,18 +373,23 @@ namespace EliteRaid
             StatDefOf.PsychicSensitivity.defName,
             // 可根据需要扩展更多乘算属性
         };
-                if (data == null)
-                {
-                    Log.Error("[EliteRaid] 反序列化失败，EliteLevelData 为空");
-                    RemoveThis();
-                    return;
-                }
+
                 // 恢复加算属性（StatOffsets）
-                foreach (var smd in data.StatOffsets)
+            //    Log.Message($"[EliteRaid] 开始恢复加算属性，数量: {data.StatOffsets?.Count ?? 0}");
+
+                foreach (var smd in data.StatOffsets ?? Enumerable.Empty<StatModifierData>())
                 {
                     try
                     {
+                    //    Log.Message($"[EliteRaid] 恢复加算属性: {smd.StatDefName}, 值: {smd.Value}");
                         var statDef = DefDatabase<StatDef>.GetNamed(smd.StatDefName);
+
+                        if (statDef == null)
+                        {
+                            Log.Error($"[EliteRaid] 找不到 StatDef: {smd.StatDefName}");
+                            continue;
+                        }
+
                         this.CurStage.statOffsets.Add(new StatModifier
                         {
                             stat = statDef,
@@ -367,11 +403,21 @@ namespace EliteRaid
                 }
 
                 // 恢复乘算属性（StatFactors）
-                foreach (var smd in data.StatFactors)
+             //   Log.Message($"[EliteRaid] 开始恢复乘算属性，数量: {data.StatFactors?.Count ?? 0}");
+
+                foreach (var smd in data.StatFactors ?? Enumerable.Empty<StatModifierData>())
                 {
                     try
                     {
+                      //  Log.Message($"[EliteRaid] 恢复乘算属性: {smd.StatDefName}, 值: {smd.Value}");
                         var statDef = DefDatabase<StatDef>.GetNamed(smd.StatDefName);
+
+                        if (statDef == null)
+                        {
+                            Log.Error($"[EliteRaid] 找不到 StatDef: {smd.StatDefName}");
+                            continue;
+                        }
+
                         // 二次校验是否属于乘算属性（避免逻辑错误）
                         if (multiplicativeStats.Contains(statDef.defName))
                         {
@@ -397,11 +443,21 @@ namespace EliteRaid
                 }
 
                 // 恢复容量修改器（CapMods）
-                foreach (var pcmd in data.CapMods)
+            //    Log.Message($"[EliteRaid] 开始恢复容量修改器，数量: {data.CapMods?.Count ?? 0}");
+
+                foreach (var pcmd in data.CapMods ?? Enumerable.Empty<PawnCapacityModifierData>())
                 {
                     try
                     {
+                    //    Log.Message($"[EliteRaid] 恢复容量修改器: {pcmd.CapacityDefName}, 偏移: {pcmd.Offset}");
                         var capacityDef = DefDatabase<PawnCapacityDef>.GetNamed(pcmd.CapacityDefName);
+
+                        if (capacityDef == null)
+                        {
+                            Log.Error($"[EliteRaid] 找不到 PawnCapacityDef: {pcmd.CapacityDefName}");
+                            continue;
+                        }
+
                         this.CurStage.capMods.Add(new PawnCapacityModifier
                         {
                             capacity = capacityDef,
@@ -415,10 +471,12 @@ namespace EliteRaid
                 }
 
                 // 应用额外效果（如外观变化）
+              //  Log.Message($"[EliteRaid] 开始应用等级效果，等级: {data.Level}");
                 ApplyLevelEffects(data);
+             //   Log.Message($"[EliteRaid] 等级效果应用完成");
 
                 // 输出成功日志（仅在所有属性恢复无异常时）
-                //if (EliteRaidMod.displayMessageValue && shouldLog)
+                //if (shouldLog)
                 //{
                 //    Log.Message($"[EliteRaid] 成功恢复精英数据：" +
                 //                $"pawn={pawn.Name}, " +
@@ -431,11 +489,8 @@ namespace EliteRaid
             {
                 Log.Error($"[EliteRaid] 恢复数据失败：{e.Message}\n{e.StackTrace}");
                 RemoveThis();
-
             }
-
         }
-
         private void GenerateSilverOnPawn()
         {
             // 检查 Pawn 是否在地图上且位置有效

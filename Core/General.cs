@@ -268,6 +268,9 @@ namespace EliteRaid
             int tempNum =(int) (baseNum / EliteRaidMod.compressionRatio);
             if (EliteRaidMod.useCompressionRatio&&tempNum<enhancePawnNumber)
             {
+                if (tempNum < 20) {
+                    return 20;
+                }
                return tempNum;
             }
             return enhancePawnNumber;

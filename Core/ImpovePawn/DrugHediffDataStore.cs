@@ -275,6 +275,17 @@ namespace EliteRaid
                     {
                         continue;
                     }
+                    bool isModContent = drug.modContentPack != null &&
+              drug.modContentPack.Name != "ludeon.rimworld" &&
+              drug.modContentPack.Name != "ludeon.rimworld.royalty" &&
+              drug.modContentPack.Name != "ludeon.rimworld.ideology" &&
+              drug.modContentPack.Name != "ludeon.rimworld.biotech" &&
+               drug.modContentPack.Name != "ludeon.rimworld.anomaly";
+                  //  Log.Message("药物信息:drug.modContentPack" + drug.modContentPack+ "名字"+drug.defName);
+                    if (isModContent && !EliteRaidMod.AllowModBionicsAndDrugs)
+                    {
+                        continue;
+                    }
                     drugHediffs.Add(doer.hediffDef);
                 }
                 if (drugHediffs.Any())
