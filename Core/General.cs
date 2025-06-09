@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 using Verse.AI.Group;
 using static EliteRaid.StaticVariables_ModCompatibility;
@@ -101,7 +102,7 @@ namespace EliteRaid
             {
              //   Log.Message("最终输出人数" + enhancePawnNumber);
             }
-            Log.Message($"压缩后人数（压缩率{EliteRaidMod.compressionRatio}）：{enhancePawnNumber}");
+          //  Log.Message($"压缩后人数（压缩率{EliteRaidMod.compressionRatio}）：{enhancePawnNumber}");
             for (int i = 0; i < pawns.Count; i++)
             {
                 Pawn pawn = pawns[i];
@@ -256,13 +257,7 @@ namespace EliteRaid
             float compressionRatio = (float)(Math.Ceiling((double)(baseNum  / maxPawnNum)));
             if (EliteRaidMod.useCompressionRatio)
             {
-                if (baseNum  > maxPawnNum * EliteRaidMod.compressionRatio)
-                {
-                    return EliteRaidMod.compressionRatio;
-                } else
-                {
-                    return compressionRatio>EliteRaidMod.compressionRatio?EliteRaidMod.compressionRatio:compressionRatio;
-                }
+                return EliteRaidMod.compressionRatio;
             } else
             {
                 return compressionRatio;
@@ -288,9 +283,9 @@ namespace EliteRaid
             foreach (Pawn pawn in pawns) { 
             PawnWeaponChager.CheckAndReplaceMainWeapon(pawn); // 检查并替换主武器
             }
-
-            // 新增：输出原始参数和 TryGetCompressWork_GeneratePawnsValues 的结果
-            Type pawnGroupWorker = null;
+            PawnWeaponChager.ResetCounter();
+               // 新增：输出原始参数和 TryGetCompressWork_GeneratePawnsValues 的结果
+               Type pawnGroupWorker = null;
             int baseNum = 0;
             int maxPawnNum = 0;
             bool raidFriendly = false;
@@ -308,6 +303,39 @@ namespace EliteRaid
            if (pawns.Count<EliteRaidMod.maxRaidEnemy)
             {
                 return;
+            }
+
+            //平衡生成的动物和人类的数量
+            int humanCount = pawns.Where(p => !p.RaceProps.Animal).ToList().Count ;
+            int OthersCount = pawns.Count - humanCount;
+            if (humanCount<=0||(pawns.Count>0&&OthersCount/humanCount>1))
+            {
+                int needReplaceCount =(int)Mathf.Ceil( OthersCount / 2);
+                List<Pawn> animalPawns = pawns.Where(p => p.RaceProps.Animal).ToList();
+                for (int i = 0; i < needReplaceCount; i++) {
+
+                   
+
+                    if (pawns[i] != null )
+                    {
+                        // 生成保底人类单位
+                        Pawn atleastOnePerson = PawnGenerator.GeneratePawn(new PawnGenerationRequest(
+                             parms.faction.RandomPawnKind(),
+                             parms.faction,
+                             PawnGenerationContext.NonPlayer,
+                             -1,
+                             forceGenerateNewPawn: true,
+                             mustBeCapableOfViolence: true,
+                             biocodeWeaponChance: 0.7f,
+                             biocodeApparelChance: 0.7f
+                         ));
+                        PawnWeaponChager.CheckAndReplaceMainWeapon(atleastOnePerson);
+                        pawns.Replace(animalPawns[i],atleastOnePerson);
+                         Log.Message($"[EliteRaid] 添加保底人类单位: {atleastOnePerson.LabelCap}");
+                    }
+                }
+                PawnWeaponChager.ResetCounter();
+               // Log.Warning("[Elite Raid] 压缩率过高导致没有正常生成人类  Excessive compression rate caused failure to normally generate human units.");
             }
             GenerateAnything_Impl(pawns, baseNum, maxPawnNum, raidFriendly);
         }

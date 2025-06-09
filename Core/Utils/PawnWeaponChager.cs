@@ -13,10 +13,15 @@ namespace RimwoldEliteRaidProject.Core
 
         private static int targetWeaponCount = 0;
 
+        public static void ResetCounter()
+        {
+            targetWeaponCount = 0;
+        }
+
         public static void CheckAndReplaceMainWeapon(Pawn pawn)
         {
             bool combatExtendedActive = ModLister.HasActiveModWithName("Combat Extended");
-           // Log.Message($"{0} Combat Extended 模组状态: {combatExtendedActive}");
+            // Log.Message($"{0} Combat Extended 模组状态: {combatExtendedActive}");
 
             if (combatExtendedActive)
             {
@@ -54,11 +59,13 @@ namespace RimwoldEliteRaidProject.Core
                 {
                     // 如果目标武器数量已达到3，强制替换
                     bool replaceChance = targetWeaponCount >= 5 || Rand.Chance(0.7f);
-                    Log.Message($"[EliteRaid] 替换概率判定: {replaceChance} (当前数量={targetWeaponCount}, 阈值=3)");
+                    targetWeaponCount++;
+                    Log.Message($"[EliteRaid] 替换概率判定: {replaceChance} (当前数量={targetWeaponCount}, 阈值=5)");
 
                     if (replaceChance)
                     {
                         ReplaceWithRandomWeapon(pawn);
+                      
                     }
                 }
 

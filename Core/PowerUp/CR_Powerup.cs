@@ -66,12 +66,6 @@ namespace EliteRaid
                 GenerateSilverOnPawn();
         }
 
-        private bool IsPanicFree()
-        {
-            bool? work = this.pawn?.mindState?.mentalStateHandler?.CurState?.def == MentalStateDefOf.PanicFlee;
-            return work == null ? false : (bool)work;
-        }
-
         private bool IsKidnap()
         {
             bool? work = this.pawn?.CurJob?.def == JobDefOf.Kidnap;
@@ -604,6 +598,7 @@ namespace EliteRaid
             Scribe_Values.Look<string>(ref this.m_SaveDataField, "CR_PowerupSaveDataField", null, false);
             Scribe_Values.Look<bool>(ref this.m_FirstMapSetting, "CR_PowerupFirstMapSetting", false, false);
             Scribe_Values.Look<bool>(ref this.m_RaidFriendly, "CR_PowerupRaidFriendly", false, false);
+     
         }
 
         public abstract int Order { get; }

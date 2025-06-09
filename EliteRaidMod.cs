@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using static UnityEngine.Scripting.GarbageCollector;
 using static Verse.Widgets;
 
 
@@ -176,7 +177,7 @@ namespace EliteRaid
         public EliteRaidMod(ModContentPack content) : base(content)
         {
             settings = GetSettings<EliteRaidSettings>();
-
+           
             SyncSettingsToStaticFields();
         }
 
@@ -184,7 +185,17 @@ namespace EliteRaid
         {
             return "EliteRaidSettingsCategory".Translate();
         }
-
+        public int timer = 0;
+        public void Tick()
+        {
+            if (timer > 360) {
+                timer = 0;
+                SyncSettingsToStaticFields();
+            } else
+            {
+                timer++;
+            }
+        }
 
         private float CalculateContentHeight(float width)
         {

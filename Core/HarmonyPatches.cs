@@ -826,6 +826,7 @@ namespace EliteRaid
                     list.Add(pawn);
                 }
             }
+            PawnWeaponChager.ResetCounter();
             if (list.Any<Pawn>())
             {
                 if (allowedCompress)
@@ -864,10 +865,10 @@ namespace EliteRaid
                 {
                    // Messages.Message(String.Format("CR_RaidCompressedMassageNotEnhanced".Translate(), baseNum, maxPawnNum), MessageTypeDefOf.NeutralEvent, true);
                 }
-            
-
             return false;
         }
+
+
         public static int GetenhancePawnNumber(int baseNum, int enhancePawnNumber)
         {
             int tempNum = (int)(baseNum / EliteRaidMod.compressionRatio);
@@ -882,13 +883,7 @@ namespace EliteRaid
             float compressionRatio = (float)(Math.Ceiling((double)(baseNum / maxPawnNum)));
             if (EliteRaidMod.useCompressionRatio)
             {
-                if(baseNum > maxPawnNum)
-                {
-                    return compressionRatio > EliteRaidMod.compressionRatio ? EliteRaidMod.compressionRatio : compressionRatio;
-                } else
-                {
-                    return compressionRatio;
-                }
+                return EliteRaidMod.compressionRatio;
             } else
             {
                 return compressionRatio;
