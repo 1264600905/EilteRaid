@@ -340,9 +340,14 @@ namespace EliteRaid
                 buttonIcon: null,
                 dragLabel: "DragToSelectDifficulty".Translate()
             );
-
-
             y += ROW_HEIGHT + GAP_LARGE;
+            // 新增：难度描述文本框
+            Rect descRect = new Rect(labelRect.x, y, viewRect.width - GAP_SMALL, ROW_HEIGHT * 2); // 两行高度
+            string difficultyDesc = GetDifficultyDescription(CurrentDifficulty); // 获取描述文本
+            Widgets.Label(descRect, difficultyDesc);
+            Widgets.DrawBox(descRect, 1); // 绘制边框
+            y += ROW_HEIGHT * 2 + GAP_LARGE; // 预留间距
+
 
             // 新增：根据选择的总难度更新相关设置
             DrawCheckbox(ref y, viewRect.width, "showDetailConfig", "ShowDetailConfig".Translate(),
@@ -368,6 +373,8 @@ namespace EliteRaid
                 // 根据勾选状态显示不同控件
                 if (settings.useCompressionRatio)
                 {
+                    settings.maxRaidEnemy = 20;
+                    EliteRaidMod.maxRaidEnemy = 20;
                     float ratioFloat = settings.compressionRatio;
                     DrawSlider(ref y, viewRect.width, "compressionRatio", "compressionRatio".Translate(),
                         ref ratioFloat, "compressionRatioDesc".Translate(), 1.0f, 10.0f);
@@ -412,6 +419,48 @@ namespace EliteRaid
             // 同步设置到静态字段（移到UI绘制完成后）
             SyncSettingsToStaticFields();
            
+        }
+
+        private string GetDifficultyDescription(TotalDifficultyLevel level)
+        {
+            // 根据难度级别返回对应的描述文本（需在XML中添加翻译键）
+            switch (level)
+            {
+                case TotalDifficultyLevel.Novice:
+                    return "Difficulty_Novice_Desc".Translate("0.4"); // 示例："难度系数0.4，适合新手，敌人强度较低"
+                case TotalDifficultyLevel.Retainer:
+                    return "Difficulty_Retainer_Desc".Translate("0.7");
+                case TotalDifficultyLevel.Knight:
+                    return "Difficulty_Knight_Desc".Translate("1.0"); // 默认难度，平衡体验
+                case TotalDifficultyLevel.Justiciar:
+                    return "Difficulty_Justiciar_Desc".Translate("1.3");
+                case TotalDifficultyLevel.Lord:
+                    return "Difficulty_Lord_Desc".Translate("1.6");
+                case TotalDifficultyLevel.Viceroy:
+                    return "Difficulty_Viceroy_Desc".Translate("2.0");
+                case TotalDifficultyLevel.Governor:
+                    return "Difficulty_Governor_Desc".Translate("2.4");
+                case TotalDifficultyLevel.Duke:
+                    return "Difficulty_Duke_Desc".Translate("3.9");
+                case TotalDifficultyLevel.Despot:
+                    return "Difficulty_Despot_Desc".Translate("6.4");
+                case TotalDifficultyLevel.GrandDuke:
+                    return "Difficulty_GrandDuke_Desc".Translate("10.0");
+                case TotalDifficultyLevel.Consul:
+                    return "Difficulty_Consul_Desc".Translate("16.0");
+                case TotalDifficultyLevel.General:
+                    return "Difficulty_General_Desc".Translate("32.0");
+                case TotalDifficultyLevel.GuardCommander:
+                    return "Difficulty_GuardCommander_Desc".Translate("54.0");
+                case TotalDifficultyLevel.GalaxyLord:
+                    return "Difficulty_GalaxyLord_Desc".Translate("72.0");
+                case TotalDifficultyLevel.StarOverlord:
+                    return "Difficulty_StarOverlord_Desc".Translate("100.0");
+                case TotalDifficultyLevel.GalaxyEmperor:
+                    return "Difficulty_GalaxyEmperor_Desc".Translate("200.0");
+                default:
+                    return "Difficulty_Unknown_Desc".Translate(); // 未知难度
+            }
         }
 
         // 在EliteRaidMod类中添加以下方法

@@ -119,44 +119,43 @@ namespace EliteRaid
                     if (EliteRaidMod.AllowCompress(pawn))
                     {
                         // 创建新的HediffDef实例，确保每个pawn有独立的属性
-                        HediffDef originalDef = HediffDef.Named($"CR_Powerup{order}");
-                        HediffDef cloneDef = new HediffDef();
-                        int uniqueId = Interlocked.Increment(ref hediffDefCounter);
-                        cloneDef.defName = $"CR_Powerup{order}_{pawn.thingIDNumber}_{uniqueId}";
+                        HediffDef originalDef = HediffDef.Named($"CR_Powerup1");
+                        //HediffDef cloneDef = new HediffDef();
+                        //cloneDef.defName = $"CR_Powerup1";
                        
 
-                        // 复制所有原始定义的属性，包括UI显示相关的属性
-                        cloneDef.label = originalDef.label;
-                        cloneDef.description = originalDef.description;
-                        cloneDef.stages = new List<HediffStage>();
-                        cloneDef.defaultLabelColor = originalDef.defaultLabelColor;
-                        cloneDef.everCurableByItem = originalDef.everCurableByItem;
-                        cloneDef.hediffClass = originalDef.hediffClass;
+                        //// 复制所有原始定义的属性，包括UI显示相关的属性
+                        //cloneDef.label = originalDef.label;
+                        //cloneDef.description = originalDef.description;
+                        //cloneDef.stages = new List<HediffStage>();
+                        //cloneDef.defaultLabelColor = originalDef.defaultLabelColor;
+                        //cloneDef.everCurableByItem = originalDef.everCurableByItem;
+                        //cloneDef.hediffClass = originalDef.hediffClass;
                         // 复制其他可能影响UI显示的属性
 
-                        // 复制原始阶段数据
-                        foreach (var stage in originalDef.stages)
-                        {
-                            HediffStage newStage = new HediffStage();
-                            newStage.statOffsets = new List<StatModifier>();
-                            newStage.statFactors = new List<StatModifier>();
-                            newStage.capMods = new List<PawnCapacityModifier>();
+                        //// 复制原始阶段数据
+                        //foreach (var stage in originalDef.stages)
+                        //{
+                        //    HediffStage newStage = new HediffStage();
+                        //    newStage.statOffsets = new List<StatModifier>();
+                        //    newStage.statFactors = new List<StatModifier>();
+                        //    newStage.capMods = new List<PawnCapacityModifier>();
 
-                            // 复制阶段的UI相关属性
-                            newStage.label = stage.label;
-                            newStage.lifeThreatening = stage.lifeThreatening;
-                            // 复制其他需要的阶段属性
+                        //    // 复制阶段的UI相关属性
+                        //    newStage.label = stage.label;
+                        //    newStage.lifeThreatening = stage.lifeThreatening;
+                        //    // 复制其他需要的阶段属性
 
-                            cloneDef.stages.Add(newStage);
-                        }
+                        //    cloneDef.stages.Add(newStage);
+                        //}
 
                         // 添加到DefDatabase
-                        DefDatabase<HediffDef>.Add(cloneDef);
+                      //  DefDatabase<HediffDef>.Add(originalDef);
 
                         // 添加Hediff使用新创建的def
-                        pawn.health.AddHediff(cloneDef);
+                        pawn.health.AddHediff(originalDef);
                         Hediff powerup = pawn.health.hediffSet.hediffs
-                            .FirstOrDefault(h => h.def.defName == cloneDef.defName);
+                            .FirstOrDefault(h => h.def.defName == originalDef.defName);
 
                         if (powerup != null)
                         {

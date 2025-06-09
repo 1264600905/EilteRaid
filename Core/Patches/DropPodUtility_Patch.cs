@@ -116,7 +116,12 @@ namespace EliteRaid
               //  Log.Message($"[EliteRaid] 基于传入派系判断：{faction.Name} 是否敌对？ {isHostile}");
                 return isHostile;
             }
-
+            // 新增：排除机械族（FactionDefOf.Mechanoids）
+            if (faction != null && faction.def == FactionDefOf.Mechanoid)
+            {
+                Log.Message("[EliteRaid] 检测到机械族派系，跳过强化");
+                return false;
+            }
             // 否则检查 Pawn 自身派系（取第一个 Pawn 的派系作为代表）
             var firstPawnFaction = pawns[0].Faction;
             if (firstPawnFaction != null)
@@ -271,6 +276,13 @@ namespace EliteRaid
                 return;
             }
 
+            // 新增：判断是否为机械族
+            if (pawn.Faction?.def == FactionDefOf.Mechanoid)
+            {
+              //  Log.Message($"[EliteRaid] 机械族单位 {pawn.Name}，跳过强化");
+                return;
+            }
+
             Guid matchingGroupId = FindMatchingGroupId(pawn);
             if (matchingGroupId == Guid.Empty)
             {
@@ -284,7 +296,7 @@ namespace EliteRaid
                 int baseNum = group.Count;
                 int maxNum = Mathf.Max(1, (int)(baseNum * compressionRatio));
              //   Log.Message($"[EliteRaid] 处理Pawn：{pawn.Name}，组ID={matchingGroupId}，组内数量={baseNum}，最大增强数={maxNum}");
-
+                
                 ApplyEliteBuffToSinglePawn(pawn, baseNum, maxNum);
 
                 group.Remove(pawn);

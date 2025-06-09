@@ -275,6 +275,7 @@ namespace EliteRaid
         }
         private void RestoreData()
         {
+
             if (string.IsNullOrEmpty(m_SaveDataField))
             {
                 Log.Warning($"[EliteRaid] 尝试恢复空的精英数据，移除Hediff, Pawn: {pawn?.Name}");
@@ -287,6 +288,12 @@ namespace EliteRaid
 
             try
             {
+                if (!m_SaveDataField.Contains("|data:"))
+                {
+                    Log.Error($"[EliteRaid] 无效的保存数据格式：{m_SaveDataField}");
+                    RemoveThis();
+                    return;
+                }
                 // 拆分 pawnID 和 JSON 数据
                 string[] parts = m_SaveDataField.Split(new[] { "|data:" }, 2, StringSplitOptions.None);
                 if (parts.Length != 2)
@@ -335,7 +342,12 @@ namespace EliteRaid
             StatDefOf.PsychicSensitivity.defName,
             // 可根据需要扩展更多乘算属性
         };
-
+                if (data == null)
+                {
+                    Log.Error("[EliteRaid] 反序列化失败，EliteLevelData 为空");
+                    RemoveThis();
+                    return;
+                }
                 // 恢复加算属性（StatOffsets）
                 foreach (var smd in data.StatOffsets)
                 {

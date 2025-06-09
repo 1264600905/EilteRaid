@@ -24,7 +24,7 @@ namespace EliteRaid
             // 增加护甲（加算）
             if (eliteLevel.armorEnhance)
             {
-                float armorValue = 0.2f + eliteLevel.Level * 0.05f;
+                float armorValue = 0.1f + eliteLevel.Level * 0.05f;
                 // 检测CE mod是否启用
                 bool ceActive = ModLister.GetActiveModWithIdentifier("ceteam.combatextended") != null;
 
@@ -259,48 +259,6 @@ namespace EliteRaid
         }
 
 
-        // 计算部位血量倍数（5级开始生效，每级提升血量）
-        private static float CalculateBodyPartHPFactor(EliteLevel eliteLevel)
-        {
-            if (eliteLevel.Level == 5)
-            {
-                return 1.2f;
-            }
-            if (eliteLevel.Level == 6)
-            {
-                return 1.5f;
-            }
-            if (eliteLevel.Level == 7)
-            {
-                return 2f;
-            }
-            return 1f;
-        }
-
-        //遍历修改部位血量
-        // TODO
-        private static void SetBodyPartHP(Hediff hediff, EliteLevel eliteLevel)
-        {
-            //if (eliteLevel.Level < 5) return;
-
-            //Pawn pawn = hediff.pawn;
-            //float hpFactor = CalculateBodyPartHPFactor(eliteLevel);
-
-            //// 获取所有部位，包括已缺失的（用于恢复已损坏部位的血量上限）
-            //foreach (BodyPartRecord part in pawn.RaceProps.body.AllParts)
-            //{
-            //    // 跳过已移除的部位
-            //    if (pawn.health.hediffSet.PartIsMissing(part))
-            //        continue;
-
-            //    // 计算新的最大血量增加值（注意：这里使用绝对值而非乘数）
-            //    float maxHealthOffset = part.def.hitPoints * (hpFactor - 1);
-
-
-            //}
-        }
-
-
         public static bool TrySetStatModifierToHediff(Hediff hediff, EliteLevel eliteLevel)
         {
             if (eliteLevel == null || eliteLevel.Level < 1)
@@ -314,8 +272,6 @@ namespace EliteRaid
             hediff.CurStage.statFactors = new List<StatModifier>(); // 乘算
             //设置痛觉
             SetPainReduction(eliteLevel, hediff);
-            //设置部位血量
-            SetBodyPartHP(hediff, eliteLevel);
             //设置体型
 
             // 填充加算属性（type=Flat）
@@ -368,8 +324,8 @@ namespace EliteRaid
 
         public static Hediff SetPowerupHediff(Pawn pawn, int order, bool removeExisting = true)
         {
+            // 移除现有CR_Powerup类型的Hediff
             List<Hediff> hediffs = pawn.health.hediffSet.hediffs.Where(x => x is CR_Powerup).ToList();
-
             for (int i = 0; i < hediffs.Count; i++)
             {
                 Hediff hediff = hediffs[i];
@@ -382,29 +338,22 @@ namespace EliteRaid
                 }
             }
 
+            // 使用基础名称（如 "CR_Powerup1"）
+            string defName = "CR_Powerup1";
 
-            // 生成基础名称（如 "CR_Powerup1"）
-            string baseName = $"{GetPowerupDefNameStartWith()}{order}";
-
-            // 检查重名，添加随机后缀（两位数字）
-            string uniqueName = baseName;
-            if (usedNames.Contains(uniqueName))
-            {
-                int randomSuffix = new Random().Next(10, 99); // 生成两位随机数
-                uniqueName = $"{baseName}_{randomSuffix}";
-            }
-            usedNames.Add(uniqueName); // 记录已使用的名称
-
-            // 创建 HediffDef（注意：需确保名称存在于游戏 Def 中）
-            HediffDef crDef = DefDatabase<HediffDef>.GetNamedSilentFail(uniqueName);
+            // 从DefDatabase中获取已定义的HediffDef
+            HediffDef crDef = DefDatabase<HediffDef>.GetNamedSilentFail(defName);
             if (crDef == null)
             {
-                Log.Error($"[EliteRaid] 未找到 HediffDef: {uniqueName}");
+                Log.Error($"[EliteRaid] 未找到HediffDef: {defName}");
                 return null;
             }
+
+            // 添加Hediff到pawn
             pawn.health.AddHediff(crDef);
-            Hediff ret = pawn.health.hediffSet.hediffs.Where(x => x is CR_Powerup).FirstOrDefault();
-            return ret;
+
+            // 返回新添加的CR_Powerup实例
+            return pawn.health.hediffSet.hediffs.Where(x => x is CR_Powerup).FirstOrDefault();
         }
 
         public static int GetNewOrder()
@@ -424,8 +373,8 @@ namespace EliteRaid
                     }
                     continue;
                 }
-                CR_Powerup cr = pawn.health.hediffSet.hediffs.Where(h => h is CR_Powerup).FirstOrDefault() as CR_Powerup;
-                if (cr != null && !crList.Any(x => x.Order == cr.Order))
+                CR_Powerup cr = pawn.health.hediffSet.hediffs.OfType<CR_Powerup>().FirstOrDefault();
+                if (cr != null && cr.Order >= 1 && cr.Order <= 20 && !crList.Any(x => x.Order == cr.Order))
                 {
                     crList.Add(cr);
                 }
