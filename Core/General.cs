@@ -263,18 +263,23 @@ namespace EliteRaid
             }
         }
 
-        public static int GetenhancePawnNumber(int baseNum,int enhancePawnNumber)
+
+        public static int GetenhancePawnNumber(int baseNum, int enhancePawnNumber)
         {
-            int tempNum =(int) (baseNum / EliteRaidMod.compressionRatio);
-            if (EliteRaidMod.useCompressionRatio&&tempNum<enhancePawnNumber)
+            int tempNum = (int)(baseNum / EliteRaidMod.compressionRatio);
+            if (EliteRaidMod.useCompressionRatio && tempNum < enhancePawnNumber)
             {
-                if (tempNum < 20) {
+                if (tempNum < 20)
+                {
                     return 20;
                 }
-               return tempNum;
+                return tempNum;
+            } else
+            {
+                return EliteRaidMod.maxRaidEnemy;
             }
-            return enhancePawnNumber;
         }
+
 
         internal static void GeneratePawns_Impl(PawnGroupMakerParms parms, List<Pawn> pawns)
         {

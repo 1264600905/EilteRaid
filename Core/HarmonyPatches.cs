@@ -869,15 +869,23 @@ namespace EliteRaid
         }
 
 
+
         public static int GetenhancePawnNumber(int baseNum, int enhancePawnNumber)
         {
             int tempNum = (int)(baseNum / EliteRaidMod.compressionRatio);
             if (EliteRaidMod.useCompressionRatio && tempNum < enhancePawnNumber)
             {
+                if (tempNum < 20)
+                {
+                    return 20;
+                }
                 return tempNum;
+            } else
+            {
+                return EliteRaidMod.maxRaidEnemy;
             }
-            return enhancePawnNumber;
         }
+
         public static float GetcompressionRatio(int baseNum,int maxPawnNum)
         {
             float compressionRatio = (float)(Math.Ceiling((double)(baseNum / maxPawnNum)));
