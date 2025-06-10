@@ -183,9 +183,14 @@ namespace EliteRaid
             if (eliteLevel.Level >= 5)
             {
                 float painRatio = 1f;
-                if (eliteLevel.Level >= 5) painRatio = 0.8f; // 5级
-                if (eliteLevel.Level >= 6) painRatio = 0.6f; // 6级
-                if (eliteLevel.Level >= 7) painRatio = 0.4f; // 7级及以上
+                if (level >= 1) painRatio = 1f;
+                if (level >= 2) painRatio = 1f;
+                if (level >= 3) painRatio = 1f;
+                if (level >= 4) painRatio = 0.9f;
+                if (level >= 5) painRatio = 0.8f; // 5级
+                if (level >= 6) painRatio = 0.6f; // 6级
+                if (level >= 7) painRatio = 0.4f; // 7级及以上
+                CurStage.painFactor = painRatio;
                 hediff.CurStage.painFactor = painRatio;
             }
         }
