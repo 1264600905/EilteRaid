@@ -184,7 +184,7 @@ namespace EliteRaid
 
         public override string SettingsCategory()
         {
-            return "EliteRaidSettingsCategory".Translate();
+            return "EliteRaidSettingsCategory".Translate()+"(v1.2.4)";
         }
         public int timer = 0;
         public void Tick()
@@ -248,7 +248,7 @@ namespace EliteRaid
             float contentHeight = CalculateContentHeight(inRect.width);
 
             // 使用计算出的内容高度创建滚动视图
-            Rect viewRect = new Rect(0, 0, inRect.width - 40f, contentHeight+400);
+            Rect viewRect = new Rect(0, 0, inRect.width - 40f, contentHeight+600);
             Widgets.BeginScrollView(inRect, ref settings.scrollPosition, viewRect);
 
             float y = 15f;

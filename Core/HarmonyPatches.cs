@@ -70,6 +70,8 @@ namespace EliteRaid
             HashSet<TargetMethod> targetMethods = new HashSet<TargetMethod>();
             TranspilerTest(harmony, targetMethods);
 
+            HiveSpawnLoggerPatch.ApplyPatches(harmony);
+
             try
             {
                 Type targetClass = typeof(TunnelHiveSpawner);
@@ -834,14 +836,9 @@ namespace EliteRaid
                 Faction faction = parms.faction;
                 float biocodeWeaponsChance = parms.biocodeWeaponsChance;
                 float biocodeApparelChance = parms.biocodeApparelChance;
-
-                Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1,
-                    forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true,
-                    mustBeCapableOfViolence: false, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true,
-                    allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance,
-                    biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
-                {
-                    BiocodeApparelChance = 1f
+               Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
+               {
+                   BiocodeApparelChance = 1f
                 });
 
                 if (pawn != null)
@@ -977,6 +974,7 @@ namespace EliteRaid
         [HarmonyPatch(new Type[] { typeof(Map), typeof(IntVec3) })]
         public static bool Spawn_Prefix(TunnelHiveSpawner __instance, Map map, IntVec3 loc)
         {
+            Log.Message("[EliteRaid] 虫族生成补丁已加载"); // 验证补丁是否被加载
             if (!EliteRaidMod.allowInsectoidsValue || EliteRaidMod.modEnabled)
             {
               //  Log.Message($"[EliteRaid] 虫族压缩已禁用 (allowInsectoidsValue={EliteRaidMod.allowInsectoidsValue}, modEnabled={EliteRaidMod.modEnabled})");
