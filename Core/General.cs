@@ -177,11 +177,6 @@ namespace EliteRaid
                         // 设置标签为真实等级（非截取后的等级）
                         powerup.Label.Named("EliteLevelLabel".Translate(currentLevel.Level));
 
-                        // 装备、仿生体、药物处理
-                        GearRefiner.RefineGear(pawn, currentLevel);
-                        BionicsDataStore.AddBionics(pawn, currentLevel);
-                        DrugHediffDataStore.AddDrugHediffs(pawn, currentLevel);
-
                         // 应用属性修改器
                         if (PowerupUtility.TrySetStatModifierToHediff(powerup, currentLevel))
                         {

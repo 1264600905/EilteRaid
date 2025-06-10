@@ -911,7 +911,54 @@ namespace EliteRaid
             Console.WriteLine($"[EliteRaid] Final optimization results: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots, utilization {utilization:P2}.");
             return (currentSlotsFilled, currentElites);
         }
+        // 根据等级获取精英配置
+        public static EliteLevelConfig GetEliteLevelConfigByLevel(int level)
+        {
+            // 检查当前难度配置
+            if (difficultyConfigs.TryGetValue(EliteRaidMod.eliteRaidDifficulty, out var configs))
+            {
+                // 查找匹配等级的配置
+                var config = configs.FirstOrDefault(c => c.Level == level);
+                if (config != null)
+                    return config;
+            }
 
+            // 如果没找到，尝试从任何难度配置中获取
+            foreach (var difficultyConfig in difficultyConfigs.Values)
+            {
+                var config = difficultyConfig.FirstOrDefault(c => c.Level == level);
+                if (config != null)
+                    return config;
+            }
+
+            // 默认返回0级配置
+            return new EliteLevelConfig
+            {
+                Level = 0,
+                DamageFactor = 1f,
+                MoveSpeedFactor = 1f,
+                ScaleFactor = 1f,
+                MaxTraits = 0,
+                IsBoss = false,
+                CompressionRatio = 1
+            };
+        }
+
+        // 根据等级获取精英级别实例
+        public static EliteLevel GetEliteLevelByLevel(int level)
+        {
+            var config = GetEliteLevelConfigByLevel(level);
+
+            // 创建并返回EliteLevel实例
+            return new EliteLevel(
+                config.Level,
+                config.DamageFactor,
+                config.MoveSpeedFactor,
+                config.ScaleFactor,
+                config.MaxTraits,
+                config.IsBoss
+            );
+        }
         public static EliteLevel GetRandomEliteLevel()
         {
             if (EliteRaidMod.maxAllowLevel == 0)

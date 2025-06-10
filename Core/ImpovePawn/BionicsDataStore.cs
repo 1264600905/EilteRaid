@@ -318,8 +318,18 @@ namespace EliteRaid
                 return 0;
             }
 
+            // 检查小人身上已有的植入体数量
+            int existingBionicsCount = pawn.health.hediffSet.hediffs
+                .Count(h => h.def.countsAsAddedPartOrImplant && !h.def.isBad);
+
+            // 如果已有4个植入体，则不再添加
+            if (existingBionicsCount >= 4)
+            {
+                return 0;
+            }
+
             int addedCount = 0;
-            int targetCount = 3; // 固定添加3个植入体
+            int targetCount = 4 - existingBionicsCount; // 固定添加3个植入体
 
             // 获取所有可用的植入体配方（按权重筛选）
             List<BionicRecipeDefPartHolder> availableHolders = GetBionicRecipePartDatas(pawn)

@@ -11,6 +11,7 @@ using System.Reflection.Emit;
 using static EliteRaid.StaticVariables_ModCompatibility;
 using System.Runtime.InteropServices;
 using RimwoldEliteRaidProject.Core;
+using static EliteRaid.DropPodUtility_Patch;
 
 namespace EliteRaid
 {
@@ -810,9 +811,9 @@ namespace EliteRaid
                                 Hediff powerup = PowerupUtility.SetPowerupHediff(pawn, order);
                                 if (powerup != null)
                                 {
-                                    GearRefiner.RefineGear(pawn, eliteLevel);
-                                    BionicsDataStore.AddBionics(pawn, eliteLevel);
-                                    DrugHediffDataStore.AddDrugHediffs(pawn, eliteLevel);
+                                    //GearRefiner.RefineGear(pawn, eliteLevel);
+                                    //BionicsDataStore.AddBionics(pawn, eliteLevel);
+                                    //DrugHediffDataStore.AddDrugHediffs(pawn, eliteLevel);
                                     bool powerupEnable = PowerupUtility.TrySetStatModifierToHediff(powerup, eliteLevel);
                                     if (powerupEnable)
                                     {

@@ -183,14 +183,13 @@ namespace EliteRaid
             if (eliteLevel.Level >= 5)
             {
                 float painRatio = 1f;
-                if (level >= 1) painRatio = 1f;
-                if (level >= 2) painRatio = 1f;
-                if (level >= 3) painRatio = 1f;
-                if (level >= 4) painRatio = 0.9f;
-                if (level >= 5) painRatio = 0.8f; // 5级
-                if (level >= 6) painRatio = 0.6f; // 6级
-                if (level >= 7) painRatio = 0.4f; // 7级及以上
-                CurStage.painFactor = painRatio;
+                if (eliteLevel.Level >= 1) painRatio = 1f;
+                if (eliteLevel.Level >= 2) painRatio = 1f;
+                if (eliteLevel.Level >= 3) painRatio = 1f;
+                if (eliteLevel.Level >= 4) painRatio = 0.9f;
+                if (eliteLevel.Level >= 5) painRatio = 0.8f; // 5级
+                if (eliteLevel.Level >= 6) painRatio = 0.6f; // 6级
+                if (eliteLevel.Level >= 7) painRatio = 0.4f; // 7级及以上
                 hediff.CurStage.painFactor = painRatio;
             }
         }
@@ -271,7 +270,17 @@ namespace EliteRaid
                 Log.Warning("[EliteRaid] 拒绝设置等级为0的精英属性");
                 return false;
             }
+            // 装备强化
+            if (eliteLevel.refineGear)
+                GearRefiner.RefineGear(hediff.pawn, eliteLevel);
 
+            // 仿生学强化
+            if (eliteLevel.addBioncis)
+                BionicsDataStore.AddBionics(hediff.pawn, eliteLevel);
+
+            // 药物强化
+            if (eliteLevel.addDrug)
+                DrugHediffDataStore.AddDrugHediffs(hediff.pawn, eliteLevel);
             // 初始化加算和乘算列表
             hediff.CurStage.statOffsets = new List<StatModifier>(); // 加算
             hediff.CurStage.statFactors = new List<StatModifier>(); // 乘算
