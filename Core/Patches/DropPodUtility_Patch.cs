@@ -128,7 +128,7 @@ namespace EliteRaid
             // 新增：排除机械族（FactionDefOf.Mechanoids）
             if (faction != null && faction.def == FactionDefOf.Mechanoid)
             {
-                Log.Message("[EliteRaid] 检测到机械族派系，跳过强化");
+         //       Log.Message("[EliteRaid] 检测到机械族派系，跳过强化");
                 return false;
             }
             // 否则检查 Pawn 自身派系（取第一个 Pawn 的派系作为代表）
@@ -280,11 +280,11 @@ namespace EliteRaid
                             Log.Message($"[EliteRaid] 成功为 {pawn.Name} 应用等级: Level {eliteLevel.Level}");
                         } else
                         {
-                            Log.Warning($"[EliteRaid] 无效等级: Level {eliteLevel?.Level ?? -1}，跳过应用");
+                    //        Log.Warning($"[EliteRaid] 无效等级: Level {eliteLevel?.Level ?? -1}，跳过应用");
                         }
                     } else
                     {
-                        Log.Message($"[EliteRaid] {pawn.Name} 不在增强范围内（索引 {pawnIndex} >= 最大数 {maxNum}）");
+                  //      Log.Message($"[EliteRaid] {pawn.Name} 不在增强范围内（索引 {pawnIndex} >= 最大数 {maxNum}）");
                     }
                 }
             }
@@ -360,7 +360,7 @@ namespace EliteRaid
                 // 新增：判断是否为机械族
                 if (pawn.Faction?.def == FactionDefOf.Mechanoid)
                 {
-                    Log.Message($"[EliteRaid] 机械族单位 {pawn.Name}，跳过强化");
+                 //   Log.Message($"[EliteRaid] 机械族单位 {pawn.Name}，跳过强化");
                     return;
                 }
 
@@ -376,7 +376,7 @@ namespace EliteRaid
                     List<Pawn> group = groupData.Pawns;
                     int baseNum = group.Count;
                     int maxNum = Mathf.Max(1, (int)(baseNum * compressionRatio));
-                    Log.Message($"[EliteRaid] 处理Pawn：{pawn.Name}，组ID={matchingGroupId}，组内数量={baseNum}，最大增强数={maxNum}");
+               //     Log.Message($"[EliteRaid] 处理Pawn：{pawn.Name}，组ID={matchingGroupId}，组内数量={baseNum}，最大增强数={maxNum}");
 
                     // 新增：如果还没有生成等级分布，生成它
                     if (!groupData.IsLevelGenerated)
@@ -393,10 +393,10 @@ namespace EliteRaid
 
                     if (TryAddToLevelGroup(cappedLevel, pawn.thingIDNumber))
                     {
-                        Log.Message($"[EliteRaid] {pawn.Name} 添加到等级 {cappedLevel} 分组");
+                      //  Log.Message($"[EliteRaid] {pawn.Name} 添加到等级 {cappedLevel} 分组");
                     } else
                     {
-                        Log.Message($"[EliteRaid] {pawn.Name} 未能添加到等级 {cappedLevel} 分组（已达上限）");
+                     //   Log.Message($"[EliteRaid] {pawn.Name} 未能添加到等级 {cappedLevel} 分组（已达上限）");
                         // 尝试降级处理
                         int lowerLevel = Math.Max(1, cappedLevel - 1);
 
@@ -406,10 +406,10 @@ namespace EliteRaid
 
                         if (TryAddToLevelGroup(cappedLevel, pawn.thingIDNumber))
                         {
-                            Log.Message($"[EliteRaid] {pawn.Name} 降级添加到等级 {cappedLevel} 分组");
+                        //    Log.Message($"[EliteRaid] {pawn.Name} 降级添加到等级 {cappedLevel} 分组");
                         } else
                         {
-                            Log.Message($"[EliteRaid] {pawn.Name} 所有等级已满，使用最低有效等级");
+                          //  Log.Message($"[EliteRaid] {pawn.Name} 所有等级已满，使用最低有效等级");
                             eliteLevel = new EliteLevel(0, 1, 1, 1, 0);
                             cappedLevel = Math.Min(eliteLevel.Level, 7);
                             TryAddToLevelGroup(cappedLevel, pawn.thingIDNumber);
@@ -424,7 +424,7 @@ namespace EliteRaid
                     {
                         GroupData removedGroup;
                         DropPodUtility_Patch.pendingHostileGroups.TryRemove(matchingGroupId, out removedGroup);
-                        Log.Message($"[EliteRaid] 安全移除组ID={matchingGroupId}");
+                    //    Log.Message($"[EliteRaid] 安全移除组ID={matchingGroupId}");
 
                         // 清理等级分组
                         levelGroups.Clear();
@@ -535,7 +535,7 @@ namespace EliteRaid
                     HediffDef existingDef = DefDatabase<HediffDef>.GetNamedSilentFail(defName);
                     if (existingDef != null)
                     {
-                        Log.Message($"[EliteRaid] 复用现有HediffDef: {defName}");
+                    //    Log.Message($"[EliteRaid] 复用现有HediffDef: {defName}");
                         return existingDef;
                     }
 

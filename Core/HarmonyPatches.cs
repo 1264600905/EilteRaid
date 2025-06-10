@@ -72,6 +72,49 @@ namespace EliteRaid
 
             try
             {
+                Type targetClass = typeof(TunnelHiveSpawner);
+                MethodInfo targetMethod = AccessTools.Method(
+                    targetClass,
+                    "Spawn",
+                    new Type[] { typeof(Map), typeof(IntVec3) }
+                );
+
+                if (targetMethod == null)
+                {
+                    Log.Error($"[EliteRaid] 找不到 TunnelHiveSpawner.Spawn 方法！");
+                    return;
+                }
+
+                // 获取补丁方法
+                MethodInfo prefixMethod = AccessTools.Method(
+                    typeof(TunnelHiveSpawner_Spawn_Patch),
+                    nameof(TunnelHiveSpawner_Spawn_Patch.Spawn_Prefix)
+                );
+
+                if (prefixMethod == null)
+                {
+                    Log.Error($"[EliteRaid] 找不到 TunnelHiveSpawner_Spawn_Patch.Spawn_Prefix 方法！");
+                    return;
+                }
+
+                // 创建Harmony补丁
+                var prefix = new HarmonyMethod(prefixMethod);
+
+                // 应用补丁
+                harmony.Patch(
+                    original: targetMethod,
+                    prefix: prefix
+                );
+
+             //   Log.Message($"[EliteRaid] 成功为 TunnelHiveSpawner.Spawn 添加 Prefix 补丁！");
+            } catch (Exception ex)
+            {
+                Log.Error($"[EliteRaid] 注册 TunnelHiveSpawner.Spawn 补丁失败: {ex.Message}");
+                Log.Error(ex.StackTrace);
+            }
+
+            try
+            {
                 // 获取目标类型和方法
                 Type targetClass = typeof(StorytellerUtility);
                 MethodInfo targetMethod = AccessTools.Method(
@@ -719,6 +762,16 @@ namespace EliteRaid
         {
             if(EliteRaidMod.displayMessageValue)
             Log.Message("输出人数" + parms.pawnCount + "输出种类" + parms.pawnKind);
+
+            // 全面检查事件参数的有效性
+            if (parms == null || parms.target == null || !(parms.target is Map map) || !map.IsPlayerHome)
+            {
+                Log.Error("[EliteRaid] 事件参数无效或地图对象为空，跳过补丁处理");
+                return true; // 让原始方法处理
+                             // 或者设置默认结果并返回false
+                             // __result = new List<Pawn>();
+                             // return false;
+            }
             if (EliteRaidMod.modEnabled)
             {
                 return true;
@@ -773,47 +826,49 @@ namespace EliteRaid
             int order = PowerupUtility.GetNewOrder();
             int enhancedCount = 0;
             List<Pawn> list = new List<Pawn>();
-
-
-            for (int i = 0; i < parms.pawnCount; i++)
+            List<Pawn> nonCompressiblePawns = new List<Pawn>(); // 存储不可压缩的pawn
+            // 修改循环逻辑，确保生成足够的pawn（包括不可压缩的）
+            while (list.Count < parms.pawnCount && enhancePawnNumber < baseNum)
             {
                 PawnKindDef pawnKind = parms.pawnKind;
                 Faction faction = parms.faction;
                 float biocodeWeaponsChance = parms.biocodeWeaponsChance;
                 float biocodeApparelChance = parms.biocodeApparelChance;
 
-                Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
+                Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1,
+                    forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true,
+                    mustBeCapableOfViolence: false, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true,
+                    allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance,
+                    biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
                 {
                     BiocodeApparelChance = 1f
                 });
 
                 if (pawn != null)
                 {
+                    enhancePawnNumber++;
 
-                    if (allowedCompress )
+                    // 使用新的检查方法判断是否可压缩
+                    bool canCompress = allowedCompress && PawnStateChecker.CanCompressPawn(pawn);
+
+                    if (canCompress)
                     {
-                        //DummyForCompatibility付与ここから
+                        // 可压缩的pawn处理逻辑
                         if (MOD_MSER_Active)
                         {
                             pawn.health.AddHediff(CR_DummyForCompatibilityDefOf.CR_DummyForCompatibility);
                         }
-                        //DummyForCompatibility付与ここまで
 
-                        //Hediff仕込みここから
                         if (EliteRaidMod.modEnabled)
                         {
-                           
-                                PawnWeaponChager.CheckAndReplaceMainWeapon(pawn); // 检查并替换主武器
-                            
+                            PawnWeaponChager.CheckAndReplaceMainWeapon(pawn);
+
                             if (EliteRaidMod.AllowCompress(pawn))
                             {
                                 EliteLevel eliteLevel = EliteLevelManager.GetRandomEliteLevel();
                                 Hediff powerup = PowerupUtility.SetPowerupHediff(pawn, order);
                                 if (powerup != null)
                                 {
-                                    //GearRefiner.RefineGear(pawn, eliteLevel);
-                                    //BionicsDataStore.AddBionics(pawn, eliteLevel);
-                                    //DrugHediffDataStore.AddDrugHediffs(pawn, eliteLevel);
                                     bool powerupEnable = PowerupUtility.TrySetStatModifierToHediff(powerup, eliteLevel);
                                     if (powerupEnable)
                                     {
@@ -822,11 +877,22 @@ namespace EliteRaid
                                 }
                             }
                         }
-                        //Hediff仕込みここまで
+
+                        list.Add(pawn);
+                    } else
+                    {
+                        // 不可压缩的pawn直接添加到非压缩列表
+                        nonCompressiblePawns.Add(pawn);
+                        // 如果不可压缩的pawn数量 + 已压缩的pawn数量 <= 最大允许数量，直接添加到最终列表
+                        if (list.Count + nonCompressiblePawns.Count <= maxPawnNum)
+                        {
+                            list.AddRange(nonCompressiblePawns);
+                            nonCompressiblePawns.Clear();
+                        }
                     }
-                    list.Add(pawn);
                 }
             }
+
             PawnWeaponChager.ResetCounter();
             if (list.Any<Pawn>())
             {
@@ -909,10 +975,11 @@ namespace EliteRaid
         [HarmonyPrefix]
         [HarmonyPatch("Spawn")]
         [HarmonyPatch(new Type[] { typeof(Map), typeof(IntVec3) })]
-        static bool Spawn_Prefix(TunnelHiveSpawner __instance, Map map, IntVec3 loc)
+        public static bool Spawn_Prefix(TunnelHiveSpawner __instance, Map map, IntVec3 loc)
         {
             if (!EliteRaidMod.allowInsectoidsValue || EliteRaidMod.modEnabled)
             {
+              //  Log.Message($"[EliteRaid] 虫族压缩已禁用 (allowInsectoidsValue={EliteRaidMod.allowInsectoidsValue}, modEnabled={EliteRaidMod.modEnabled})");
                 return true;
             }
 
@@ -933,9 +1000,10 @@ namespace EliteRaid
 
             if (__instance.insectsPoints > 0f)
             {
+              //  Log.Message($"[EliteRaid] 开始处理虫族生成 (points={__instance.insectsPoints})");
+
                 __instance.insectsPoints = Mathf.Max(__instance.insectsPoints, Hive.spawnablePawnKinds.Min((PawnKindDef x) => x.combatPower));
                 float pointsLeft = __instance.insectsPoints;
-                List<Pawn> list = new List<Pawn>();
                 int num = 0;
 
                 // 计算基础数量
@@ -945,7 +1013,7 @@ namespace EliteRaid
                     num++;
                     if (num > 1000)
                     {
-                        Log.Error("Too many iterations.");
+                     //   Log.Error("[EliteRaid] 虫族生成迭代次数过多");
                         break;
                     }
                     IEnumerable<PawnKindDef> spawnablePawnKinds = Hive.spawnablePawnKinds;
@@ -965,28 +1033,105 @@ namespace EliteRaid
 
                 int baseNum = num;
                 int maxPawnNum = EliteRaidMod.maxRaidEnemy;
-             
-                // 新增：使用PatchContinuityHelper存储原始参数
-                // PatchContinuityHelper.SetCompressWork_GeneratePawns(__instance);
+
+              //  Log.Message($"[EliteRaid] 虫族基础数量计算完成: {baseNum}");
+             //   Log.Message($"[EliteRaid] 最大允许数量: {maxPawnNum}");
 
                 if (maxPawnNum >= baseNum)
                 {
-                    // 数量不需要压缩，使用原始逻辑
+                  //  Log.Message($"[EliteRaid] 虫族数量不需要压缩 ({baseNum} ≤ {maxPawnNum})，使用原始逻辑");
                     return true;
                 }
-           
 
+                // 应用压缩比例
                 if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
                 {
                     int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
                     maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
+                  //  Log.Message($"[EliteRaid] 应用压缩比例: {EliteRaidMod.compressionRatio}x → 压缩后数量: {maxPawnNum}");
                 }
-                // 调用统一的处理方法
-                General.GenerateEntitys_Impl(list, baseNum, maxPawnNum);
+
+                // 生成压缩后的pawns列表
+                List<Pawn> list = new List<Pawn>();
+                EliteLevelManager.GenerateLevelDistribution(baseNum);
+                int order = PowerupUtility.GetNewOrder();
+
+             //   Log.Message($"[EliteRaid] 开始生成压缩后的虫族: {maxPawnNum} 只");
+
+                for (int i = 0; i < maxPawnNum; i++)
+                {
+                    PawnKindDef pawnKindDef;
+                    if (Hive.spawnablePawnKinds.Where(p => p.combatPower <= pointsLeft).TryRandomElement(out pawnKindDef))
+                    {
+                        PawnGenerationRequest request = new PawnGenerationRequest(
+                      kind: pawnKindDef,
+                      faction: Faction.OfInsects,
+                      context: PawnGenerationContext.NonPlayer,
+                      tile: map.Tile,
+                      forceGenerateNewPawn: false,
+                      allowDead: false,
+                      allowDowned: false,
+                      canGeneratePawnRelations: false, // 虫族不需要关系
+                      mustBeCapableOfViolence: true,
+                      colonistRelationChanceFactor: 0f, // 虫族不是殖民者
+                      forceAddFreeWarmLayerIfNeeded: false,
+                      allowGay: false, // 虫族无性繁殖
+                      allowPregnant: false,
+                      allowFood: true,
+                      allowAddictions: false,
+                      inhabitant: false,
+                      certainlyBeenInCryptosleep: false,
+                      forceRedressWorldPawnIfFormerColonist: false,
+                      worldPawnFactionDoesntMatter: false,
+                      biocodeWeaponChance: 0f, // 虫族没有生物编码武器
+                      biocodeApparelChance: 0f, // 虫族没有生物编码服装
+                      validatorPreGear: null,
+                      validatorPostGear: null,
+                      forcedTraits: null,
+                      prohibitedTraits: null,
+                      forceNoIdeo: true, // 虫族没有意识形态
+                      forceNoBackstory: true, // 虫族没有背景故事
+                      forbidAnyTitle: true, // 虫族没有头衔
+                      forceDead: false,
+                      forcedXenotype: null,
+                      forceBaselinerChance: 0f,
+                      forceRecruitable: false, // 虫族不可招募
+                      dontGiveWeapon: false, // 让游戏为虫族分配武器
+                      onlyUseForcedBackstories: false,
+                      maximumAgeTraits: -1,
+                      minimumAgeTraits: 0,
+                      forceNoGear: false
+                  );
+
+                        Pawn pawn = PawnGenerator.GeneratePawn(request);
+                        if (pawn != null)
+                        {
+                            list.Add(pawn);
+                            pointsLeft -= pawnKindDef.combatPower;
+
+                            // 应用增强
+                            if (EliteRaidMod.AllowCompress(pawn))
+                            {
+                                EliteLevel eliteLevel = EliteLevelManager.GetRandomEliteLevel();
+                                Hediff powerup = PowerupUtility.SetPowerupHediff(pawn, order);
+                                if (powerup != null)
+                                {
+                                    bool powerupEnable = PowerupUtility.TrySetStatModifierToHediff(powerup, eliteLevel);
+                                    if (powerupEnable)
+                                    {
+                                 //       Log.Message($"[EliteRaid] 虫族已增强: {pawn.LabelCap} → Level {eliteLevel.Level}");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // 处理生成的pawns
                 if (list.Any())
                 {
+                  //  Log.Message($"[EliteRaid] 虫族生成完成: {list.Count} 只 (原始: {baseNum}只)");
+
                     foreach (Pawn pawn in list)
                     {
                         GenSpawn.Spawn(pawn, CellFinder.RandomClosewalkCellNear(loc, map, 2, null), map, WipeMode.Vanish);
@@ -994,10 +1139,21 @@ namespace EliteRaid
                     }
 
                     LordMaker.MakeNewLord(Faction.OfInsects, new LordJob_AssaultColony(Faction.OfInsects, true, false, false, false, true, false, false), map, list);
-                    return false;
+
+                    // 显示压缩消息
+                    if (EliteRaidMod.displayMessageValue)
+                    {
+                    //    Messages.Message($"[EliteRaid] 污染虫灾已压缩: {baseNum} → {list.Count}", MessageTypeDefOf.NeutralEvent);
+                    }
+
+                    return false; // 阻止原始方法执行
+                } else
+                {
+                    Log.Warning($"[EliteRaid] 虫族生成失败: 生成了0只昆虫");
                 }
             }
-            return false;
+
+            return false; // 如果没有生成任何pawn，也阻止原始方法执行
         }
     }
     #endregion

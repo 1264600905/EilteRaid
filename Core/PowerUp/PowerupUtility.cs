@@ -65,7 +65,7 @@ namespace EliteRaid
         }
 
         // 乘算属性集合
-        private static IEnumerable<StatModifier> GetMultiplicativeStatModifiers(EliteLevel eliteLevel)
+        private static IEnumerable<StatModifier> GetMultiplicativeStatModifiers(EliteLevel eliteLevel, Hediff hediff)
         {
 
 
@@ -163,16 +163,16 @@ namespace EliteRaid
                     };
                 }
             }
-
-            // 新增：boss级精英敌人的心灵敏感度处理
-            if (eliteLevel.IsBoss)
+            bool cantCompress = hediff.pawn.Faction.Equals(Faction.OfHoraxCult);
+            if (eliteLevel.IsBoss && !cantCompress)
             {
+              
                 yield return new StatModifier
                 {
                     stat = StatDefOf.PsychicSensitivity,
                     value = 0f // 心灵敏感度乘0%，完全免疫心灵效果
                 };
-            }
+            } 
 
         }
 
@@ -295,7 +295,7 @@ namespace EliteRaid
             }
 
             // 填充乘算属性（type=Multiply）
-            foreach (var sm in GetMultiplicativeStatModifiers(eliteLevel))
+            foreach (var sm in GetMultiplicativeStatModifiers(eliteLevel, hediff))
             {
                 hediff.CurStage.statFactors.Add(sm);
             }

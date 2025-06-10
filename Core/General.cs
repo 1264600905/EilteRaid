@@ -140,7 +140,6 @@ namespace EliteRaid
             for (int i = 0; i < pawns.Count; i++)
             {
                 Pawn pawn = pawns[i];
-
                 // 添加兼容性Hediff
                 if (MOD_MSER_Active)
                 {

@@ -9,7 +9,8 @@ using Verse;
 
 namespace EliteRaid
 {
-     class PawnStateChecker
+  
+    class PawnStateChecker
     {
         public static bool CanCompressPawn(Pawn pawn)
         {
@@ -32,6 +33,8 @@ namespace EliteRaid
             // 5. 生成状态与保留标记（不可压缩）
             if (IsSpawnedOrForcedKept(pawn))
                 return false;
+          
+            Log.Message("单位身上有任务，无法压缩" + pawn.Name);
 
             // 允许压缩
             return true;
