@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using static System.Collections.Specialized.BitVector32;
 
 namespace EliteRaid
 {
@@ -118,6 +119,40 @@ namespace EliteRaid
                 return ret;
             }
         }
+        public static Pawn TryGeneratePawn(PawnKindDef pawnKind, Faction faction)
+        {
+            Pawn pawn = null;
+            if (faction == Faction.OfHoraxCult)
+            {
+                PawnGenerationContext pawnGenerationContext = PawnGenerationContext.NonPlayer;
+                int num = -1;
+                bool flag = false;
+                bool flag2 = false;
+                bool flag3 = false;
+                bool flag4 = true;
+                bool flag5 = true;
+                float num2 = 1f;
+                bool flag6 = false;
+                bool flag7 = true;
+                bool flag8 = false;
+                Log.Message("执行了，为心灵仪式定制的生成函数" + faction);
+                pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, pawnGenerationContext, num, flag, flag2, flag3, flag4, flag5, num2, flag6, flag7, flag8, false, true, false, false, false, false, 0.7f, 0.8f, null, 1f, null, null, null, null, null, null, null, null, null, null, null, null, false, false, false, false, null, null, null, null, null, 0f, DevelopmentalStage.Adult, null, null, null, false, false, false, -1, 0, false)
+                {
+                    BiocodeApparelChance = 1f,
+                    ForcedXenotype = XenotypeDefOf.Baseliner,
+                    ProhibitedTraits = new List<TraitDef>() { TraitDef.Named("psychically deaf") }//禁止心灵仪式出现心灵失聪
+                });
+            } else
+            {
+                Log.Message("输出阵营" + faction);
+                pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: 0.8f, biocodeApparelChance: 0.8f, allowFood: true)
+                {
+                    BiocodeApparelChance = 1f
+                });
+            }
+            return pawn;
+        }
+
         internal static void SetCompressWork_GeneratePawns(PawnGroupMakerParms groupParms, ref IEnumerable<PawnGenOption> __result)
         {
             if ((__result?.EnumerableNullOrEmpty() ?? true) || groupParms == null)
@@ -137,14 +172,9 @@ namespace EliteRaid
                 foreach (var option in __result)
                 {
                     // 临时生成 Pawn 用于检查
-                    Pawn tempPawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(
-                        option.kind,
-                        groupParms.faction,
-                        PawnGenerationContext.NonPlayer,
-                        forceGenerateNewPawn: true,
-                        canGeneratePawnRelations: false,
-                        mustBeCapableOfViolence: false
-                    ));
+                    Pawn tempPawn = TryGeneratePawn(option.kind, groupParms.faction);
+                       
+                  
 
                     tempPawns.Add(tempPawn);
 
@@ -184,7 +214,7 @@ namespace EliteRaid
                 }
 
                 // 4. 实现真正的"压缩"：合并多个敌人为一个更强的敌人
-                List<PawnGenOption> compressedOptions = CompressPawnOptions(normalOptions, maxPawnNum);
+                List<PawnGenOption> compressedOptions = CompressPawnOptions(normalOptions, maxPawnNum,groupParms.faction);
 
                 // 5. 合并关键角色和压缩后的普通角色
                 __result = criticalOptions.Concat(compressedOptions);
@@ -207,7 +237,7 @@ namespace EliteRaid
         }
 
         // 优化 CompressPawnOptions 方法中的类型检查
-        private static List<PawnGenOption> CompressPawnOptions(List<PawnGenOption> options, int targetCount)
+        private static List<PawnGenOption> CompressPawnOptions(List<PawnGenOption> options, int targetCount,Faction faction)
         {
             // 按成本排序（从高到低）
             options = options.OrderByDescending(x => x.Cost).ToList();
@@ -231,13 +261,8 @@ namespace EliteRaid
 
                 // 确保不压缩关键角色类型
                 if (!PawnStateChecker.CanCompressPawn(
-                    PawnGenerator.GeneratePawn(new PawnGenerationRequest(
-                        baseOption.kind,
-                        Faction.OfMechanoids, // 使用默认派系进行检查
-                        PawnGenerationContext.NonPlayer,
-                        forceGenerateNewPawn: true,
-                        canGeneratePawnRelations: false
-                    ))))
+                 
+                    TryGeneratePawn(baseOption.kind,faction)))
                 {
                     result.Add(baseOption);
                     continue;

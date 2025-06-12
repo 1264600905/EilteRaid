@@ -12,6 +12,7 @@ using static EliteRaid.StaticVariables_ModCompatibility;
 using System.Runtime.InteropServices;
 using RimwoldEliteRaidProject.Core;
 using static EliteRaid.DropPodUtility_Patch;
+using Verse.Noise;
 
 namespace EliteRaid
 {
@@ -757,48 +758,33 @@ namespace EliteRaid
     [HarmonyPatch(typeof(RaidStrategyWorker))]
     class RaidStrategyWorkerPatch
     {
-        [HarmonyPrefix]
-        [HarmonyPatch(nameof(RaidStrategyWorker.SpawnThreats))]
         [HarmonyPatch(new Type[] { typeof(IncidentParms) })]
-        static bool SpawnThreats_Prefix(RaidStrategyWorker __instance, ref List<Pawn> __result, IncidentParms parms)
+        public static bool SpawnThreats_Prefix(RaidStrategyWorker __instance, ref List<Pawn> __result, IncidentParms parms)
         {
-            if(EliteRaidMod.displayMessageValue)
-            Log.Message("输出人数" + parms.pawnCount + "输出种类" + parms.pawnKind);
+            if (EliteRaidMod.displayMessageValue)
+                Log.Message("输出人数" + parms.pawnCount + "输出种类" + parms.pawnKind);
 
             // 全面检查事件参数的有效性
             if (parms == null || parms.target == null || !(parms.target is Map map) || !map.IsPlayerHome)
             {
                 Log.Error("[EliteRaid] 事件参数无效或地图对象为空，跳过补丁处理");
                 return true; // 让原始方法处理
-                             // 或者设置默认结果并返回false
-                             // __result = new List<Pawn>();
-                             // return false;
             }
-            if (EliteRaidMod.modEnabled)
+            if (!EliteRaidMod.modEnabled)
             {
-                return true;
+                return true; // 如果mod未启用，让原始方法处理
             }
-            if (parms?.pawnKind == null)
+
+            if (parms?.pawnKind == null || parms?.faction == null || parms?.raidArrivalMode?.Worker == null)
             {
-                return true;
+                Log.Error("[EliteRaid] 事件参数不完整，跳过补丁处理");
+                return true; // 让原始方法处理
             }
-            if (parms?.faction == null)
-            {
-                return true;
-            }
-            if (parms?.raidArrivalMode?.Worker == null)
-            {
-                return true;
-            }
+
             if (!EliteRaidMod.AllowCompress(parms))
             {
-                return true;
+                return true; // 不允许压缩，让原始方法处理
             }
-            //bool hostileRaid = FactionUtility.HostileTo(Faction.OfPlayer, parms.faction);
-            //if (!hostileRaid)
-            //{
-            //    return true;
-            //}
 
             bool allowedCompress = true;
             if (!EliteRaidMod.allowMechanoidsValue && (parms?.pawnKind?.RaceProps?.IsMechanoid ?? false))
@@ -813,33 +799,77 @@ namespace EliteRaid
             int maxPawnNum = EliteRaidMod.maxRaidEnemy;
             int baseNum = parms.pawnCount;
 
-         
+            // 如果不需要压缩，让原始方法处理
             if (maxPawnNum >= baseNum)
             {
                 return true;
             }
-            if (allowedCompress)
+
+            if (!allowedCompress)
             {
-                parms.pawnCount = Math.Min(maxPawnNum, parms.pawnCount);
+                return true;
             }
 
-            EliteLevelManager.GenerateLevelDistribution(baseNum);
+            // 限制最大生成数量
+            parms.pawnCount = Math.Min(maxPawnNum, parms.pawnCount);
+
+             EliteLevelManager.GenerateLevelDistribution(baseNum);
             int enhancePawnNumber = EliteLevelManager.getCurrentLevelDistributionNum();
             int order = PowerupUtility.GetNewOrder();
             int enhancedCount = 0;
             List<Pawn> list = new List<Pawn>();
             List<Pawn> nonCompressiblePawns = new List<Pawn>(); // 存储不可压缩的pawn
-            // 修改循环逻辑，确保生成足够的pawn（包括不可压缩的）
-            while (list.Count < parms.pawnCount && enhancePawnNumber < baseNum)
+
+            // 添加安全退出条件，防止无限循环
+            int maxAttempts = Math.Max(baseNum * 2, 100); // 最多尝试2倍的基础数量或100次
+            int attempts = 0;
+
+            // 修改循环逻辑，确保生成足够的pawn
+            while (list.Count < parms.pawnCount && enhancePawnNumber < baseNum && attempts < maxAttempts)
             {
+                attempts++;
+
                 PawnKindDef pawnKind = parms.pawnKind;
                 Faction faction = parms.faction;
                 float biocodeWeaponsChance = parms.biocodeWeaponsChance;
                 float biocodeApparelChance = parms.biocodeApparelChance;
-               Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
-               {
-                   BiocodeApparelChance = 1f
-                });
+
+                Pawn pawn = null;
+                try
+                {
+                    if (parms.faction == Faction.OfHoraxCult)
+                    {
+                        PawnGenerationContext pawnGenerationContext = PawnGenerationContext.NonPlayer;
+                        int num = -1;
+                        bool flag = false;
+                        bool flag2 = false;
+                        bool flag3 = false;
+                        bool flag4 = true;
+                        bool flag5 = true;
+                        float num2 = 1f;
+                        bool flag6 = false;
+                        bool flag7 = true;
+                        bool flag8 = false;
+                        Log.Message("执行了，为心灵仪式定制的生成函数"+ parms.faction);
+                        pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, pawnGenerationContext, num, flag, flag2, flag3, flag4, flag5, num2, flag6, flag7, flag8,false, true, false, false, false, false, biocodeWeaponsChance, biocodeApparelChance, null, 1f, null, null, null, null, null, null, null, null, null, null, null, null, false, false, false, false, null, null, null, null, null, 0f, DevelopmentalStage.Adult, null, null, null, false, false, false, -1, 0, false)
+                        {
+                            BiocodeApparelChance = 1f,
+                             ForcedXenotype = XenotypeDefOf.Baseliner ,
+                             ProhibitedTraits=new List<TraitDef>() { TraitDef.Named("psychically deaf") }//禁止心灵仪式出现心灵失聪
+                         });
+                    } else
+                    {
+                        Log.Message("输出阵营" + parms.faction);
+                        pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
+                        {
+                            BiocodeApparelChance = 1f
+                        });
+                    }
+                } catch (Exception ex)
+                {
+                    Log.Error($"[EliteRaid] 生成pawn时出错: {ex.Message}");
+                    continue; // 尝试生成下一个pawn
+                }
 
                 if (pawn != null)
                 {
@@ -878,25 +908,18 @@ namespace EliteRaid
                         list.Add(pawn);
                     } else
                     {
-                        // 不可压缩的pawn直接添加到非压缩列表
-                        nonCompressiblePawns.Add(pawn);
-                        // 如果不可压缩的pawn数量 + 已压缩的pawn数量 <= 最大允许数量，直接添加到最终列表
-                        if (list.Count + nonCompressiblePawns.Count <= maxPawnNum)
-                        {
-                            list.AddRange(nonCompressiblePawns);
-                            nonCompressiblePawns.Clear();
-                        }
+                        // 不可压缩的pawn直接添加到列表
+                        list.Add(pawn);
                     }
                 }
             }
 
             PawnWeaponChager.ResetCounter();
+
             if (list.Any<Pawn>())
             {
                 if (allowedCompress)
                 {
-                 
-
                     //DummyForCompatibility除去ここから
                     if (MOD_MSER_Active)
                     {
@@ -913,35 +936,53 @@ namespace EliteRaid
                     //DummyForCompatibility除去ここまで
                 }
 
-                parms.raidArrivalMode.Worker.Arrive(list, parms);
-                __result = list;
-            }
-            __result = null;
+                // 确保地图对象仍然有效
+                if (map != null && map.IsPlayerHome)
+                {
+                    try
+                    {
+                        parms.raidArrivalMode.Worker.Arrive(list, parms);
+                        __result = list;
 
-       
-                if ( enhancedCount > 0)
+                        if (enhancedCount > 0)
+                        {
+                            int finalNum = GetenhancePawnNumber(baseNum);
+                            Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum
+                            , finalNum, GetcompressionRatio(baseNum, maxPawnNum)
+                            , finalNum), MessageTypeDefOf.NeutralEvent, true);
+                        }
+
+                        return false; // 跳过原始方法
+                    } catch (Exception ex)
+                    {
+                        Log.Error($"[EliteRaid] 部署pawn时出错: {ex.Message}");
+                        // 出错时让原始方法处理
+                        return true;
+                    }
+                } else
                 {
-                int finalNum = GetenhancePawnNumber(baseNum, enhancePawnNumber);
-                Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum
-                 , finalNum, GetcompressionRatio(baseNum, maxPawnNum)
-                 , finalNum), MessageTypeDefOf.NeutralEvent, true);
-            } else
-                {
-                   // Messages.Message(String.Format("CR_RaidCompressedMassageNotEnhanced".Translate(), baseNum, maxPawnNum), MessageTypeDefOf.NeutralEvent, true);
+                    Log.Error("[EliteRaid] 地图对象无效，无法部署pawn");
+                    // 地图无效时让原始方法处理
+                    return true;
                 }
-            return false;
+            } else
+            {
+                Log.Warning("[EliteRaid] 未能生成任何pawn，让原始方法处理");
+                // 未能生成任何pawn时让原始方法处理
+                return true;
+            }
         }
 
 
-
-        public static int GetenhancePawnNumber(int baseNum, int enhancePawnNumber)
+        public static int GetenhancePawnNumber(int baseNum)
         {
             int tempNum = (int)(baseNum / EliteRaidMod.compressionRatio);
-            if (EliteRaidMod.useCompressionRatio && tempNum < enhancePawnNumber)
+            //  Log.Message("baseNum是" + baseNum + "EliteRaidMod" + EliteRaidMod.compressionRatio + "结果是" + tempNum);
+            if (EliteRaidMod.useCompressionRatio)
             {
-                if (tempNum < 20)
+                if (tempNum < EliteRaidMod.maxRaidEnemy)
                 {
-                    return 20;
+                    return EliteRaidMod.maxRaidEnemy;
                 }
                 return tempNum;
             } else

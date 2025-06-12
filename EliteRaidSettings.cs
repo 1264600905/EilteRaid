@@ -82,11 +82,14 @@ public class EliteRaidSettings : ModSettings
             silverDropPerLevel = StaticVariables.DEFAULT_SILVER_DROP_PER_LEVEL;
             maxRaidPoint = StaticVariables.DEFAULT_MAX_RAID_POINT;
             totalDifficulty = StaticVariables.DEFAULT_TOTAL_DIFFICULTY; // 重置总体难度等级
-            showDetailConfig = StaticVariables.DEFAULT_SHOW_DETAIL_CONFIG; // 重置是否显示详细配置
+           
             allowDropPodRaidValue = StaticVariables.DEFAULT_ALLOW_DROP_POD_RAID; // 新增
             raidScale = StaticVariables.DEFAULT_RAID_SCALE; // 重置袭击缩放倍率
             wasReset = true;
             allowModBionicsAndDrugs = StaticVariables.DEFAULT_ALLOW_MOD_BIONICS_AND_DRUGS;
+
+            // 总难度下拉框索引重置
+            currentDifficultyIndex = (int)StaticVariables.DEFAULT_TOTAL_DIFFICULTY;
         }
 }
 
@@ -112,13 +115,9 @@ public static class StaticVariables
     public const int DEFAULT_MAX_ENEMY = 20;
     public const bool DEFAULT_MAP_ENHANCED = false;
         public const int DEFAULT_MAX_RAID_POINT = 10000; // 新增默认值
-        public const TotalDifficultyLevel DEFAULT_TOTAL_DIFFICULTY = TotalDifficultyLevel.Knight; // 新增默认值
+        public const TotalDifficultyLevel DEFAULT_TOTAL_DIFFICULTY = TotalDifficultyLevel.Retainer; // 新增默认值
         public const bool DEFAULT_SHOW_DETAIL_CONFIG = false; // 新增默认值
-        public const bool DEFAULT_ALLOW_DROP_POD_RAID = true; // 新增默认值
+        public const bool DEFAULT_ALLOW_DROP_POD_RAID = false; // 新增默认值
         public const float DEFAULT_RAID_SCALE=1f; // 新增：袭击缩放倍率
     }
-
-
-
-
 }

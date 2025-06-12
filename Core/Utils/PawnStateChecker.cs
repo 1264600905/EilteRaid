@@ -14,33 +14,42 @@ namespace EliteRaid
     {
         public static bool CanCompressPawn(Pawn pawn)
         {
-            // 1. 基础过滤：已被标记为删除、正在生成中的pawn
-            if (pawn.Discarded || PawnGenerator.IsBeingGenerated(pawn))
-                return false;
+            try
+            {
+                // 1. 基础过滤：已被标记为删除、正在生成中的pawn
+                if (pawn.Discarded || PawnGenerator.IsBeingGenerated(pawn))
+                    return false;
 
-            // 2. 派系首领判断（不可压缩）
-            if (PawnUtility.IsFactionLeader(pawn))
-                return false;
+                // 2. 派系首领判断（不可压缩）
+                if (PawnUtility.IsFactionLeader(pawn))
+                    return false;
 
-            // 3. 任务相关判断（不可压缩）
-            if (IsInQuestOrTale(pawn))
-                return false;
+                // 3. 任务相关判断（不可压缩）
+                if (IsInQuestOrTale(pawn))
+                    return false;
 
-            // 4. 特殊状态判断（不可压缩）
-            if (HasSpecialStatus(pawn))
-                return false;
+                // 4. 特殊状态判断（不可压缩）
+                if (HasSpecialStatus(pawn))
+                    return false;
 
-            // 5. 生成状态与保留标记（不可压缩）
-            if (IsSpawnedOrForcedKept(pawn))
-                return false;
-          
-            Log.Message("单位身上有任务，无法压缩" + pawn.Name);
+                // 5. 生成状态与保留标记（不可压缩）
+                if (IsSpawnedOrForcedKept(pawn))
+                    return false;
+            } catch (Exception e) {
+               return false;
+                Log.Warning("单位身上有任务，无法压缩" + pawn.Name+ "信息"+e.Message);
+            }
 
             // 允许压缩
             return true;
         }
         public static  bool IsInQuestOrTale(Pawn pawn)
         {
+            //作为心灵仪式仪式长
+            if (pawn.kindDef.isGoodPsychicRitualInvoker)
+            {
+                return true;
+            }
             // 被任务占用或正在生成任务相关pawn
             if (QuestUtility.IsReservedByQuestOrQuestBeingGenerated(pawn))
                 return true;

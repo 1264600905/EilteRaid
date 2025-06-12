@@ -24,7 +24,7 @@ namespace EliteRaid
 
         public static bool modEnabled = true; // 是否启用Mod
         public static bool allowRaidFriendlyValue = true; // 是否允许友好突袭精英化
-        public static bool allowDropPodRaidValue = true; // 新增：是否允许精英化空投袭击
+        public static bool allowDropPodRaidValue = false; // 新增：是否允许精英化空投袭击
         public static bool allowMechanoidsValue = true;
         public static bool allowInsectoidsValue = true;
         public static bool allowEntitySwarmValue = true;
@@ -40,7 +40,7 @@ namespace EliteRaid
         public static int maxRaidPoint = 10000; // 新增：最大袭击点数上限（默认10000）
         public static bool showDetailConfig = false;
         public static float raidScale = 1.0f;  //游戏内袭击倍率
-        public static TotalDifficultyLevel CurrentDifficulty { get; set; } = TotalDifficultyLevel.Knight;
+        public static TotalDifficultyLevel CurrentDifficulty { get; set; } = TotalDifficultyLevel.Consul;
         // 在 EliteRaidMod 类顶部添加（与其他静态字段并列）
         public static bool AllowModBionicsAndDrugs = true; // 新增：允许模组药物和仿生体
         //植入体强化
@@ -87,6 +87,8 @@ namespace EliteRaid
 
         public static bool AllowCompress(Pawn pawn, bool isDropPodRaid = false)
         {
+            if(pawn == null) return false;
+            if(pawn.Faction==Faction.OfPlayer) return false;
             if (!allowMechanoidsValue)
             {
                 bool isMechanoid = pawn?.RaceProps?.IsMechanoid ?? false;
@@ -130,6 +132,7 @@ namespace EliteRaid
 
         public static bool AllowCompress(IncidentParms parms)
         {
+            if (parms.faction == Faction.OfPlayer) return false;
             bool hostileRaid = FactionUtility.HostileTo(Faction.OfPlayer, parms.faction);
             if (hostileRaid)
             {
@@ -147,6 +150,10 @@ namespace EliteRaid
         public static bool AllowCompress(PawnGroupMakerParms parms, out bool raidFriendly)
         {
             raidFriendly = false;
+            if (parms.faction == Faction.OfPlayer) {
+                return false;
+            } 
+           
             bool hostileRaid = FactionUtility.HostileTo(Faction.OfPlayer, parms.faction);
             if (hostileRaid)
             {
@@ -184,7 +191,7 @@ namespace EliteRaid
 
         public override string SettingsCategory()
         {
-            return "EliteRaidSettingsCategory".Translate()+"(v1.2.4)";
+            return "EliteRaidSettingsCategory".Translate()+"(v1.2.8)";
         }
         public int timer = 0;
         public void Tick()
@@ -418,8 +425,8 @@ namespace EliteRaid
             if (Widgets.ButtonText(resetButtonRect, "ResetToDefault".Translate()))
             {
                 settings.Reset();
+                SyncSettingsToStaticFields();
                 settings.Write();
-               
             }
 
             Widgets.EndScrollView();
@@ -607,13 +614,18 @@ namespace EliteRaid
                 maxRaidPoint = config.MaxRaidPoint;
                 raidScale = config.RaidScale/100f;
                 maxAllowLevel = config.MaxEliteLevel;
-
+                useCompressionRatio = true;
+                maxRaidEnemy= StaticVariables.DEFAULT_MAX_ENEMY;
                 // 同步配置值到设置对象
                 settings.eliteRaidDifficulty = eliteRaidDifficulty;
                 settings.compressionRatio = compressionRatio;
                 settings.maxRaidPoint = maxRaidPoint;
                 settings.raidScale = raidScale;
                 settings.maxAllowLevel = maxAllowLevel;
+
+                settings.useCompressionRatio = true;
+                settings.maxRaidEnemy = StaticVariables.DEFAULT_MAX_ENEMY;
+
 
             //    Log.Message($"[EliteRaid] 应用难度配置: {config.Name} (系数: {config.DifficultyFactor})");
             } else
@@ -639,6 +651,7 @@ namespace EliteRaid
             CurrentDifficulty = level;
         }
 
+        
 
         // 新增：跟踪当前难度索引
         private int currentDifficultyIndex = 0;
@@ -649,7 +662,7 @@ namespace EliteRaid
             if (EliteRaidMod.modEnabled && Find.Storyteller != null)
             {
                 Find.Storyteller.difficulty.threatScale = EliteRaidMod.raidScale;
-                //Log.Message($"[EliteRaid] 应用袭击缩放倍率: {EliteRaidMod.raidScale}");
+             //   Log.Message($"[EliteRaid] 应用袭击缩放倍率: {EliteRaidMod.raidScale}");
             }
         }
         private static bool lastAllowModBionicsAndDrug = EliteRaidMod.AllowModBionicsAndDrugs;
@@ -856,7 +869,53 @@ namespace EliteRaid
 
     }
 
+    public class EliteRaidMapComponent : MapComponent
+    {
+        private bool raidScaleApplied = false;
+        private int tickTime = 0;
+        public EliteRaidMapComponent(Map map) : base(map)
+        {
+        }
+
+        public override void MapComponentTick()
+        {
+            base.MapComponentTick();
+            tickTime++;
+            // 每200个tick检查一次，而不是每个tick都检查
+            if (tickTime>200||raidScaleApplied)
+            {
+                TryApplyRaidScale();
+                tickTime = 0;
+            }
+        }
+
+        private void TryApplyRaidScale()
+        {
+            // 确保这是玩家的主地图
+            if (map.IsPlayerHome && !raidScaleApplied && EliteRaidMod.modEnabled)
+            {
+                if (EliteRaidMod.modEnabled && Find.Storyteller != null)
+                {
+                    Find.Storyteller.difficulty.threatScale = EliteRaidMod.raidScale;
+                  //  Log.Message($"[EliteRaid] 在加载地图时应用袭击规模: {EliteRaidMod.raidScale}");
+                }
+                raidScaleApplied = true;
+            }
+        }
+
+        // 当游戏切换到新地图时重置标志
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref raidScaleApplied, "raidScaleApplied", false);
+
+            // 如果是新游戏或加载存档，重置标志以便再次应用
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                raidScaleApplied = false;
+            }
+        }
+    }
 
 }
 
-     

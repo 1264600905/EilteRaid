@@ -205,7 +205,7 @@ namespace EliteRaid
             // 消息提示（保持不变）
             if (enhancedCount > 0)
             {
-                int finalNum = GetenhancePawnNumber(baseNum, enhancePawnNumber);
+                int finalNum = GetenhancePawnNumber(baseNum);
                 Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum, finalNum,
                     GetcompressionRatio(baseNum, maxPawnNum), finalNum), MessageTypeDefOf.NeutralEvent, true);
             }
@@ -223,14 +223,15 @@ namespace EliteRaid
         }
 
 
-        public static int GetenhancePawnNumber(int baseNum, int enhancePawnNumber)
+        public static int GetenhancePawnNumber(int baseNum)
         {
             int tempNum = (int)(baseNum / EliteRaidMod.compressionRatio);
-            if (EliteRaidMod.useCompressionRatio && tempNum < enhancePawnNumber)
+          //  Log.Message("baseNum是" + baseNum + "EliteRaidMod" + EliteRaidMod.compressionRatio + "结果是" + tempNum);
+            if (EliteRaidMod.useCompressionRatio)
             {
-                if (tempNum < 20)
+                if(tempNum< EliteRaidMod.maxRaidEnemy)
                 {
-                    return 20;
+                    return EliteRaidMod.maxRaidEnemy;
                 }
                 return tempNum;
             } else

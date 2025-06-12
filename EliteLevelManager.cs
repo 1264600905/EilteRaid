@@ -281,7 +281,7 @@ namespace EliteRaid
                 int temp = (int)(originalCount / EliteRaidMod.compressionRatio);
                 maxRaidEnemy =Math.Max(temp,StaticVariables.DEFAULT_MAX_ENEMY);
             }
-            maxRaidEnemy = General.GetenhancePawnNumber(originalCount, maxRaidEnemy);
+            maxRaidEnemy = General.GetenhancePawnNumber(originalCount);
             Log.Message("最大袭击人数"+maxRaidEnemy);
             const double minUtilizationThreshold = 0.80; // 80%的利用率阈值
             const int maxAttempts = 20; // 最大尝试次数
@@ -580,6 +580,7 @@ namespace EliteRaid
                         elitesActuallyGenerated += addCount;
                     }
                 }
+
             }
 
             if (iterations >= maxIterations)

@@ -43,6 +43,11 @@ namespace EliteRaid
         {
             //  Log.Message($"[EliteRaid] DropThingGroupsNear_Postfix 开始执行，派系：{faction?.Name ?? "无"}");
 
+            if (!EliteRaidMod.allowDropPodRaidValue)
+            {
+                return;
+            }
+
             // 检查是否有Pawn
             var allPawns = new List<Pawn>();
             foreach (var group in thingsGroups)
@@ -200,50 +205,58 @@ namespace EliteRaid
             // 处理空投舱内容的方法
             public static void ProcessContents(ActiveDropPod __instance)
             {
-                if (__instance == null || __instance.Contents == null)
-                    return;
-
-
-
-                // Log.Message($"[EliteRaid] 处理空投舱内容，ID={__instance.thingIDNumber}");
-
-                // 方法 1：使用泛型方法获取内容
-                var innerContainer = __instance.Contents.innerContainer as ThingOwner<Thing>;
-                if (innerContainer == null)
-                {
-                    //  Log.Warning("[EliteRaid] 容器类型非 ThingOwner<Thing>，跳过处理");
-                    return;
+                if (__instance == null) {
+                
                 }
-                List<Thing> allContents = innerContainer.InnerListForReading.ToList();
-
-                if (allContents.Count == 0)
+                
+                try
                 {
-                    //   Log.Warning("[EliteRaid] 容器中无有效物品");
-                    return;
-                }
+                    if (__instance == null || __instance.Contents == null)
+                        return;
+                     Log.Message($"[EliteRaid] 处理空投舱内容，ID={__instance.thingIDNumber}");
 
-                // 限制单次处理时间
-                var startTime = Time.realtimeSinceStartup;
-                const float maxProcessTime = 0.1f; // 100ms
-
-                foreach (Thing thing in allContents)
-                {
-                    if (Time.realtimeSinceStartup - startTime > maxProcessTime)
+                    // 方法 1：使用泛型方法获取内容
+                    var innerContainer = __instance.Contents.innerContainer as ThingOwner<Thing>;
+                    if (innerContainer == null)
                     {
-                        Log.Warning("[EliteRaid] 处理超时，中断本次循环");
-                        break;
+                          Log.Warning("[EliteRaid] 容器类型非 ThingOwner<Thing>，跳过处理");
+                        return;
+                    }
+                    List<Thing> allContents = innerContainer.InnerListForReading.ToList();
+
+                    if (allContents.Count == 0)
+                    {
+                           Log.Warning("[EliteRaid] 容器中无有效物品");
+                        return;
                     }
 
-                    if (thing is Pawn pawn)
+                    // 限制单次处理时间
+                    var startTime = Time.realtimeSinceStartup;
+                    const float maxProcessTime = 0.1f; // 100ms
+
+                    foreach (Thing thing in allContents)
                     {
-                        // 新增：检查Pawn是否已经被处理过
-                        if (!processedPawnIds.Contains(pawn.thingIDNumber))
+                        if (Time.realtimeSinceStartup - startTime > maxProcessTime)
                         {
-                            ProcessSinglePawn(pawn);
-                            processedPawnIds.Add(pawn.thingIDNumber);
+                            Log.Warning("[EliteRaid] 处理超时，中断本次循环");
+                            break;
+                        }
+
+                        if (thing is Pawn pawn)
+                        {
+                            // 新增：检查Pawn是否已经被处理过
+                            if (!processedPawnIds.Contains(pawn.thingIDNumber))
+                            {
+                                ProcessSinglePawn(pawn);
+                                processedPawnIds.Add(pawn.thingIDNumber);
+                            }
                         }
                     }
+                } catch (Exception ex) {
+                    Log.Warning($"[EliteRaid] ProcessContents 空头仓里可能是物品: {ex.Message}");
+
                 }
+               
             }
 
 
@@ -280,11 +293,11 @@ namespace EliteRaid
                             Log.Message($"[EliteRaid] 成功为 {pawn.Name} 应用等级: Level {eliteLevel.Level}");
                         } else
                         {
-                    //        Log.Warning($"[EliteRaid] 无效等级: Level {eliteLevel?.Level ?? -1}，跳过应用");
+                            Log.Warning($"[EliteRaid] 无效等级: Level {eliteLevel?.Level ?? -1}，跳过应用");
                         }
                     } else
                     {
-                  //      Log.Message($"[EliteRaid] {pawn.Name} 不在增强范围内（索引 {pawnIndex} >= 最大数 {maxNum}）");
+                        Log.Message($"[EliteRaid] {pawn.Name} 不在增强范围内（索引 {pawnIndex} >= 最大数 {maxNum}）");
                     }
                 }
             }
@@ -349,89 +362,100 @@ namespace EliteRaid
             // 修改ProcessSinglePawn方法，使用等级分组管理器
             private static void ProcessSinglePawn(Thing thing)
             {
-                if (thing == null) return;
-                Pawn pawn = thing as Pawn;
-                if (pawn == null)
+                try
                 {
-                    Log.Warning($"[EliteRaid] 无效Pawn对象: {thing.def.defName}");
-                    return;
-                }
-
-                // 新增：判断是否为机械族
-                if (pawn.Faction?.def == FactionDefOf.Mechanoid)
-                {
-                 //   Log.Message($"[EliteRaid] 机械族单位 {pawn.Name}，跳过强化");
-                    return;
-                }
-
-                Guid matchingGroupId = FindMatchingGroupId(pawn);
-                if (matchingGroupId == Guid.Empty)
-                {
-                    Log.Warning($"[EliteRaid] 未找到匹配的Pawn组，Pawn：{pawn.Name}");
-                    return;
-                }
-
-                if (DropPodUtility_Patch.pendingHostileGroups.TryGetValue(matchingGroupId, out var groupData) && groupData != null)
-                {
-                    List<Pawn> group = groupData.Pawns;
-                    int baseNum = group.Count;
-                    int maxNum = Mathf.Max(1, (int)(baseNum * compressionRatio));
-               //     Log.Message($"[EliteRaid] 处理Pawn：{pawn.Name}，组ID={matchingGroupId}，组内数量={baseNum}，最大增强数={maxNum}");
-
-                    // 新增：如果还没有生成等级分布，生成它
-                    if (!groupData.IsLevelGenerated)
+                    if (thing == null) return;
+                    Pawn pawn = thing as Pawn;
+                    if (pawn == null)
                     {
-                        GenerateLevelDistribution(group.Count);
-                        groupData.IsLevelGenerated = true;
+                        Log.Warning($"[EliteRaid] 无效Pawn对象: {thing.def.defName}");
+                        return;
+                    }
+                    // 新增：检查是否为玩家派系的单位，若是则直接返回不处理
+                    if (pawn.Faction == Faction.OfPlayer)
+                    {
+                        Log.Message($"[EliteRaid] 检测到玩家派系单位 {pawn.Name}，跳过处理");
+                        return;
                     }
 
-                    // 为当前pawn获取等级
-                    var eliteLevel = GetRandomEliteLevelWithFallback();
-
-                    // 添加到等级分组
-                    int cappedLevel = Math.Min(eliteLevel.Level, 7); // 限制最大等级为7
-
-                    if (TryAddToLevelGroup(cappedLevel, pawn.thingIDNumber))
+                    // 新增：判断是否为机械族
+                    if (pawn.Faction?.def == FactionDefOf.Mechanoid)
                     {
-                      //  Log.Message($"[EliteRaid] {pawn.Name} 添加到等级 {cappedLevel} 分组");
-                    } else
-                    {
-                     //   Log.Message($"[EliteRaid] {pawn.Name} 未能添加到等级 {cappedLevel} 分组（已达上限）");
-                        // 尝试降级处理
-                        int lowerLevel = Math.Max(1, cappedLevel - 1);
+                        //   Log.Message($"[EliteRaid] 机械族单位 {pawn.Name}，跳过强化");
+                        return;
+                    }
 
-                        // 重新生成一个较低等级
-                        eliteLevel = GetRandomEliteLevelWithFallback(lowerLevel);
-                        cappedLevel = Math.Min(eliteLevel.Level, 7);
+                    Guid matchingGroupId = FindMatchingGroupId(pawn);
+                    if (matchingGroupId == Guid.Empty)
+                    {
+                        Log.Warning($"[EliteRaid] 未找到匹配的Pawn组，Pawn：{pawn.Name}");
+                        return;
+                    }
+
+                    if (DropPodUtility_Patch.pendingHostileGroups.TryGetValue(matchingGroupId, out var groupData) && groupData != null)
+                    {
+                        List<Pawn> group = groupData.Pawns;
+                        int baseNum = group.Count;
+                        int maxNum = Mathf.Max(1, (int)(baseNum * compressionRatio));
+                        //     Log.Message($"[EliteRaid] 处理Pawn：{pawn.Name}，组ID={matchingGroupId}，组内数量={baseNum}，最大增强数={maxNum}");
+
+                        // 新增：如果还没有生成等级分布，生成它
+                        if (!groupData.IsLevelGenerated)
+                        {
+                            GenerateLevelDistribution(group.Count);
+                            groupData.IsLevelGenerated = true;
+                        }
+
+                        // 为当前pawn获取等级
+                        var eliteLevel = GetRandomEliteLevelWithFallback();
+
+                        // 添加到等级分组
+                        int cappedLevel = Math.Min(eliteLevel.Level, 7); // 限制最大等级为7
 
                         if (TryAddToLevelGroup(cappedLevel, pawn.thingIDNumber))
                         {
-                        //    Log.Message($"[EliteRaid] {pawn.Name} 降级添加到等级 {cappedLevel} 分组");
+                              Log.Message($"[EliteRaid] {pawn.Name} 添加到等级 {cappedLevel} 分组");
                         } else
                         {
-                          //  Log.Message($"[EliteRaid] {pawn.Name} 所有等级已满，使用最低有效等级");
-                            eliteLevel = new EliteLevel(0, 1, 1, 1, 0);
+                               Log.Message($"[EliteRaid] {pawn.Name} 未能添加到等级 {cappedLevel} 分组（已达上限）");
+                            // 尝试降级处理
+                            int lowerLevel = Math.Max(1, cappedLevel - 1);
+
+                            // 重新生成一个较低等级
+                            eliteLevel = GetRandomEliteLevelWithFallback(lowerLevel);
                             cappedLevel = Math.Min(eliteLevel.Level, 7);
-                            TryAddToLevelGroup(cappedLevel, pawn.thingIDNumber);
+
+                            if (TryAddToLevelGroup(cappedLevel, pawn.thingIDNumber))
+                            {
+                                   Log.Message($"[EliteRaid] {pawn.Name} 降级添加到等级 {cappedLevel} 分组");
+                            } else
+                            {
+                                  Log.Message($"[EliteRaid] {pawn.Name} 所有等级已满，使用最低有效等级");
+                                eliteLevel = new EliteLevel(0, 1, 1, 1, 0);
+                                cappedLevel = Math.Min(eliteLevel.Level, 7);
+                                TryAddToLevelGroup(cappedLevel, pawn.thingIDNumber);
+                            }
                         }
-                    }
 
-                    // 应用等级
-                    ApplyEliteBuffToSinglePawn(pawn, baseNum, maxNum);
+                        // 应用等级
+                        ApplyEliteBuffToSinglePawn(pawn, baseNum, maxNum);
 
-                    group.Remove(pawn);
-                    if (group.Count == 0)
+                        group.Remove(pawn);
+                        if (group.Count == 0)
+                        {
+                            GroupData removedGroup;
+                            DropPodUtility_Patch.pendingHostileGroups.TryRemove(matchingGroupId, out removedGroup);
+                               Log.Message($"[EliteRaid] 安全移除组ID={matchingGroupId}");
+
+                            // 清理等级分组
+                            levelGroups.Clear();
+                        }
+                    } else
                     {
-                        GroupData removedGroup;
-                        DropPodUtility_Patch.pendingHostileGroups.TryRemove(matchingGroupId, out removedGroup);
-                    //    Log.Message($"[EliteRaid] 安全移除组ID={matchingGroupId}");
-
-                        // 清理等级分组
-                        levelGroups.Clear();
+                        Log.Warning($"[EliteRaid] 组ID={matchingGroupId} 已失效，Pawn：{pawn.Name}");
                     }
-                } else
-                {
-                    Log.Warning($"[EliteRaid] 组ID={matchingGroupId} 已失效，Pawn：{pawn.Name}");
+                } catch (Exception ex) {
+                    Log.Error($"[EliteRaid] ProcessSinglePawn 异常: {ex.Message}");
                 }
             }
 
@@ -458,7 +482,7 @@ namespace EliteRaid
                             .OrderByDescending(g => g.Value.CreationTime)
                             .First();
 
-                        //  Log.Message($"[EliteRaid] 通过RaidTag找到匹配组，ID={closestGroup.Key}，Pawn：{pawn.Name}");
+                          Log.Message($"[EliteRaid] 通过RaidTag找到匹配组，ID={closestGroup.Key}，Pawn：{pawn.Name}");
                         return closestGroup.Key;
                     }
 
@@ -473,7 +497,7 @@ namespace EliteRaid
                             .OrderByDescending(g => g.Value.CreationTime)
                             .First();
 
-                        //  Log.Message($"[EliteRaid] 通过RaidTag找到匹配的未完成组，ID={closestGroup.Key}，Pawn：{pawn.Name}");
+                          Log.Message($"[EliteRaid] 通过RaidTag找到匹配的未完成组，ID={closestGroup.Key}，Pawn：{pawn.Name}");
                         return closestGroup.Key;
                     }
                 }
@@ -483,7 +507,7 @@ namespace EliteRaid
                 {
                     if (kvp.Value.Pawns.Contains(pawn))
                     {
-                        //  Log.Message($"[EliteRaid] 通过直接匹配找到组，ID={kvp.Key}，Pawn：{pawn.Name}");
+                          Log.Message($"[EliteRaid] 通过直接匹配找到组，ID={kvp.Key}，Pawn：{pawn.Name}");
                         return kvp.Key;
                     }
                 }
@@ -493,12 +517,12 @@ namespace EliteRaid
                 {
                     if (kvp.Value.Pawns.Any(p => p.thingIDNumber == pawn.thingIDNumber))
                     {
-                        //  Log.Message($"[EliteRaid] 通过ID找到匹配组，ID={kvp.Key}，Pawn：{pawn.Name}");
+                         Log.Message($"[EliteRaid] 通过ID找到匹配组，ID={kvp.Key}，Pawn：{pawn.Name}");
                         return kvp.Key;
                     }
                 }
 
-                // Log.Message($"[EliteRaid] 未找到匹配组，Pawn：{pawn.Name}，派系：{pawn.Faction?.Name ?? "无"}");
+                 Log.Message($"[EliteRaid] 未找到匹配组，Pawn：{pawn.Name}，派系：{pawn.Faction?.Name ?? "无"}");
                 return Guid.Empty;
             }
 
@@ -535,7 +559,7 @@ namespace EliteRaid
                     HediffDef existingDef = DefDatabase<HediffDef>.GetNamedSilentFail(defName);
                     if (existingDef != null)
                     {
-                    //    Log.Message($"[EliteRaid] 复用现有HediffDef: {defName}");
+                        Log.Message($"[EliteRaid] 复用现有HediffDef: {defName}");
                         return existingDef;
                     }
 
@@ -572,7 +596,7 @@ namespace EliteRaid
                 // 获取或创建Hediff实例
                 Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(uniqueDef) ??
                                pawn.health.AddHediff(uniqueDef);
-                //   Log.Warning($"[EliteRaid]hediff后的 hediff" + hediff.ToString());
+                  Log.Warning($"[EliteRaid]hediff后的 hediff" + hediff.ToString());
                 if (hediff == null)
                 {
                     Log.Error($"[EliteRaid] 无法获取Hediff实例: {uniqueDef.defName}");
@@ -589,7 +613,7 @@ namespace EliteRaid
                 //}
 
                 // 记录日志
-                //  Log.Message($"[EliteRaid] 为 {pawn.Name} 应用等级: Level {level.Level}");
+                  Log.Message($"[EliteRaid] 为 {pawn.Name} 应用等级: Level {level.Level}");
             }
 
 
