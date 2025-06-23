@@ -108,12 +108,9 @@ namespace EliteRaid
                 }
                 //限制模组的药物使用
                 bool isModContent = x.modContentPack != null &&
-                x.modContentPack.Name != "ludeon.rimworld"&&
-                x.modContentPack.Name != "ludeon.rimworld.royalty"&&
-                x.modContentPack.Name != "ludeon.rimworld.ideology" &&
-                x.modContentPack.Name != "ludeon.rimworld.biotech"&&
-                 x.modContentPack.Name != "ludeon.rimworld.anomaly";
-              //  Log.Message("植入体信息:drug.modContentPack" + x.modContentPack + "名字" + x.defName);
+      !string.IsNullOrEmpty(x.modContentPack.Name) &&
+      !x.modContentPack.Name.StartsWith("ludeon.");
+                //  Log.Message("植入体信息:drug.modContentPack" + x.modContentPack + "名字" + x.defName);
                 if (isModContent && !EliteRaidMod.AllowModBionicsAndDrugs)
                 {
                     return false; // 不允许模组内容时跳过
