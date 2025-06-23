@@ -134,7 +134,7 @@
 //            // 新增：排除机械族（FactionDefOf.Mechanoids）
 //            if (faction != null && faction.def == FactionDefOf.Mechanoid)
 //            {
-//         //       Log.Message("[EliteRaid] 检测到机械族派系，跳过强化");
+//                //       Log.Message("[EliteRaid] 检测到机械族派系，跳过强化");
 //                return false;
 //            }
 //            // 否则检查 Pawn 自身派系（取第一个 Pawn 的派系作为代表）
@@ -208,28 +208,29 @@
 //            {
 //                return;
 
-//                if (__instance == null) {
-                
+//                if (__instance == null)
+//                {
+
 //                }
-                
+
 //                try
 //                {
 //                    if (__instance == null || __instance.Contents == null)
 //                        return;
-//                     Log.Message($"[EliteRaid] 处理空投舱内容，ID={__instance.thingIDNumber}");
+//                    Log.Message($"[EliteRaid] 处理空投舱内容，ID={__instance.thingIDNumber}");
 
 //                    // 方法 1：使用泛型方法获取内容
 //                    var innerContainer = __instance.Contents.innerContainer as ThingOwner<Thing>;
 //                    if (innerContainer == null)
 //                    {
-//                          Log.Warning("[EliteRaid] 容器类型非 ThingOwner<Thing>，跳过处理");
+//                        Log.Warning("[EliteRaid] 容器类型非 ThingOwner<Thing>，跳过处理");
 //                        return;
 //                    }
 //                    List<Thing> allContents = innerContainer.InnerListForReading.ToList();
 
 //                    if (allContents.Count == 0)
 //                    {
-//                           Log.Warning("[EliteRaid] 容器中无有效物品");
+//                        Log.Warning("[EliteRaid] 容器中无有效物品");
 //                        return;
 //                    }
 
@@ -260,11 +261,12 @@
 //                            }
 //                        }
 //                    }
-//                } catch (Exception ex) {
+//                } catch (Exception ex)
+//                {
 //                    Log.Warning($"[EliteRaid] ProcessContents 空头仓里可能是物品: {ex.Message}");
 
 //                }
-               
+
 //            }
 
 
@@ -392,7 +394,7 @@
 //                        //   Log.Message($"[EliteRaid] 机械族单位 {pawn.Name}，跳过强化");
 //                        return;
 //                    }
-//                   // Log.Message("pendingHostileGroups"+ pendingHostileGroups.Count+"to string"+ pendingHostileGroups.ToString());
+//                    // Log.Message("pendingHostileGroups"+ pendingHostileGroups.Count+"to string"+ pendingHostileGroups.ToString());
 //                    Guid matchingGroupId = FindMatchingGroupId(pawn);
 //                    if (matchingGroupId == Guid.Empty)
 //                    {
@@ -425,10 +427,10 @@
 
 //                        if (TryAddToLevelGroup(cappedLevel, pawn.thingIDNumber))
 //                        {
-//                              Log.Message($"[EliteRaid] {pawn.Name} 添加到等级 {cappedLevel} 分组");
+//                            Log.Message($"[EliteRaid] {pawn.Name} 添加到等级 {cappedLevel} 分组");
 //                        } else
 //                        {
-//                               Log.Message($"[EliteRaid] {pawn.Name} 未能添加到等级 {cappedLevel} 分组（已达上限）");
+//                            Log.Message($"[EliteRaid] {pawn.Name} 未能添加到等级 {cappedLevel} 分组（已达上限）");
 //                            // 尝试降级处理
 //                            int lowerLevel = Math.Max(1, cappedLevel - 1);
 
@@ -438,10 +440,10 @@
 
 //                            if (TryAddToLevelGroup(cappedLevel, pawn.thingIDNumber))
 //                            {
-//                                   Log.Message($"[EliteRaid] {pawn.Name} 降级添加到等级 {cappedLevel} 分组");
+//                                Log.Message($"[EliteRaid] {pawn.Name} 降级添加到等级 {cappedLevel} 分组");
 //                            } else
 //                            {
-//                                  Log.Message($"[EliteRaid] {pawn.Name} 所有等级已满，使用最低有效等级");
+//                                Log.Message($"[EliteRaid] {pawn.Name} 所有等级已满，使用最低有效等级");
 //                                eliteLevel = new EliteLevel(0, 1, 1, 1, 0);
 //                                cappedLevel = Math.Min(eliteLevel.Level, 7);
 //                                TryAddToLevelGroup(cappedLevel, pawn.thingIDNumber);
@@ -456,7 +458,7 @@
 //                        {
 //                            GroupData removedGroup;
 //                            DropPodUtility_Patch.pendingHostileGroups.TryRemove(matchingGroupId, out removedGroup);
-//                               Log.Message($"[EliteRaid] 安全移除组ID={matchingGroupId}");
+//                            Log.Message($"[EliteRaid] 安全移除组ID={matchingGroupId}");
 
 //                            // 清理等级分组
 //                            levelGroups.Clear();
@@ -465,7 +467,8 @@
 //                    {
 //                        Log.Warning($"[EliteRaid] 组ID={matchingGroupId} 已失效，Pawn：{pawn.Name}");
 //                    }
-//                } catch (Exception ex) {
+//                } catch (Exception ex)
+//                {
 //                    Log.Error($"[EliteRaid] ProcessSinglePawn 异常: {ex.Message}");
 //                }
 //            }
@@ -493,7 +496,7 @@
 //                            .OrderByDescending(g => g.Value.CreationTime)
 //                            .First();
 
-//                          Log.Message($"[EliteRaid] 通过RaidTag找到匹配组，ID={closestGroup.Key}，Pawn：{pawn.Name}");
+//                        Log.Message($"[EliteRaid] 通过RaidTag找到匹配组，ID={closestGroup.Key}，Pawn：{pawn.Name}");
 //                        return closestGroup.Key;
 //                    }
 
@@ -508,7 +511,7 @@
 //                            .OrderByDescending(g => g.Value.CreationTime)
 //                            .First();
 
-//                          Log.Message($"[EliteRaid] 通过RaidTag找到匹配的未完成组，ID={closestGroup.Key}，Pawn：{pawn.Name}");
+//                        Log.Message($"[EliteRaid] 通过RaidTag找到匹配的未完成组，ID={closestGroup.Key}，Pawn：{pawn.Name}");
 //                        return closestGroup.Key;
 //                    }
 //                }
@@ -518,7 +521,7 @@
 //                {
 //                    if (kvp.Value.Pawns.Contains(pawn))
 //                    {
-//                          Log.Message($"[EliteRaid] 通过直接匹配找到组，ID={kvp.Key}，Pawn：{pawn.Name}");
+//                        Log.Message($"[EliteRaid] 通过直接匹配找到组，ID={kvp.Key}，Pawn：{pawn.Name}");
 //                        return kvp.Key;
 //                    }
 //                }
@@ -528,12 +531,12 @@
 //                {
 //                    if (kvp.Value.Pawns.Any(p => p.thingIDNumber == pawn.thingIDNumber))
 //                    {
-//                         Log.Message($"[EliteRaid] 通过ID找到匹配组，ID={kvp.Key}，Pawn：{pawn.Name}");
+//                        Log.Message($"[EliteRaid] 通过ID找到匹配组，ID={kvp.Key}，Pawn：{pawn.Name}");
 //                        return kvp.Key;
 //                    }
 //                }
 
-//                 Log.Message($"[EliteRaid] 未找到匹配组，Pawn：{pawn.Name}，派系：{pawn.Faction?.Name ?? "无"}");
+//                Log.Message($"[EliteRaid] 未找到匹配组，Pawn：{pawn.Name}，派系：{pawn.Faction?.Name ?? "无"}");
 //                return Guid.Empty;
 //            }
 
@@ -607,7 +610,7 @@
 //                // 获取或创建Hediff实例
 //                Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(uniqueDef) ??
 //                               pawn.health.AddHediff(uniqueDef);
-//                  Log.Warning($"[EliteRaid]hediff后的 hediff" + hediff.ToString());
+//                Log.Warning($"[EliteRaid]hediff后的 hediff" + hediff.ToString());
 //                if (hediff == null)
 //                {
 //                    Log.Error($"[EliteRaid] 无法获取Hediff实例: {uniqueDef.defName}");
@@ -624,7 +627,7 @@
 //                //}
 
 //                // 记录日志
-//                  Log.Message($"[EliteRaid] 为 {pawn.Name} 应用等级: Level {level.Level}");
+//                Log.Message($"[EliteRaid] 为 {pawn.Name} 应用等级: Level {level.Level}");
 //            }
 
 
@@ -633,8 +636,8 @@
 //            private static bool IsLevelValid(EliteLevel level)
 //            {
 //                return level != null &&
-//                       level.Level != 0&&level.Level<=7;
-                     
+//                       level.Level != 0 && level.Level <= 7;
+
 //            }
 
 //        }
