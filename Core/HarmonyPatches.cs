@@ -12,6 +12,7 @@ using static EliteRaid.StaticVariables_ModCompatibility;
 using System.Runtime.InteropServices;
 using RimwoldEliteRaidProject.Core;
 using Verse.Noise;
+using RimWorld.Planet;
 
 namespace EliteRaid
 {
@@ -334,7 +335,7 @@ namespace EliteRaid
             //GenerateAnimals
             orgType = typeof(AggressiveAnimalIncidentUtility);
             orgName = nameof(AggressiveAnimalIncidentUtility.GenerateAnimals);
-            method = AccessTools.Method(orgType, orgName, new Type[] { typeof(PawnKindDef), typeof(int), typeof(float), typeof(int) });
+            method = AccessTools.Method(orgType, orgName, new Type[] { typeof(PawnKindDef), typeof(PlanetTile), typeof(float), typeof(int) });
             if (General.m_CanTranspilerGenerateAnimals)
             {
                 try
@@ -349,22 +350,35 @@ namespace EliteRaid
                         null,
                         null,
                         new HarmonyMethod(typeof(ManhunterPackIncidentUtility_Patch), nameof(ManhunterPackIncidentUtility_Patch.GenerateAnimals_Finalizer), new Type[] { typeof(Exception), typeof(List<Pawn>).MakeByRefType(), typeof(PawnKindDef) }) { methodType = MethodType.Normal });
-                    General.SendLog_Debug(General.MessageTypes.Debug, String.Format("[{0}.{1}] Transpiler patched!!", orgType.FullName, orgName));
+                  //  Log.Message("GenerateAnimals_Transpiler和GenerateAnimals_Finalizer成功注册!");
                 } catch (Exception ex)
                 {
-                    General.SendLog_Debug(General.MessageTypes.DebugError, String.Format("[{0}.{1}] Patch Failed!! reason:{2}{3}", orgType.FullName, orgName, Environment.NewLine, ex.ToString()));
+                  //  Log.Message("GenerateAnimals_Transpiler和GenerateAnimals_Finalizer注册失败!");
                 }
             } else
             {
                 try
                 {
-                    harmony.Patch(method,
-                        new HarmonyMethod(typeof(ManhunterPackIncidentUtility_Patch), nameof(ManhunterPackIncidentUtility_Patch.GenerateAnimals_Prefix), new Type[] { typeof(List<Pawn>).MakeByRefType(), typeof(PawnKindDef), typeof(int), typeof(float), typeof(int) }) { methodType = MethodType.Normal });
+                    harmony.Patch(
+          method,
+          new HarmonyMethod(
+              typeof(ManhunterPackIncidentUtility_Patch),
+              nameof(ManhunterPackIncidentUtility_Patch.GenerateAnimals_Prefix),
+              new Type[] {
+                typeof(List<Pawn>).MakeByRefType(),
+                typeof(PawnKindDef),
+                typeof(PlanetTile),  // 修正为PlanetTile
+                typeof(float),
+                typeof(int)
+              }
+          )
+          { methodType = MethodType.Normal }
+      );
 
-                    General.SendLog_Debug(General.MessageTypes.Debug, String.Format("[{0}.{1}] Prefix patched!!", orgType.FullName, orgName));
+                 //   Log.Message("GenerateAnimals_Prefix成功注册!");
                 } catch (Exception ex)
                 {
-                    General.SendLog_Debug(General.MessageTypes.DebugError, String.Format("[{0}.{1}] Patch Failed!! reason:{2}{3}", orgType.FullName, orgName, Environment.NewLine, ex.ToString()));
+                  //  Log.Message("GenerateAnimals_Prefix注册失败!");
                 }
             }
 
@@ -454,7 +468,7 @@ namespace EliteRaid
             MethodInfo methodGenerateAnimals_TestTramspiler = AccessTools.Method(typeof(ManhunterPackIncidentUtility_Patch), nameof(ManhunterPackIncidentUtility_Patch.GenerateAnimals_Test_Transpiler), new Type[] { typeof(IEnumerable<CodeInstruction>) });
             try
             {
-                orgMethod = AccessTools.Method(typeof(AggressiveAnimalIncidentUtility), nameof(AggressiveAnimalIncidentUtility.GenerateAnimals), new Type[] { typeof(PawnKindDef), typeof(int), typeof(float), typeof(int) });
+                orgMethod = AccessTools.Method(typeof(AggressiveAnimalIncidentUtility), nameof(AggressiveAnimalIncidentUtility.GenerateAnimals), new Type[] { typeof(PawnKindDef), typeof(PlanetTile), typeof(float), typeof(int) });
                 harmony.Patch(orgMethod,
                     null,
                     null,
@@ -610,8 +624,9 @@ namespace EliteRaid
             return __exception;
         }
 
-        internal static bool GenerateAnimals_Prefix(ref List<Pawn> __result, PawnKindDef animalKind, int tile, float points, int animalCount = 0)
+        internal static bool GenerateAnimals_Prefix(ref List<Pawn> __result, PawnKindDef animalKind, PlanetTile tile, float points, int animalCount = 0)
         {
+            Log.Message("[EliteRaid] GenerateAnimals_Prefix 被调用！");
             if (EliteRaidMod.modEnabled || !EliteRaidMod.allowAnimalsValue)
             {
                 return true;
