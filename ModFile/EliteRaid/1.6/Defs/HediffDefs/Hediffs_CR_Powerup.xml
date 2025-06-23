@@ -1,0 +1,1242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<HediffDef>
+		<defName>CR_Powerup1</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup1</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup2</defName>
+		<label></label>
+	
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup2</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup3</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup3</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup4</defName>
+		<label></label>
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup4</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup5</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup5</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup6</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup6</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup7</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup7</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup8</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup8</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup9</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup9</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup10</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup10</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup11</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup11</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup12</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup12</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup13</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup13</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup14</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup14</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup15</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup15</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup16</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup16</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup17</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup17</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup18</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup18</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup19</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup19</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>CR_Powerup20</defName>
+		<label></label>
+		
+		<defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+		<isBad>false</isBad>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<comps>
+			<li Class="HediffCompProperties_HealPermanentWounds" />
+		</comps>
+		<hediffClass>EliteRaid.CR_Powerup20</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+	</HediffDef>
+<!-- CR_Powerup21 -->
+<HediffDef>
+    <defName>CR_Powerup21</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup21</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup22 -->
+<HediffDef>
+    <defName>CR_Powerup22</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup22</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup23 -->
+<HediffDef>
+    <defName>CR_Powerup23</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup23</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup24 -->
+<HediffDef>
+    <defName>CR_Powerup24</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup24</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup25 -->
+<HediffDef>
+    <defName>CR_Powerup25</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup25</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup26 -->
+<HediffDef>
+    <defName>CR_Powerup26</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup26</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup27 -->
+<HediffDef>
+    <defName>CR_Powerup27</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup27</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup28 -->
+<HediffDef>
+    <defName>CR_Powerup28</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup28</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup29 -->
+<HediffDef>
+    <defName>CR_Powerup29</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup29</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup30 -->
+<HediffDef>
+    <defName>CR_Powerup30</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup30</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup31 -->
+<HediffDef>
+    <defName>CR_Powerup31</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup31</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup32 -->
+<HediffDef>
+    <defName>CR_Powerup32</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup32</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup33 -->
+<HediffDef>
+    <defName>CR_Powerup33</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup33</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup34 -->
+<HediffDef>
+    <defName>CR_Powerup34</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup34</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup35 -->
+<HediffDef>
+    <defName>CR_Powerup35</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup35</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup36 -->
+<HediffDef>
+    <defName>CR_Powerup36</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup36</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup37 -->
+<HediffDef>
+    <defName>CR_Powerup37</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup37</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup38 -->
+<HediffDef>
+    <defName>CR_Powerup38</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup38</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup39 -->
+<HediffDef>
+    <defName>CR_Powerup39</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup39</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup40 -->
+<HediffDef>
+    <defName>CR_Powerup40</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup40</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup41 -->
+<HediffDef>
+    <defName>CR_Powerup41</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup41</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup42 -->
+<HediffDef>
+    <defName>CR_Powerup42</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup42</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup43 -->
+<HediffDef>
+    <defName>CR_Powerup43</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup43</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup44 -->
+<HediffDef>
+    <defName>CR_Powerup44</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup44</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup45 -->
+<HediffDef>
+    <defName>CR_Powerup45</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup45</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup46 -->
+<HediffDef>
+    <defName>CR_Powerup46</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup46</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup47 -->
+<HediffDef>
+    <defName>CR_Powerup47</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup47</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup48 -->
+<HediffDef>
+    <defName>CR_Powerup48</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup48</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup49 -->
+<HediffDef>
+    <defName>CR_Powerup49</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup49</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup50 -->
+<HediffDef>
+    <defName>CR_Powerup50</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup50</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup51 -->
+<HediffDef>
+    <defName>CR_Powerup51</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup51</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup52 -->
+<HediffDef>
+    <defName>CR_Powerup52</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup52</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup53 -->
+<HediffDef>
+    <defName>CR_Powerup53</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup53</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup54 -->
+<HediffDef>
+    <defName>CR_Powerup54</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup54</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup55 -->
+<HediffDef>
+    <defName>CR_Powerup55</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup55</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup56 -->
+<HediffDef>
+    <defName>CR_Powerup56</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup56</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup57 -->
+<HediffDef>
+    <defName>CR_Powerup57</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup57</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup58 -->
+<HediffDef>
+    <defName>CR_Powerup58</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup58</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup59 -->
+<HediffDef>
+    <defName>CR_Powerup59</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup59</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup60 -->
+<HediffDef>
+    <defName>CR_Powerup60</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup60</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup61 -->
+<HediffDef>
+    <defName>CR_Powerup61</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup61</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup62 -->
+<HediffDef>
+    <defName>CR_Powerup62</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup62</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup63 -->
+<HediffDef>
+    <defName>CR_Powerup63</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup63</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup64 -->
+<HediffDef>
+    <defName>CR_Powerup64</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup64</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup65 -->
+<HediffDef>
+    <defName>CR_Powerup65</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup65</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup66 -->
+<HediffDef>
+    <defName>CR_Powerup66</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup66</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup67 -->
+<HediffDef>
+    <defName>CR_Powerup67</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup67</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup68 -->
+<HediffDef>
+    <defName>CR_Powerup68</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup68</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup69 -->
+<HediffDef>
+    <defName>CR_Powerup69</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup69</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>
+
+<!-- CR_Powerup70 -->
+<HediffDef>
+    <defName>CR_Powerup70</defName>
+    <label></label>
+    <defaultLabelColor>(0.5, 0.8, 0.8)</defaultLabelColor>
+    <isBad>false</isBad>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+        <li Class="HediffCompProperties_HealPermanentWounds" />
+    </comps>
+    <hediffClass>EliteRaid.CR_Powerup70</hediffClass>
+		    <stages>
+        <li>
+            <painFactor>1.1</painFactor>
+        </li>
+    </stages>
+</HediffDef>    
+</Defs>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <EliteRaidSettingsCategory>精英突襲設定</EliteRaidSettingsCategory>
+  <modEnabled>啟用精英突襲</modEnabled>
+  <modEnabledDesc>開啟或關閉本Mod功能</modEnabledDesc>
+  <displayMessageValue>顯示調試日誌</displayMessageValue>
+  <displayMessageValueDesc>在日誌中顯示詳細調試資訊</displayMessageValueDesc>
+  <eliteRaidDifficulty>精英等級強化程度</eliteRaidDifficulty>
+  <eliteRaidDifficultyDesc>1 = 正常, 2 = 加強, 3 = 極強</eliteRaidDifficultyDesc>
+  
+  <allowRaidFriendlyValue>允許友軍突襲精英化</allowRaidFriendlyValue>
+  <allowRaidFriendlyValueDesc>對非敵對突襲啟用精英化</allowRaidFriendlyValueDesc>
+  <allowMechanoidsValue>機械體突襲</allowMechanoidsValue>
+  <allowMechanoidsValueDesc>允許機械單位精英化</allowMechanoidsValueDesc>
+  <allowInsectoidsValue>昆蟲突襲</allowInsectoidsValue>
+  <allowInsectoidsValueDesc>允許昆蟲單位精英化</allowInsectoidsValueDesc>
+  <allowEntitySwarmValue>實體突襲</allowEntitySwarmValue>
+  <allowEntitySwarmValueDesc>允許血肉/機械群體精英化</allowEntitySwarmValueDesc>
+  <allowAnimalsValue>動物突襲</allowAnimalsValue>
+  <allowAnimalsValueDesc>允許動物精英化</allowAnimalsValueDesc>
+  
+  <maxAllowLevel>最大精英等級</maxAllowLevel>
+  <maxAllowLevelDesc>允許的最高精英等級 (1-7)</maxAllowLevelDesc>
+  <useCompressionRatio>使用壓縮倍率替換數量</useCompressionRatio>
+  <useCompressionRatioDesc>啟用後將使用壓縮倍率而非最大數量</useCompressionRatioDesc>
+  <compressionRatio>壓縮倍率</compressionRatio>
+  <compressionRatioDesc>敵人數量壓縮倍率 (1.0-10.0) 例如壓縮倍率3，78個敵人會被壓縮成26個</compressionRatioDesc>
+  <maxRaidEnemy>最大突襲敵人數量</maxRaidEnemy>
+  <maxRaidEnemyDesc>每次突襲受精英化影響的最大敵人數量 (20-100)</maxRaidEnemyDesc>
+  <enableSilverDrop>敵人掉落白銀</enableSilverDrop>
+  <enableSilverDropDesc>精英敵人死亡時掉落白銀</enableSilverDropDesc>
+  <silverDropPerLevel>每級掉落數量</silverDropPerLevel>
+  <silverDropPerLevelDesc>每個精英等級額外掉落的白銀數量 (20-100)</silverDropPerLevelDesc>
+  <mapGeneratedEnemyEnhanced>地圖生成敵人增強</mapGeneratedEnemyEnhanced>
+  <mapGeneratedEnemyEnhancedDesc>對地圖已生成的敵人啟用精英化</mapGeneratedEnemyEnhancedDesc>
+  
+  <ResetToDefault>恢復預設設定</ResetToDefault>
+  
+  <BasicSettings>基礎設定</BasicSettings>
+  <AllowedPawnTypes>允許精英化的單位類型</AllowedPawnTypes>
+  <ValueLimits>數值限制</ValueLimits>
+  
+  <Difficulty_Normal>正常</Difficulty_Normal>
+  <Difficulty_Hard>困難</Difficulty_Hard>
+  <Difficulty_Extreme>極端</Difficulty_Extreme>
+  
+  <MaxRaidPoint>最大突襲點數</MaxRaidPoint>
+  <MaxRaidPointDesc>調整最大突襲點數，注意原本突襲點數上限是1W，這裡調整的是突襲點上限,如果你能無壓力打1W點突襲，可以考慮調高這個值。</MaxRaidPointDesc>
+  <ShowDetailConfig>顯示詳細設定</ShowDetailConfig>
+  <ShowDetailConfigDesc>即使不勾選，詳細設定裡的內容也會生效！</ShowDetailConfigDesc>
+  <DragToSelectDifficulty>下拉選擇總體難度</DragToSelectDifficulty>
+  <TotalDifficulty>總難度設定</TotalDifficulty>
+<allowDropPodRaidValue>允許精英化空投襲擊(測試)</allowDropPodRaidValue>
+<allowDropPodRaidValueDesc>注意此功能可能導致空投卡滯，當前為測試版本。是否允許對通過空投艙抵達的襲擊者進行精英化增強(不影響壓縮敵人數量)</allowDropPodRaidValueDesc>
+ <!-- 袭击缩放倍率相关翻译 -->
+  <RaidScale>襲擊規模</RaidScale>
+  <RaidScaleDesc>調整襲擊難度的總體縮放倍率，值越高，襲擊難度越大。</RaidScaleDesc>
+  <!-- 難度名稱（不含顏色標籤） -->
+  <Difficulty_Novice>修士</Difficulty_Novice>
+  <Difficulty_Retainer>扈從</Difficulty_Retainer>
+  <Difficulty_Knight>騎士</Difficulty_Knight>
+  <Difficulty_Justiciar>法務官</Difficulty_Justiciar>
+  <Difficulty_Lord>領主</Difficulty_Lord>
+  <Difficulty_Viceroy>執政總督</Difficulty_Viceroy>
+  <Difficulty_Governor>總督</Difficulty_Governor>
+  <Difficulty_Duke>都督</Difficulty_Duke>
+  <Difficulty_Despot>專制公</Difficulty_Despot>
+  <Difficulty_GrandDuke>大公</Difficulty_GrandDuke>
+  <Difficulty_Consul>執政官</Difficulty_Consul>
+  <Difficulty_General>將軍</Difficulty_General>
+  <Difficulty_GuardCommander>近衛總長</Difficulty_GuardCommander>
+  <Difficulty_GalaxyLord>星系主宰</Difficulty_GalaxyLord>
+  <Difficulty_StarOverlord>至高星主</Difficulty_StarOverlord>
+  <Difficulty_GalaxyEmperor>星海皇帝</Difficulty_GalaxyEmperor>
+  
+  <!-- 難度係數 -->
+  <DifficultyFactor_0_4>難度係數0.4</DifficultyFactor_0_4>
+  <DifficultyFactor_0_7>難度係數0.7</DifficultyFactor_0_7>
+  <DifficultyFactor_1>難度係數1</DifficultyFactor_1>
+  <DifficultyFactor_1_3>難度係數1.3</DifficultyFactor_1_3>
+  <DifficultyFactor_1_6>難度係數1.6</DifficultyFactor_1_6>
+  <DifficultyFactor_2>難度係數2</DifficultyFactor_2>
+  <DifficultyFactor_2_4>難度係數2.4</DifficultyFactor_2_4>
+  <DifficultyFactor_3_9>難度係數3.9</DifficultyFactor_3_9>
+  <DifficultyFactor_6_4>難度係數6.4</DifficultyFactor_6_4>
+  <DifficultyFactor_10>難度係數10</DifficultyFactor_10>
+  <DifficultyFactor_16>難度係數16</DifficultyFactor_16>
+  <DifficultyFactor_32>難度係數32</DifficultyFactor_32>
+  <DifficultyFactor_54>難度係數54</DifficultyFactor_54>
+  <DifficultyFactor_72>難度係數72</DifficultyFactor_72>
+  <DifficultyFactor_100>難度係數100</DifficultyFactor_100>
+  <DifficultyFactor_200>難度係數200</DifficultyFactor_200>
+  
+  <!-- 難度描述（無顏色標籤） -->
+<Difficulty_Novice_Desc>難度：修士，難度係數{0}  
+提供原版孤星探險=的難度水平，只會出現三級精英以下的敵人</Difficulty_Novice_Desc>
+
+<Difficulty_Retainer_Desc>難度：扈從，難度係數{0}  
+提供原版荒野求生+的難度水平，只會出現四級精英以下的敵人</Difficulty_Retainer_Desc>
+
+<Difficulty_Knight_Desc>難度：騎士，難度係數{0}（預設）  
+提供原版殘酷難度+的難度水平，只會出現六級精英以下的敵人</Difficulty_Knight_Desc>
+
+<Difficulty_Justiciar_Desc>難度：法務官，難度係數{0}  
+提供冷酷500%的難度水平，會出現boss級精英單位，敵人強化+2</Difficulty_Justiciar_Desc>
+
+<Difficulty_Lord_Desc>難度：領主，難度係數{0}  
+提供中等正義的模組環境難度+1，會出現boss級精英單位，敵人強化+2</Difficulty_Lord_Desc>
+
+<Difficulty_Viceroy_Desc>難度：總督，難度係數{0}  
+提供中等正義的模組環境難度+2，會出現boss級精英單位，敵人強化+2</Difficulty_Viceroy_Desc>
+
+<Difficulty_Governor_Desc>難度：執政總督，難度係數{0}  
+提供中等正義的模組環境難度+3，會出現boss級精英單位，敵人強化+2</Difficulty_Governor_Desc>
+
+<Difficulty_Duke_Desc>難度：都督，難度係數{0}  
+提供高正義的模組環境難度+1，會出現boss級精英單位，敵人強化+2</Difficulty_Duke_Desc>
+
+<Difficulty_Despot_Desc>難度：專制公，難度係數{0}  
+提供高正義的模組環境難度+2，會出現boss級精英單位，敵人強化+2</Difficulty_Despot_Desc>
+
+<Difficulty_GrandDuke_Desc>難度：大公，難度係數{0}  
+提供高正義的模組環境難度+3，會出現boss級精英單位，敵人強化+2</Difficulty_GrandDuke_Desc>
+
+<Difficulty_Consul_Desc>難度：執政官，難度係數{0}  
+提供超高正義的模組環境難度+1，會出現boss級精英單位，敵人強化+2</Difficulty_Consul_Desc>
+
+<Difficulty_General_Desc>難度：將軍，難度係數{0}  
+提供超高正義的模組環境難度+2，會出現boss級精英單位，敵人強化+2</Difficulty_General_Desc>
+
+<Difficulty_GuardCommander_Desc>難度：近衛總長，難度係數{0}  
+提供超高正義的模組環境難度+3，會出現boss級精英單位，敵人強化+2</Difficulty_GuardCommander_Desc>
+
+<Difficulty_GalaxyLord_Desc>難度：星系主宰，難度係數{0}  
+提供極端正義的模組環境難度+1，會出現boss級精英單位，敵人強化+2</Difficulty_GalaxyLord_Desc>
+
+<Difficulty_StarOverlord_Desc>難度：至高星主，難度係數{0}  
+提供極端正義的模組環境難度+2，會出現boss級精英單位，敵人強化+2</Difficulty_StarOverlord_Desc>
+
+<Difficulty_GalaxyEmperor_Desc>難度：星海皇帝，難度係數{0}（最高）  
+提供極端正義的模組環境難度+3，會出現boss級精英單位，敵人強化+2</Difficulty_GalaxyEmperor_Desc>
+
+<AllowModBionicsAndDrugs>允許模組藥物和植入體(重啟遊戲生效)</AllowModBionicsAndDrugs>
+<AllowModBionicsAndDrugsDesc>是否允許抽取模組內的藥物和植入體強化單位(重啟遊戲生效)</AllowModBionicsAndDrugsDesc>
+</LanguageData>

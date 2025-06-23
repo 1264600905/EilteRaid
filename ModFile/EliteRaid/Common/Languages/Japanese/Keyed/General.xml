@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 新增的消息文本 -->
+  <CR_RaidCompressedMassageEnhanced>襲撃者の数を{0}から{1}に圧縮し、その中の{3}体の属性を強化しました。（基礎倍率：{2}倍）</CR_RaidCompressedMassageEnhanced>
+  <CR_RaidCompressedMassageNotEnhanced>襲撃者の数が{0}から{1}に圧縮されました。</CR_RaidCompressedMassageNotEnhanced>
+  <CR_InfoExcludedDrugs>[圧縮襲撃] 情報：以下の薬物は「薬物効果を追加」から除外されます。</CR_InfoExcludedDrugs>
+  <CR_InfoMustNegativeEffectDrugs>[圧縮襲撃] 情報：以下の薬物は「マイナス効果を回避」の設定を無視し、常にマイナス効果を適用します。</CR_InfoMustNegativeEffectDrugs>
+</LanguageData>

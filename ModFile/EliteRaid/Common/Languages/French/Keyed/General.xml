@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 新增的消息文本 -->
+  <CR_RaidCompressedMassageEnhanced>Le nombre de raideurs a été compressé de {0} à {1}, et les attributs de {3} raideurs ont été améliorés. (Facteur de base : {2}x)</CR_RaidCompressedMassageEnhanced>
+  <CR_RaidCompressedMassageNotEnhanced>Le nombre de raideurs a été compressé de {0} à {1}.</CR_RaidCompressedMassageNotEnhanced>
+  <CR_InfoExcludedDrugs>[Compression de raid] Info : Les médicaments suivants seront exclus de "Ajouter des effets de drogues".</CR_InfoExcludedDrugs>
+  <CR_InfoMustNegativeEffectDrugs>[Compression de raid] Info : Les médicaments suivants ignoreront la configuration "Éviter les effets négatifs" et appliqueront toujours des effets négatifs.</CR_InfoMustNegativeEffectDrugs>
+</LanguageData>

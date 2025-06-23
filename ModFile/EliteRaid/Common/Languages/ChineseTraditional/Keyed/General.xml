@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 新增的消息文本 -->
+  <CR_RaidCompressedMassageEnhanced>將襲擊者數量從{0}壓縮到{1}，並增強了其中{3}名襲擊者屬性。（基礎倍率：{2}倍）</CR_RaidCompressedMassageEnhanced>
+  <CR_RaidCompressedMassageNotEnhanced>襲擊者數量已從{0}壓縮到{1}。</CR_RaidCompressedMassageNotEnhanced>
+  <CR_InfoExcludedDrugs>[壓縮襲擊] 資訊：以下藥物將從「添加藥物效果」中排除。</CR_InfoExcludedDrugs>
+  <CR_InfoMustNegativeEffectDrugs>[壓縮襲擊] 資訊：以下藥物會忽略「避免負面效果」的設定，並始終施加負面效果。</CR_InfoMustNegativeEffectDrugs>
+</LanguageData>

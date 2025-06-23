@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <EliteRaidSettingsCategory>精英化袭击</EliteRaidSettingsCategory>
+  <modEnabled>启用精英化袭击</modEnabled>
+  <modEnabledDesc>开启或关闭本Mod功能</modEnabledDesc>
+  <displayMessageValue>显示调试日志</displayMessageValue>
+  <displayMessageValueDesc>在日志中显示详细调试信息</displayMessageValueDesc>
+  <eliteRaidDifficulty>精英等级强化程度</eliteRaidDifficulty>
+  <eliteRaidDifficultyDesc>1 = 正常, 2 = 加强, 3 = 极强</eliteRaidDifficultyDesc>
+  
+  <allowRaidFriendlyValue>允许友军袭击精英化</allowRaidFriendlyValue>
+  <allowRaidFriendlyValueDesc>对非敌对突袭启用精英化</allowRaidFriendlyValueDesc>
+  <allowMechanoidsValue>机械体袭击</allowMechanoidsValue>
+  <allowMechanoidsValueDesc>允许机械单位精英化</allowMechanoidsValueDesc>
+  <allowInsectoidsValue>昆虫袭击</allowInsectoidsValue>
+  <allowInsectoidsValueDesc>允许昆虫单位精英化</allowInsectoidsValueDesc>
+  <allowEntitySwarmValue>实体袭击</allowEntitySwarmValue>
+  <allowEntitySwarmValueDesc>允许血肉/机械群体精英化</allowEntitySwarmValueDesc>
+  <allowAnimalsValue>动物袭击</allowAnimalsValue>
+  <allowAnimalsValueDesc>允许动物精英化</allowAnimalsValueDesc>
+  
+  <maxAllowLevel>最大精英等级</maxAllowLevel>
+  <maxAllowLevelDesc>允许的最高精英等级 (1-7)</maxAllowLevelDesc>
+  <useCompressionRatio>使用压缩倍率替换数量</useCompressionRatio>
+  <useCompressionRatioDesc>启用后将使用压缩倍率而非最大数量</useCompressionRatioDesc>
+  <compressionRatio>压缩倍率</compressionRatio>
+  <compressionRatioDesc>敌人数量压缩倍率 (1.0-10.0) 例如压缩倍率3，78个敌人会被压缩成26个</compressionRatioDesc>
+  <maxRaidEnemy>最大袭击敌人数量</maxRaidEnemy>
+  <maxRaidEnemyDesc>每次袭击受精英化影响的最大敌人数量 (20-100)</maxRaidEnemyDesc>
+  <enableSilverDrop>敌人掉落白银</enableSilverDrop>
+  <enableSilverDropDesc>精英敌人死亡时掉落白银</enableSilverDropDesc>
+  <silverDropPerLevel>每级掉落数量</silverDropPerLevel>
+  <silverDropPerLevelDesc>每个精英等级额外掉落的白银数量 (20-100)</silverDropPerLevelDesc>
+  <mapGeneratedEnemyEnhanced>地图生成敌人增强</mapGeneratedEnemyEnhanced>
+  <mapGeneratedEnemyEnhancedDesc>对地图已生成的敌人启用精英化</mapGeneratedEnemyEnhancedDesc>
+  
+  <ResetToDefault>恢复默认设置</ResetToDefault>
+  
+  <BasicSettings>基础设置</BasicSettings>
+  <AllowedPawnTypes>允许精英化的单位类型</AllowedPawnTypes>
+  <ValueLimits>数值限制</ValueLimits>
+  
+  <Difficulty_Normal>正常</Difficulty_Normal>
+  <Difficulty_Hard>困难</Difficulty_Hard>
+  <Difficulty_Extreme>极端</Difficulty_Extreme>
+  <EliteRaidSettingsCategory>精英化袭击</EliteRaidSettingsCategory>
+  
+  <MaxRaidPoint>最大袭击点数</MaxRaidPoint>
+<MaxRaidPointDesc>调整最大袭击点数，注意原本袭击点数上限是1W，这里调整的是袭击点上限,如果你能无压力打1W点袭击，可以考虑调高这个值。</MaxRaidPointDesc>
+<ShowDetailConfig>显示详细设置</ShowDetailConfig>
+<ShowDetailConfigDesc>即使不勾选，详细设置里的内容也会生效！</ShowDetailConfigDesc>
+<DragToSelectDifficulty>下拉选择总体难度</DragToSelectDifficulty>
+<TotalDifficulty>总难度设置</TotalDifficulty>
+<allowDropPodRaidValue>允许精英化空投袭击(测试)</allowDropPodRaidValue>
+<allowDropPodRaidValueDesc>注意此功能可能导致空投卡死，当前为测试版本,是否允许对通过空投舱抵达的袭击者进行精英化增强(不影响压缩敌人数量)</allowDropPodRaidValueDesc>
+ <!-- 袭击缩放倍率相关翻译 -->
+  <RaidScale>袭击规模</RaidScale>
+  <RaidScaleDesc>调整袭击规模，数值越高，袭击难度越大。</RaidScaleDesc>
+ <!-- 难度名称（不含颜色标签） -->
+    <Difficulty_Novice>修士</Difficulty_Novice>
+    <Difficulty_Retainer>扈从</Difficulty_Retainer>
+    <Difficulty_Knight>骑士</Difficulty_Knight>
+    <Difficulty_Justiciar>法务官</Difficulty_Justiciar>
+    <Difficulty_Lord>领主</Difficulty_Lord>
+    <Difficulty_Viceroy>执政总督</Difficulty_Viceroy>
+    <Difficulty_Governor>总督</Difficulty_Governor>
+    <Difficulty_Duke>都督</Difficulty_Duke>
+    <Difficulty_Despot>专制公</Difficulty_Despot>
+    <Difficulty_GrandDuke>大公</Difficulty_GrandDuke>
+    <Difficulty_Consul>执政官</Difficulty_Consul>
+    <Difficulty_General>将军</Difficulty_General>
+    <Difficulty_GuardCommander>近卫总长</Difficulty_GuardCommander>
+    <Difficulty_GalaxyLord>星系主宰</Difficulty_GalaxyLord>
+    <Difficulty_StarOverlord>至高星主</Difficulty_StarOverlord>
+    <Difficulty_GalaxyEmperor>星海皇帝</Difficulty_GalaxyEmperor>
+    
+    <!-- 难度系数 -->
+    <DifficultyFactor_0_4>难度系数0.4</DifficultyFactor_0_4>
+    <DifficultyFactor_0_7>难度系数0.7</DifficultyFactor_0_7>
+    <DifficultyFactor_1>难度系数1</DifficultyFactor_1>
+    <DifficultyFactor_1_3>难度系数1.3</DifficultyFactor_1_3>
+    <DifficultyFactor_1_6>难度系数1.6</DifficultyFactor_1_6>
+    <DifficultyFactor_2>难度系数2</DifficultyFactor_2>
+    <DifficultyFactor_2_4>难度系数2.4</DifficultyFactor_2_4>
+    <DifficultyFactor_3_9>难度系数3.9</DifficultyFactor_3_9>
+    <DifficultyFactor_6_4>难度系数6.4</DifficultyFactor_6_4>
+    <DifficultyFactor_10>难度系数10</DifficultyFactor_10>
+    <DifficultyFactor_16>难度系数16</DifficultyFactor_16>
+    <DifficultyFactor_32>难度系数32</DifficultyFactor_32>
+    <DifficultyFactor_54>难度系数54</DifficultyFactor_54>
+    <DifficultyFactor_72>难度系数72</DifficultyFactor_72>
+    <DifficultyFactor_100>难度系数100</DifficultyFactor_100>
+    <DifficultyFactor_200>难度系数200</DifficultyFactor_200>
+	
+<!-- 难度描述（无颜色标签） -->
+  <Difficulty_Novice_Desc>难度：修士，难度系数{0}  
+  提供原版孤星探险=的难度水平，只会出现三级精英以下的敌人,</Difficulty_Novice_Desc>
+
+  <Difficulty_Retainer_Desc>难度：扈从，难度系数{0}  
+  提供原版荒野求生+的难度水平，只会出现四级精英以下的敌人</Difficulty_Retainer_Desc>
+
+  <Difficulty_Knight_Desc>难度：骑士，难度系数{0}（默认）  
+  提供原版残酷难度+的难度水平，只会出现六级精英以下的敌人</Difficulty_Knight_Desc>
+
+  <Difficulty_Justiciar_Desc>难度：法务官，难度系数{0}   
+  提供冷酷500%的难度水平，会出现boss级精英单位，敌人强化+2</Difficulty_Justiciar_Desc>
+
+  <Difficulty_Lord_Desc>难度：领主，难度系数{0}  
+  提供中等正义的模组环境难度+1，会出现boss级精英单位，敌人强化+2</Difficulty_Lord_Desc>
+
+  <Difficulty_Viceroy_Desc>难度：总督，难度系数{0}  
+  提供中等正义的模组环境难度+2，会出现boss级精英单位，敌人强化+2</Difficulty_Viceroy_Desc>
+
+  <Difficulty_Governor_Desc>难度：执政总督，难度系数{0}  
+  提供中等正义的模组环境难度+3，会出现boss级精英单位，敌人强化+2</Difficulty_Governor_Desc>
+
+  <Difficulty_Duke_Desc>难度：都督，难度系数{0}  
+  提供高正义的模组环境难度+1，会出现boss级精英单位，敌人强化+2</Difficulty_Duke_Desc>
+
+  <Difficulty_Despot_Desc>难度：专制公，难度系数{0}  
+  提供高正义的模组环境难度+2，会出现boss级精英单位，敌人强化+2</Difficulty_Despot_Desc>
+
+  <Difficulty_GrandDuke_Desc>难度：大公，难度系数{0}  
+  提供高正义的模组环境难度+3，会出现boss级精英单位，敌人强化+2</Difficulty_GrandDuke_Desc>
+
+  <Difficulty_Consul_Desc>难度：执政官，难度系数{0}  
+  提供超高正义的模组环境难度+1，会出现boss级精英单位，敌人强化+2</Difficulty_Consul_Desc>
+
+  <Difficulty_General_Desc>难度：将军，难度系数{0}  
+  提供超高正义的模组环境难度+2，会出现boss级精英单位，敌人强化+2</Difficulty_General_Desc>
+
+  <Difficulty_GuardCommander_Desc>难度：近卫总长，难度系数{0}  
+  提供超高正义的模组环境难度+3，会出现boss级精英单位，敌人强化+2</Difficulty_GuardCommander_Desc>
+
+  <Difficulty_GalaxyLord_Desc>难度：星系主宰，难度系数{0}  
+  提供极端正义的模组环境难度+1，会出现boss级精英单位，敌人强化+2</Difficulty_GalaxyLord_Desc>
+
+  <Difficulty_StarOverlord_Desc>难度：至高星主，难度系数{0}  
+  提供极端正义的模组环境难度+2，会出现boss级精英单位，敌人强化+2</Difficulty_StarOverlord_Desc>
+
+  <Difficulty_GalaxyEmperor_Desc>难度：星海皇帝，难度系数{0}（最高）  
+  提供极端正义的模组环境难度+3，会出现boss级精英单位，敌人强化+2</Difficulty_GalaxyEmperor_Desc>
+  
+  <AllowModBionicsAndDrugs>允许模组药物和植入体(重启游戏生效)</AllowModBionicsAndDrugs>
+  <AllowModBionicsAndDrugsDesc>是否允许抽取模组内的药物和植入体强化单位(重启游戏生效)</AllowModBionicsAndDrugsDesc>
+    </LanguageData>

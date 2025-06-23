@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <EliteRaidSettingsCategory>Réglages des Raids Élites</EliteRaidSettingsCategory>
+  <modEnabled>Activer les Raids Élites</modEnabled>
+  <modEnabledDesc>Activer ou désactiver la fonctionnalité de ce Mod</modEnabledDesc>
+  <displayMessageValue>Afficher les Journaux de Débogage</displayMessageValue>
+  <displayMessageValueDesc>Afficher des informations détaillées de débogage dans les journaux</displayMessageValueDesc>
+  <eliteRaidDifficulty>Niveau d'Amélioration Élite</eliteRaidDifficulty>
+  <eliteRaidDifficultyDesc>1 = Normal, 2 = Amélioré, 3 = Extrême</eliteRaidDifficultyDesc>
+  
+  <allowRaidFriendlyValue>Autoriser les Raids Amicaux Élites</allowRaidFriendlyValue>
+  <allowRaidFriendlyValueDesc>Activer l'élitisme pour les raids non hostiles</allowRaidFriendlyValueDesc>
+  <allowMechanoidsValue>Raids Mécanoïdes</allowMechanoidsValue>
+  <allowMechanoidsValueDesc>Autoriser les unités mécanoïdes à devenir élites</allowMechanoidsValueDesc>
+  <allowInsectoidsValue>Raids Insectoïdes</allowInsectoidsValue>
+  <allowInsectoidsValueDesc>Autoriser les unités insectoïdes à devenir élites</allowInsectoidsValueDesc>
+  <allowEntitySwarmValue>Raids d'Entités Grouillantes</allowEntitySwarmValue>
+  <allowEntitySwarmValueDesc>Autoriser les grouilles de chair/mécaniques à devenir élites</allowEntitySwarmValueDesc>
+  <allowAnimalsValue>Raids d'Animaux</allowAnimalsValue>
+  <allowAnimalsValueDesc>Autoriser les animaux à devenir élites</allowAnimalsValueDesc>
+  
+  <maxAllowLevel>Niveau Élite Maximal</maxAllowLevel>
+  <maxAllowLevelDesc>Niveau élite maximal autorisé (1-7)</maxAllowLevelDesc>
+  <useCompressionRatio>Utiliser le Taux de Compression</useCompressionRatio>
+  <useCompressionRatioDesc>Lorsqu'activé, utilise le taux de compression au lieu du nombre maximal</useCompressionRatioDesc>
+  <compressionRatio>Taux de Compression</compressionRatio>
+  <compressionRatioDesc>Taux de compression du nombre d'ennemis (1.0-10.0). Exemple : taux 3 comprime 78 ennemis en 26</compressionRatioDesc>
+  <maxRaidEnemy>Nombre Maximal d'Ennemis par Raid</maxRaidEnemy>
+  <maxRaidEnemyDesc>Nombre maximal d'ennemis affectés par l'élitisme par raid (20-100)</maxRaidEnemyDesc>
+  <enableSilverDrop>Ennemis Laissent de l'Argent</enableSilverDrop>
+  <enableSilverDropDesc>Les ennemis élites laissent de l'argent lorsqu'ils sont tués</enableSilverDropDesc>
+  <silverDropPerLevel>Argent Laissé par Niveau</silverDropPerLevel>
+  <silverDropPerLevelDesc>Argent supplémentaire laissé par niveau d'élite (20-100)</silverDropPerLevelDesc>
+  <mapGeneratedEnemyEnhanced>Amélioration des Ennemis Générés par la Carte</mapGeneratedEnemyEnhanced>
+  <mapGeneratedEnemyEnhancedDesc>Activer l'élitisme pour les ennemis déjà présents sur la carte</mapGeneratedEnemyEnhancedDesc>
+  
+  <ResetToDefault>Réinitialiser aux Paramètres Par Défaut</ResetToDefault>
+  
+  <BasicSettings>Réglages de Base</BasicSettings>
+  <AllowedPawnTypes>Types d'Unités Autorisés pour l'Elitisme</AllowedPawnTypes>
+  <ValueLimits>Limites de Valeurs</ValueLimits>
+  
+  <Difficulty_Normal>Normal</Difficulty_Normal>
+  <Difficulty_Hard>Difficile</Difficulty_Hard>
+  <Difficulty_Extreme>Extrême</Difficulty_Extreme>
+  
+  <MaxRaidPoint>Points Maximes de Raid</MaxRaidPoint>
+  <MaxRaidPointDesc>Ajuster les points maximes de raid. Notez que la limite originale est de 10 000. Augmentez ceci si vous gérez facilement les raids de 10 000 points.</MaxRaidPointDesc>
+  <ShowDetailConfig>Afficher les Réglages Détailés</ShowDetailConfig>
+  <ShowDetailConfigDesc>Les réglages détaillés prendront effet même si non cochés!</ShowDetailConfigDesc>
+  <DragToSelectDifficulty>Glisser pour Sélectionner la Difficulté Générale</DragToSelectDifficulty>
+  <TotalDifficulty>Réglages de Difficulté Générale</TotalDifficulty>
+<allowDropPodRaidValue>Autoriser les raids par pod de débarquement élites (Test)</allowDropPodRaidValue>
+<allowDropPodRaidValueDesc>Remarque : Cette fonctionnalité peut provoquer des blocages des pods de débarquement. Version actuelle en test. Autoriser l'affinement élite des raiders arrivant via des pods de débarquement (n'affecte pas la compression du nombre d'ennemis)</allowDropPodRaidValueDesc>
+  <!-- Échelle des Raids -->
+  <RaidScale>Échelle des Raids</RaidScale>
+  <RaidScaleDesc>Ajuster le facteur d'échelle global de la difficulté des raids. Des valeurs plus élevées augmentent la difficulté.</RaidScaleDesc>
+  
+  <!-- Noms de Difficulté (sans étiquettes de couleur) -->
+  <Difficulty_Novice>Novice</Difficulty_Novice>
+  <Difficulty_Retainer>Valet</Difficulty_Retainer>
+  <Difficulty_Knight>Chevalier</Difficulty_Knight>
+  <Difficulty_Justiciar>Justicier</Difficulty_Justiciar>
+  <Difficulty_Lord>Seigneur</Difficulty_Lord>
+  <Difficulty_Viceroy>Vice-Roy</Difficulty_Viceroy>
+  <Difficulty_Governor>Gouverneur</Difficulty_Governor>
+  <Difficulty_Duke>Duc</Difficulty_Duke>
+  <Difficulty_Despot>Despote</Difficulty_Despot>
+  <Difficulty_GrandDuke>Grand Duc</Difficulty_GrandDuke>
+  <Difficulty_Consul>Consul</Difficulty_Consul>
+  <Difficulty_General>Général</Difficulty_General>
+  <Difficulty_GuardCommander>Commandant de la Garde</Difficulty_GuardCommander>
+  <Difficulty_GalaxyLord>Seigneur de la Galaxie</Difficulty_GalaxyLord>
+  <Difficulty_StarOverlord>Souverain des Étoiles</Difficulty_StarOverlord>
+  <Difficulty_GalaxyEmperor>Empereur de la Galaxie</Difficulty_GalaxyEmperor>
+  
+  <!-- Facteurs de Difficulté -->
+  <DifficultyFactor_0_4>Facteur de Difficulté 0.4</DifficultyFactor_0_4>
+  <DifficultyFactor_0_7>Facteur de Difficulté 0.7</DifficultyFactor_0_7>
+  <DifficultyFactor_1>Facteur de Difficulté 1</DifficultyFactor_1>
+  <DifficultyFactor_1_3>Facteur de Difficulté 1.3</DifficultyFactor_1_3>
+  <DifficultyFactor_1_6>Facteur de Difficulté 1.6</DifficultyFactor_1_6>
+  <DifficultyFactor_2>Facteur de Difficulté 2</DifficultyFactor_2>
+  <DifficultyFactor_2_4>Facteur de Difficulté 2.4</DifficultyFactor_2_4>
+  <DifficultyFactor_3_9>Facteur de Difficulté 3.9</DifficultyFactor_3_9>
+  <DifficultyFactor_6_4>Facteur de Difficulté 6.4</DifficultyFactor_6_4>
+  <DifficultyFactor_10>Facteur de Difficulté 10</DifficultyFactor_10>
+  <DifficultyFactor_16>Facteur de Difficulté 16</DifficultyFactor_16>
+  <DifficultyFactor_32>Facteur de Difficulté 32</DifficultyFactor_32>
+  <DifficultyFactor_54>Facteur de Difficulté 54</DifficultyFactor_54>
+  <DifficultyFactor_72>Facteur de Difficulté 72</DifficultyFactor_72>
+  <DifficultyFactor_100>Facteur de Difficulté 100</DifficultyFactor_100>
+  <DifficultyFactor_200>Facteur de Difficulté 200</DifficultyFactor_200>
+  
+  <!-- Description des niveaux de difficulté (sans balises de couleur) -->
+<Difficulty_Novice_Desc>Difficulté : Novice, Facteur de difficulté {0}  
+Propose le niveau de difficulté de l'extension "Aventure Étoile Solitaire", avec des ennemis jusqu'au niveau Élite 3.</Difficulty_Novice_Desc>
+
+<Difficulty_Retainer_Desc>Difficulté : Retenu, Facteur de difficulté {0}  
+Propose le niveau de difficulté de l'extension "Survie Sauvage+", avec des ennemis jusqu'au niveau Élite 4.</Difficulty_Retainer_Desc>
+
+<Difficulty_Knight_Desc>Difficulté : Chevalier, Facteur de difficulté {0} (Par défaut)  
+Propose le niveau de difficulté "Cruel+" d'origine, avec des ennemis jusqu'au niveau Élite 6.</Difficulty_Knight_Desc>
+
+<Difficulty_Justiciar_Desc>Difficulté : Justicier, Facteur de difficulté {0}  
+Propose 500% de la difficulté "Sans Pitié" d'origine. Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_Justiciar_Desc>
+
+<Difficulty_Lord_Desc>Difficulté : Seigneur, Facteur de difficulté {0}  
+Propose le niveau de difficulté "+1" de l'environnement moddé "Justice Modérée". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_Lord_Desc>
+
+<Difficulty_Viceroy_Desc>Difficulté : Vice-Roi, Facteur de difficulté {0}  
+Propose le niveau de difficulté "+2" de l'environnement moddé "Justice Modérée". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_Viceroy_Desc>
+
+<Difficulty_Governor_Desc>Difficulté : Gouverneur, Facteur de difficulté {0}  
+Propose le niveau de difficulté "+3" de l'environnement moddé "Justice Modérée". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_Governor_Desc>
+
+<Difficulty_Duke_Desc>Difficulté : Duc, Facteur de difficulté {0}  
+Propose le niveau de difficulté "+1" de l'environnement moddé "Haute Justice". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_Duke_Desc>
+
+<Difficulty_Despot_Desc>Difficulté : Despote, Facteur de difficulté {0}  
+Propose le niveau de difficulté "+2" de l'environnement moddé "Haute Justice". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_Despot_Desc>
+
+<Difficulty_GrandDuke_Desc>Difficulté : Grand-Duc, Facteur de difficulté {0}  
+Propose le niveau de difficulté "+3" de l'environnement moddé "Haute Justice". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_GrandDuke_Desc>
+
+<Difficulty_Consul_Desc>Difficulté : Consul, Facteur de difficulté {0}  
+Propose le niveau de difficulté "+1" de l'environnement moddé "Ultra Justice". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_Consul_Desc>
+
+<Difficulty_General_Desc>Difficulté : Général, Facteur de difficulté {0}  
+Propose le niveau de difficulté "+2" de l'environnement moddé "Ultra Justice". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_General_Desc>
+
+<Difficulty_GuardCommander_Desc>Difficulté : Commandant de la Garde, Facteur de difficulté {0}  
+Propose le niveau de difficulté "+3" de l'environnement moddé "Ultra Justice". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_GuardCommander_Desc>
+
+<Difficulty_GalaxyLord_Desc>Difficulté : Seigneur Galactique, Facteur de difficulté {0}  
+Propose le niveau de difficulté "+1" de l'environnement moddé "Justice Extrême". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_GalaxyLord_Desc>
+
+<Difficulty_StarOverlord_Desc>Difficulté : Suprême des Étoiles, Facteur de difficulté {0}  
+Propose le niveau de difficulté "+2" de l'environnement moddé "Justice Extrême". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_StarOverlord_Desc>
+
+<Difficulty_GalaxyEmperor_Desc>Difficulté : Empereur de l'Espace, Facteur de difficulté {0} (Max)  
+Propose le niveau de difficulté "+3" de l'environnement moddé "Justice Extrême". Des unités éli tes de type Boss apparaîtront, avec une amélioration ennemie +2.</Difficulty_GalaxyEmperor_Desc>
+<AllowModBionicsAndDrugs>Autoriser les drogues et implants bioniques des mods (redémarrage requis)</AllowModBionicsAndDrugs>
+<AllowModBionicsAndDrugsDesc>Détermine si les drogues et implants bioniques des mods peuvent être utilisés pour renforcer les unités (redémarrage requis)</AllowModBionicsAndDrugsDesc>
+</LanguageData>

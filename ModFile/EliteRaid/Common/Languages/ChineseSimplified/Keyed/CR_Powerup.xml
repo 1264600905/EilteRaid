@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+    <EliteLevelLabel>精英等级 {0}</EliteLevelLabel>
+<EliteStats_Damage>承伤: </EliteStats_Damage>
+  <EliteStats_MoveSpeed>移速: </EliteStats_MoveSpeed>
+  <EliteStats_Scale>体型: </EliteStats_Scale>
+  <EliteStats_Separator> | </EliteStats_Separator> <!-- 分隔符也可以翻译 -->
+    <TraitEnhancement>词条强化:</TraitEnhancement>
+    <BossEnhancement>Boss强化:</BossEnhancement>
+    <TraitAddBioncis>植入体强化</TraitAddBioncis>
+    <TraitAddDrug>药物强化</TraitAddDrug>
+    <TraitRefineGear>装备强化</TraitRefineGear>
+    <TraitArmorEnhance>护甲强化</TraitArmorEnhance>
+    <TraitTemperatureResist>温度抗性</TraitTemperatureResist>
+    <TraitMeleeEnhance>攻击强化</TraitMeleeEnhance>
+    <TraitRangedSpeedEnhance>攻击强化</TraitRangedSpeedEnhance>
+    <TraitMoveSpeedEnhance>提速强化</TraitMoveSpeedEnhance>
+    <TraitGiantEnhance>巨人化</TraitGiantEnhance>
+    <TraitBodyPartEnhance>身体强化</TraitBodyPartEnhance>
+    <TraitPainEnhance>无痛强化</TraitPainEnhance>
+    <TraitMoveSpeedResist>抵抗减速</TraitMoveSpeedResist>
+    <TraitConsciousnessEnhance>意识强化</TraitConsciousnessEnhance>
+</LanguageData>

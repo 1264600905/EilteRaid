@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <EliteRaidSettingsCategory>エリート襲撃設定</EliteRaidSettingsCategory>
+  <modEnabled>エリート襲撃を有効にする</modEnabled>
+  <modEnabledDesc>このModの機能をオンまたはオフにします</modEnabledDesc>
+  <displayMessageValue>デバッグログを表示</displayMessageValue>
+  <displayMessageValueDesc>ログに詳細なデバッグ情報を表示します</displayMessageValueDesc>
+  <eliteRaidDifficulty>エリートレベル強化度</eliteRaidDifficulty>
+  <eliteRaidDifficultyDesc>1 = ノーマル, 2 = 強化, 3 = 超強化</eliteRaidDifficultyDesc>
+  
+  <allowRaidFriendlyValue>友好勢力襲撃のエリート化を許可</allowRaidFriendlyValue>
+  <allowRaidFriendlyValueDesc>非敵対的な襲撃に対してエリート化を有効にします</allowRaidFriendlyValueDesc>
+  <allowMechanoidsValue>メカノイド襲撃</allowMechanoidsValue>
+  <allowMechanoidsValueDesc>機械ユニットのエリート化を許可します</allowMechanoidsValueDesc>
+  <allowInsectoidsValue>昆虫襲撃</allowInsectoidsValue>
+  <allowInsectoidsValueDesc>昆虫ユニットのエリート化を許可します</allowInsectoidsValueDesc>
+  <allowEntitySwarmValue>集団襲撃</allowEntitySwarmValue>
+  <allowEntitySwarmValueDesc>血肉/機械集団のエリート化を許可します</allowEntitySwarmValueDesc>
+  <allowAnimalsValue>動物襲撃</allowAnimalsValue>
+  <allowAnimalsValueDesc>動物のエリート化を許可します</allowAnimalsValueDesc>
+  
+  <maxAllowLevel>最大エリートレベル</maxAllowLevel>
+  <maxAllowLevelDesc>許可される最高エリートレベル (1-7)</maxAllowLevelDesc>
+  <useCompressionRatio>圧縮倍率で数量を置き換える</useCompressionRatio>
+  <useCompressionRatioDesc>有効にすると、最大数量ではなく圧縮倍率を使用します</useCompressionRatioDesc>
+  <compressionRatio>圧縮倍率</compressionRatio>
+  <compressionRatioDesc>敵人数圧縮倍率 (1.0-10.0) 例: 圧縮倍率3の場合、78人の敵は26人に圧縮されます</compressionRatioDesc>
+  <maxRaidEnemy>最大襲撃敵人数</maxRaidEnemy>
+  <maxRaidEnemyDesc>各襲撃でエリート化の影響を受ける最大敵人数 (20-100)</maxRaidEnemyDesc>
+  <enableSilverDrop>敵から白銀を落とす</enableSilverDrop>
+  <enableSilverDropDesc>エリート敵が倒されたときに白銀を落とします</enableSilverDropDesc>
+  <silverDropPerLevel>レベルごとの落とし金</silverDropPerLevel>
+  <silverDropPerLevelDesc>各エリートレベルごとに追加で落とす白銀の量 (20-100)</silverDropPerLevelDesc>
+  <mapGeneratedEnemyEnhanced>マップ生成敵の強化</mapGeneratedEnemyEnhanced>
+  <mapGeneratedEnemyEnhancedDesc>マップ生成時に存在する敵に対してエリート化を有効にします</mapGeneratedEnemyEnhancedDesc>
+  
+  <ResetToDefault>デフォルト設定に戻す</ResetToDefault>
+  
+  <BasicSettings>基本設定</BasicSettings>
+  <AllowedPawnTypes>エリート化を許可するユニットタイプ</AllowedPawnTypes>
+  <ValueLimits>数値制限</ValueLimits>
+  
+  <Difficulty_Normal>ノーマル</Difficulty_Normal>
+  <Difficulty_Hard>ハード</Difficulty_Hard>
+  <Difficulty_Extreme>エクストリーム</Difficulty_Extreme>
+  
+  <MaxRaidPoint>最大襲撃ポイント</MaxRaidPoint>
+  <MaxRaidPointDesc>最大襲撃ポイントを調整します。元の襲撃ポイント上限は1万ですが、ここでは襲撃ポイントの上限を調整します。1万ポイントの襲撃を楽勝できる場合は、この値を上げることを検討してください。</MaxRaidPointDesc>
+  <ShowDetailConfig>詳細設定を表示</ShowDetailConfig>
+  <ShowDetailConfigDesc>チェックしなくても、詳細設定の内容は有効になります！</ShowDetailConfigDesc>
+  <DragToSelectDifficulty>ドロップダウンで全体の難易度を選択</DragToSelectDifficulty>
+  <TotalDifficulty>全体難易度設定</TotalDifficulty>
+<allowDropPodRaidValue>エリートドロップポッド襲撃を許可(テスト)</allowDropPodRaidValue>
+<allowDropPodRaidValueDesc>注意: この機能はドロップポッドのフリーズを引き起こす可能性があります。現在はテストバージョンです。ドロップポッド経由で到着する襲撃者にエリート強化を許可しますか？(敵人数の圧縮には影響しません)</allowDropPodRaidValueDesc>
+  <!-- 襲撃倍率関連翻訳 -->
+  <RaidScale>襲撃規模</RaidScale>
+  <RaidScaleDesc>襲撃難易度の全体的な倍率を調整します。値が高いほど、襲撃の難易度が高くなります。</RaidScaleDesc>
+  
+  <!-- 難易度名前（色タグを含まない） -->
+  <Difficulty_Novice>修道士</Difficulty_Novice>
+  <Difficulty_Retainer>家臣</Difficulty_Retainer>
+  <Difficulty_Knight>騎士</Difficulty_Knight>
+  <Difficulty_Justiciar>法務官</Difficulty_Justiciar>
+  <Difficulty_Lord>領主</Difficulty_Lord>
+  <Difficulty_Viceroy>総督</Difficulty_Viceroy>
+  <Difficulty_Governor>知事</Difficulty_Governor>
+  <Difficulty_Duke>公爵</Difficulty_Duke>
+  <Difficulty_Despot>独裁官</Difficulty_Despot>
+  <Difficulty_GrandDuke>大公</Difficulty_GrandDuke>
+  <Difficulty_Consul>執政官</Difficulty_Consul>
+  <Difficulty_General>将軍</Difficulty_General>
+  <Difficulty_GuardCommander>近衛隊長</Difficulty_GuardCommander>
+  <Difficulty_GalaxyLord>銀河支配者</Difficulty_GalaxyLord>
+  <Difficulty_StarOverlord>星の覇王</Difficulty_StarOverlord>
+  <Difficulty_GalaxyEmperor>銀河皇帝</Difficulty_GalaxyEmperor>
+  
+  <!-- 難易度係数 -->
+  <DifficultyFactor_0_4>難易度係数0.4</DifficultyFactor_0_4>
+  <DifficultyFactor_0_7>難易度係数0.7</DifficultyFactor_0_7>
+  <DifficultyFactor_1>難易度係数1</DifficultyFactor_1>
+  <DifficultyFactor_1_3>難易度係数1.3</DifficultyFactor_1_3>
+  <DifficultyFactor_1_6>難易度係数1.6</DifficultyFactor_1_6>
+  <DifficultyFactor_2>難易度係数2</DifficultyFactor_2>
+  <DifficultyFactor_2_4>難易度係数2.4</DifficultyFactor_2_4>
+  <DifficultyFactor_3_9>難易度係数3.9</DifficultyFactor_3_9>
+  <DifficultyFactor_6_4>難易度係数6.4</DifficultyFactor_6_4>
+  <DifficultyFactor_10>難易度係数10</DifficultyFactor_10>
+  <DifficultyFactor_16>難易度係数16</DifficultyFactor_16>
+  <DifficultyFactor_32>難易度係数32</DifficultyFactor_32>
+  <DifficultyFactor_54>難易度係数54</DifficultyFactor_54>
+  <DifficultyFactor_72>難易度係数72</DifficultyFactor_72>
+  <DifficultyFactor_100>難易度係数100</DifficultyFactor_100>
+  <DifficultyFactor_200>難易度係数200</DifficultyFactor_200>
+  <!-- 難易度説明（カラータグなし） -->
+<Difficulty_Novice_Desc>難易度：修道士，難易度係数{0}  
+オリジナルの「孤星探検=」の難易度レベルを提供します。3レベル以下のエリート敵のみが出現します。</Difficulty_Novice_Desc>
+
+<Difficulty_Retainer_Desc>難易度：扈従，難易度係数{0}  
+オリジナルの「荒野求生+」の難易度レベルを提供します。4レベル以下のエリート敵のみが出現します。</Difficulty_Retainer_Desc>
+
+<Difficulty_Knight_Desc>難易度：騎士，難易度係数{0}（デフォルト）  
+オリジナルの「残酷難易度+」の難易度レベルを提供します。6レベル以下のエリート敵のみが出現します。</Difficulty_Knight_Desc>
+
+<Difficulty_Justiciar_Desc>難易度：法務官，難易度係数{0}  
+冷酷500%の難易度レベルを提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_Justiciar_Desc>
+
+<Difficulty_Lord_Desc>難易度：領主，難易度係数{0}  
+中級正義のモジュール環境難易度+1を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_Lord_Desc>
+
+<Difficulty_Viceroy_Desc>難易度：総督，難易度係数{0}  
+中級正義のモジュール環境難易度+2を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_Viceroy_Desc>
+
+<Difficulty_Governor_Desc>難易度：執政総督，難易度係数{0}  
+中級正義のモジュール環境難易度+3を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_Governor_Desc>
+
+<Difficulty_Duke_Desc>難易度：都督，難易度係数{0}  
+高級正義のモジュール環境難易度+1を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_Duke_Desc>
+
+<Difficulty_Despot_Desc>難易度：専制公，難易度係数{0}  
+高級正義のモジュール環境難易度+2を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_Despot_Desc>
+
+<Difficulty_GrandDuke_Desc>難易度：大公，難易度係数{0}  
+高級正義のモジュール環境難易度+3を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_GrandDuke_Desc>
+
+<Difficulty_Consul_Desc>難易度：執政官，難易度係数{0}  
+超高級正義のモジュール環境難易度+1を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_Consul_Desc>
+
+<Difficulty_General_Desc>難易度：将軍，難易度係数{0}  
+超高級正義のモジュール環境難易度+2を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_General_Desc>
+
+<Difficulty_GuardCommander_Desc>難易度：近衛総長，難易度係数{0}  
+超高級正義のモジュール環境難易度+3を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_GuardCommander_Desc>
+
+<Difficulty_GalaxyLord_Desc>難易度：星系主宰，難易度係数{0}  
+極端正義のモジュール環境難易度+1を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_GalaxyLord_Desc>
+
+<Difficulty_StarOverlord_Desc>難易度：至高星主，難易度係数{0}  
+極端正義のモジュール環境難易度+2を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_StarOverlord_Desc>
+
+<Difficulty_GalaxyEmperor_Desc>難易度：星海皇帝，難易度係数{0}（最高）  
+極端正義のモジュール環境難易度+3を提供します。ボス級エリートユニットが出現し、敵強化+2です。</Difficulty_GalaxyEmperor_Desc>
+<AllowModBionicsAndDrugs>モジュールの薬物とバイオニックインプラントを許可する（ゲームの再起動が必要）</AllowModBionicsAndDrugs>
+<AllowModBionicsAndDrugsDesc>モジュール内の薬物とバイオニックインプラントを抽出してユニットを強化するかどうか（ゲームの再起動が必要）</AllowModBionicsAndDrugsDesc>
+</LanguageData>

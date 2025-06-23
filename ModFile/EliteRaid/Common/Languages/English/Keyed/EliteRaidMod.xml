@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <EliteRaidSettingsCategory>Elite Raid Settings</EliteRaidSettingsCategory>
+  <modEnabled>Enable Elite Raids</modEnabled>
+  <modEnabledDesc>Turn this mod's functionality on or off</modEnabledDesc>
+  <displayMessageValue>Display Debug Logs</displayMessageValue>
+  <displayMessageValueDesc>Show detailed debug information in logs</displayMessageValueDesc>
+  <eliteRaidDifficulty>Elite Level Enhancement</eliteRaidDifficulty>
+  <eliteRaidDifficultyDesc>1 = Normal, 2 = Enhanced, 3 = Extreme</eliteRaidDifficultyDesc>
+  
+  <allowRaidFriendlyValue>Allow Friendly Raid Elites</allowRaidFriendlyValue>
+  <allowRaidFriendlyValueDesc>Enable elite status for non-hostile raids</allowRaidFriendlyValueDesc>
+  <allowMechanoidsValue>Mechanoid Raids</allowMechanoidsValue>
+  <allowMechanoidsValueDesc>Allow mechanoid units to become elites</allowMechanoidsValueDesc>
+  <allowInsectoidsValue>Insectoid Raids</allowInsectoidsValue>
+  <allowInsectoidsValueDesc>Allow insectoid units to become elites</allowInsectoidsValueDesc>
+  <allowEntitySwarmValue>Entity Swarm Raids</allowEntitySwarmValue>
+  <allowEntitySwarmValueDesc>Allow flesh/mechanical swarms to become elites</allowEntitySwarmValueDesc>
+  <allowAnimalsValue>Animal Raids</allowAnimalsValue>
+  <allowAnimalsValueDesc>Allow animals to become elites</allowAnimalsValueDesc>
+  
+  <maxAllowLevel>Maximum Elite Level</maxAllowLevel>
+  <maxAllowLevelDesc>Highest allowed elite level (1-7)</maxAllowLevelDesc>
+  <useCompressionRatio>Use Compression Ratio</useCompressionRatio>
+  <useCompressionRatioDesc>When enabled, use compression ratio instead of max count</useCompressionRatioDesc>
+  <compressionRatio>Compression Ratio</compressionRatio>
+  <compressionRatioDesc>Enemy count compression ratio (1.0-10.0). Example: ratio 3 compresses 78 enemies to 26</compressionRatioDesc>
+  <maxRaidEnemy>Maximum Raid Enemies</maxRaidEnemy>
+  <maxRaidEnemyDesc>Maximum number of enemies affected by elitism per raid (20-100)</maxRaidEnemyDesc>
+  <enableSilverDrop>Enemies Drop Silver</enableSilverDrop>
+  <enableSilverDropDesc>Elite enemies drop silver when killed</enableSilverDropDesc>
+  <silverDropPerLevel>Silver Drop Per Level</silverDropPerLevel>
+  <silverDropPerLevelDesc>Additional silver dropped per elite level (20-100)</silverDropPerLevelDesc>
+  <mapGeneratedEnemyEnhanced>Map-Generated Enemy Enhancement</mapGeneratedEnemyEnhanced>
+  <mapGeneratedEnemyEnhancedDesc>Enable elitism for enemies already on the map</mapGeneratedEnemyEnhancedDesc>
+  
+  <ResetToDefault>Reset to Default Settings</ResetToDefault>
+  
+  <BasicSettings>Basic Settings</BasicSettings>
+  <AllowedPawnTypes>Allowed Unit Types for Elitism</AllowedPawnTypes>
+  <ValueLimits>Value Limits</ValueLimits>
+  
+  <Difficulty_Normal>Normal</Difficulty_Normal>
+  <Difficulty_Hard>Hard</Difficulty_Hard>
+  <Difficulty_Extreme>Extreme</Difficulty_Extreme>
+  
+  <MaxRaidPoint>Maximum Raid Points</MaxRaidPoint>
+  <MaxRaidPointDesc>Adjust the maximum raid points. Note the original limit is 10,000. Increase this if you can easily handle 10k point raids.</MaxRaidPointDesc>
+  <ShowDetailConfig>Show Detailed Settings</ShowDetailConfig>
+  <ShowDetailConfigDesc>Detailed settings will take effect even if not checked!</ShowDetailConfigDesc>
+  <DragToSelectDifficulty>Drag to Select Overall Difficulty</DragToSelectDifficulty>
+  <TotalDifficulty>Total Difficulty Settings</TotalDifficulty>
+  <allowDropPodRaidValue>Allow Elite DropPod Raids (Testing)</allowDropPodRaidValue>
+<allowDropPodRaidValueDesc>Note: This feature may cause drop pod freezes. Currently in test version. Allow elite enhancement for raiders arriving via drop pods (does not affect enemy count compression)</allowDropPodRaidValueDesc>
+  <!-- Raid Scale translations -->
+  <RaidScale>Raid Scale</RaidScale>
+  <RaidScaleDesc>Adjust the overall scaling factor for raid difficulty. Higher values increase difficulty.</RaidScaleDesc>
+  
+  <!-- Difficulty names (without color tags) -->
+  <Difficulty_Novice>Novice</Difficulty_Novice>
+  <Difficulty_Retainer>Retainer</Difficulty_Retainer>
+  <Difficulty_Knight>Knight</Difficulty_Knight>
+  <Difficulty_Justiciar>Justiciar</Difficulty_Justiciar>
+  <Difficulty_Lord>Lord</Difficulty_Lord>
+  <Difficulty_Viceroy>Viceroy</Difficulty_Viceroy>
+  <Difficulty_Governor>Governor</Difficulty_Governor>
+  <Difficulty_Duke>Duke</Difficulty_Duke>
+  <Difficulty_Despot>Despot</Difficulty_Despot>
+  <Difficulty_GrandDuke>Grand Duke</Difficulty_GrandDuke>
+  <Difficulty_Consul>Consul</Difficulty_Consul>
+  <Difficulty_General>General</Difficulty_General>
+  <Difficulty_GuardCommander>Guard Commander</Difficulty_GuardCommander>
+  <Difficulty_GalaxyLord>Galaxy Lord</Difficulty_GalaxyLord>
+  <Difficulty_StarOverlord>Star Overlord</Difficulty_StarOverlord>
+  <Difficulty_GalaxyEmperor>Galaxy Emperor</Difficulty_GalaxyEmperor>
+  
+  <!-- Difficulty factors -->
+  <DifficultyFactor_0_4>Difficulty Factor 0.4</DifficultyFactor_0_4>
+  <DifficultyFactor_0_7>Difficulty Factor 0.7</DifficultyFactor_0_7>
+  <DifficultyFactor_1>Difficulty Factor 1</DifficultyFactor_1>
+  <DifficultyFactor_1_3>Difficulty Factor 1.3</DifficultyFactor_1_3>
+  <DifficultyFactor_1_6>Difficulty Factor 1.6</DifficultyFactor_1_6>
+  <DifficultyFactor_2>Difficulty Factor 2</DifficultyFactor_2>
+  <DifficultyFactor_2_4>Difficulty Factor 2.4</DifficultyFactor_2_4>
+  <DifficultyFactor_3_9>Difficulty Factor 3.9</DifficultyFactor_3_9>
+  <DifficultyFactor_6_4>Difficulty Factor 6.4</DifficultyFactor_6_4>
+  <DifficultyFactor_10>Difficulty Factor 10</DifficultyFactor_10>
+  <DifficultyFactor_16>Difficulty Factor 16</DifficultyFactor_16>
+  <DifficultyFactor_32>Difficulty Factor 32</DifficultyFactor_32>
+  <DifficultyFactor_54>Difficulty Factor 54</DifficultyFactor_54>
+  <DifficultyFactor_72>Difficulty Factor 72</DifficultyFactor_72>
+  <DifficultyFactor_100>Difficulty Factor 100</DifficultyFactor_100>
+  <DifficultyFactor_200>Difficulty Factor 200</DifficultyFactor_200>
+  
+  <!-- Difficulty Descriptions (No Color Tags) -->
+<Difficulty_Novice_Desc>Difficulty: Novice, Difficulty Factor {0}  
+Provides the difficulty level of the original "Lone Star Adventure", with enemies up to Elite Level 3.</Difficulty_Novice_Desc>
+
+<Difficulty_Retainer_Desc>Difficulty: Retainer, Difficulty Factor {0}  
+Provides the difficulty level of the original "Survival Mode+", with enemies up to Elite Level 4.</Difficulty_Retainer_Desc>
+
+<Difficulty_Knight_Desc>Difficulty: Knight, Difficulty Factor {0} (Default)  
+Provides the difficulty level of the original "Brutal+", with enemies up to Elite Level 6.</Difficulty_Knight_Desc>
+
+<Difficulty_Justiciar_Desc>Difficulty: Justiciar, Difficulty Factor {0}  
+Provides 500% of the vanilla "Merciless" difficulty. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_Justiciar_Desc>
+
+<Difficulty_Lord_Desc>Difficulty: Lord, Difficulty Factor {0}  
+Provides Moderate Justice mod environment difficulty +1. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_Lord_Desc>
+
+<Difficulty_Viceroy_Desc>Difficulty: Viceroy, Difficulty Factor {0}  
+Provides Moderate Justice mod environment difficulty +2. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_Viceroy_Desc>
+
+<Difficulty_Governor_Desc>Difficulty: Governor, Difficulty Factor {0}  
+Provides Moderate Justice mod environment difficulty +3. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_Governor_Desc>
+
+<Difficulty_Duke_Desc>Difficulty: Duke, Difficulty Factor {0}  
+Provides High Justice mod environment difficulty +1. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_Duke_Desc>
+
+<Difficulty_Despot_Desc>Difficulty: Despot, Difficulty Factor {0}  
+Provides High Justice mod environment difficulty +2. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_Despot_Desc>
+
+<Difficulty_GrandDuke_Desc>Difficulty: Grand Duke, Difficulty Factor {0}  
+Provides High Justice mod environment difficulty +3. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_GrandDuke_Desc>
+
+<Difficulty_Consul_Desc>Difficulty: Consul, Difficulty Factor {0}  
+Provides Ultra-High Justice mod environment difficulty +1. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_Consul_Desc>
+
+<Difficulty_General_Desc>Difficulty: General, Difficulty Factor {0}  
+Provides Ultra-High Justice mod environment difficulty +2. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_General_Desc>
+
+<Difficulty_GuardCommander_Desc>Difficulty: Guard Commander, Difficulty Factor {0}  
+Provides Ultra-High Justice mod environment difficulty +3. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_GuardCommander_Desc>
+
+<Difficulty_GalaxyLord_Desc>Difficulty: Galaxy Lord, Difficulty Factor {0}  
+Provides Extreme Justice mod environment difficulty +1. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_GalaxyLord_Desc>
+
+<Difficulty_StarOverlord_Desc>Difficulty: Star Overlord, Difficulty Factor {0}  
+Provides Extreme Justice mod environment difficulty +2. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_StarOverlord_Desc>
+
+<Difficulty_GalaxyEmperor_Desc>Difficulty: Galaxy Emperor, Difficulty Factor {0} (Maximum)  
+Provides Extreme Justice mod environment difficulty +3. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_GalaxyEmperor_Desc>
+<AllowModBionicsAndDrugs>Allow mod drugs and bionic implants (requires game restart to take effect)</AllowModBionicsAndDrugs>
+<AllowModBionicsAndDrugsDesc>Whether to allow drawing drugs and bionic implants from mods to strengthen units (requires game restart to take effect)</AllowModBionicsAndDrugsDesc>
+</LanguageData>

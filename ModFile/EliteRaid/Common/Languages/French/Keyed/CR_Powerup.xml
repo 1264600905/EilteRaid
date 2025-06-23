@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+    <EliteLevelLabel>Niveau d'élite {0}</EliteLevelLabel>
+    <EliteStats_Damage>Dégâts subis: </EliteStats_Damage>
+    <EliteStats_MoveSpeed>Vitesse de déplacement: </EliteStats_MoveSpeed>
+    <EliteStats_Scale>Taille: </EliteStats_Scale>
+    <EliteStats_Separator> | </EliteStats_Separator> <!-- 分隔符也可以翻译 -->
+    <TraitEnhancement>Amélioration des traits: </TraitEnhancement>
+    <BossEnhancement>Amélioration des Boss: </BossEnhancement>
+    <TraitAddBioncis>Amélioration des implants</TraitAddBioncis>
+    <TraitAddDrug>Amélioration par drogues</TraitAddDrug>
+    <TraitRefineGear>Amélioration de l'équipement</TraitRefineGear>
+    <TraitArmorEnhance>Amélioration de l'armure</TraitArmorEnhance>
+    <TraitTemperatureResist>Résistance à la température</TraitTemperatureResist>
+    <TraitMeleeEnhance>Amélioration des attaques au corps à corps</TraitMeleeEnhance>
+    <TraitRangedSpeedEnhance>Amélioration des attaques à distance</TraitRangedSpeedEnhance>
+    <TraitMoveSpeedEnhance>Amélioration de la vitesse de déplacement</TraitMoveSpeedEnhance>
+    <TraitGiantEnhance>Gigantisme</TraitGiantEnhance>
+    <TraitBodyPartEnhance>Amélioration des parties du corps</TraitBodyPartEnhance>
+    <TraitPainEnhance>Amélioration de l'analgésie</TraitPainEnhance>
+    <TraitMoveSpeedResist>Résistance au ralentissement</TraitMoveSpeedResist>
+    <TraitConsciousnessEnhance>Amélioration de la conscience</TraitConsciousnessEnhance>
+</LanguageData>

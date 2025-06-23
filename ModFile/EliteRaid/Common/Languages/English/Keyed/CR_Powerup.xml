@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+    <EliteLevelLabel>Elite Level {0}</EliteLevelLabel>
+    <EliteStats_Damage>Damage: </EliteStats_Damage>
+    <EliteStats_MoveSpeed>Move Speed: </EliteStats_MoveSpeed>
+    <EliteStats_Scale>Size: </EliteStats_Scale>
+    <EliteStats_Separator> | </EliteStats_Separator>
+    <TraitEnhancement>Trait Enhancement:</TraitEnhancement>
+    <BossEnhancement>Boss Enhancement:</BossEnhancement>
+    <TraitAddBioncis>Bionic Implant</TraitAddBioncis>
+    <TraitAddDrug>Drug Enhancement</TraitAddDrug>
+    <TraitRefineGear>Equipment Refinement</TraitRefineGear>
+    <TraitArmorEnhance>Armor Enhancement</TraitArmorEnhance>
+    <TraitTemperatureResist>Temperature Resistance</TraitTemperatureResist>
+    <TraitMeleeEnhance>Melee Attack Enhancement</TraitMeleeEnhance>
+    <TraitRangedSpeedEnhance>Ranged Attack Enhancement</TraitRangedSpeedEnhance>
+    <TraitMoveSpeedEnhance>Movement Speed Enhancement</TraitMoveSpeedEnhance>
+    <TraitGiantEnhance>Giant Form</TraitGiantEnhance>
+    <TraitBodyPartEnhance>Body Part Enhancement</TraitBodyPartEnhance>
+    <TraitPainEnhance>Pain Resistance</TraitPainEnhance>
+    <TraitMoveSpeedResist>Slow Resistance</TraitMoveSpeedResist>
+    <TraitConsciousnessEnhance>Consciousness Enhancement</TraitConsciousnessEnhance>
+</LanguageData>
