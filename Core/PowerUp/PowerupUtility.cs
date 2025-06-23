@@ -163,16 +163,20 @@ namespace EliteRaid
                     };
                 }
             }
-            bool cantCompress = hediff.pawn.Faction.Equals(Faction.OfHoraxCult);
-            if (eliteLevel.IsBoss && !cantCompress)
+            if (hediff.pawn.RaceProps.Humanlike)
             {
-              
-                yield return new StatModifier
+                bool cantCompress = hediff.pawn.Faction.Equals(Faction.OfHoraxCult);
+                if (eliteLevel.IsBoss && !cantCompress)
                 {
-                    stat = StatDefOf.PsychicSensitivity,
-                    value = 0f // 心灵敏感度乘0%，完全免疫心灵效果
-                };
-            } 
+
+                    yield return new StatModifier
+                    {
+                        stat = StatDefOf.PsychicSensitivity,
+                        value = 0f // 心灵敏感度乘0%，完全免疫心灵效果
+                    };
+                }
+            }
+         
 
         }
 
@@ -294,6 +298,7 @@ namespace EliteRaid
                 hediff.CurStage.statOffsets.Add(sm);
             }
 
+            
             // 填充乘算属性（type=Multiply）
             foreach (var sm in GetMultiplicativeStatModifiers(eliteLevel, hediff))
             {

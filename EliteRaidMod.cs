@@ -191,7 +191,7 @@ namespace EliteRaid
 
         public override string SettingsCategory()
         {
-            return "EliteRaidSettingsCategory".Translate()+"(v1.2.8)";
+            return "EliteRaidSettingsCategory".Translate()+"(v1.3.0)";
         }
         public int timer = 0;
         public void Tick()
@@ -282,17 +282,17 @@ namespace EliteRaid
             DrawCheckbox(ref y, viewRect.width, "allowRaidFriendlyValue", "allowRaidFriendlyValue".Translate(),
                 ref settings.allowRaidFriendlyValue, "allowRaidFriendlyValueDesc".Translate());
 
-            // 新增：允许精英化空投袭击
-            DrawCheckbox(ref y, viewRect.width, "allowDropPodRaidValue", "allowDropPodRaidValue".Translate(),
-                ref settings.allowDropPodRaidValue, "allowDropPodRaidValueDesc".Translate());
+            //// 新增：允许精英化空投袭击
+            //DrawCheckbox(ref y, viewRect.width, "allowDropPodRaidValue", "allowDropPodRaidValue".Translate(),
+            //    ref settings.allowDropPodRaidValue, "allowDropPodRaidValueDesc".Translate());
 
             // 机械体
             DrawCheckbox(ref y, viewRect.width, "allowMechanoidsValue", "allowMechanoidsValue".Translate(),
                 ref settings.allowMechanoidsValue, "allowMechanoidsValueDesc".Translate());
 
-            // 昆虫
-            DrawCheckbox(ref y, viewRect.width, "allowInsectoidsValue", "allowInsectoidsValue".Translate(),
-                ref settings.allowInsectoidsValue, "allowInsectoidsValueDesc".Translate());
+            //// 昆虫
+            //DrawCheckbox(ref y, viewRect.width, "allowInsectoidsValue", "allowInsectoidsValue".Translate(),
+            //    ref settings.allowInsectoidsValue, "allowInsectoidsValueDesc".Translate());
 
             // 群体实体
             DrawCheckbox(ref y, viewRect.width, "allowEntitySwarmValue", "allowEntitySwarmValue".Translate(),

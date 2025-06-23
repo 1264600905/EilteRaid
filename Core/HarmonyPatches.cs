@@ -71,7 +71,7 @@ namespace EliteRaid
             HashSet<TargetMethod> targetMethods = new HashSet<TargetMethod>();
             TranspilerTest(harmony, targetMethods);
 
-            HiveSpawnLoggerPatch.ApplyPatches(harmony);
+            //HiveSpawnLoggerPatch.ApplyPatches(harmony);
 
             try
             {

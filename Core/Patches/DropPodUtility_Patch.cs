@@ -24,6 +24,7 @@ namespace EliteRaid
         // 存储待处理的Pawn组（合集）
         public static ConcurrentDictionary<Guid, GroupData> pendingHostileGroups =
         new ConcurrentDictionary<Guid, GroupData>();
+
         public static Guid groupId;
         private static string currentRaidTag = null;
 
@@ -205,6 +206,8 @@ namespace EliteRaid
             // 处理空投舱内容的方法
             public static void ProcessContents(ActiveDropPod __instance)
             {
+                return;
+
                 if (__instance == null) {
                 
                 }
@@ -244,6 +247,11 @@ namespace EliteRaid
 
                         if (thing is Pawn pawn)
                         {
+                            // 新增：跳过玩家派系和机械族
+                            if (pawn.Faction == Faction.OfPlayer || pawn.Faction?.def == FactionDefOf.Mechanoid)
+                            {
+                                continue;
+                            }
                             // 新增：检查Pawn是否已经被处理过
                             if (!processedPawnIds.Contains(pawn.thingIDNumber))
                             {
@@ -384,7 +392,7 @@ namespace EliteRaid
                         //   Log.Message($"[EliteRaid] 机械族单位 {pawn.Name}，跳过强化");
                         return;
                     }
-
+                   // Log.Message("pendingHostileGroups"+ pendingHostileGroups.Count+"to string"+ pendingHostileGroups.ToString());
                     Guid matchingGroupId = FindMatchingGroupId(pawn);
                     if (matchingGroupId == Guid.Empty)
                     {
@@ -398,7 +406,10 @@ namespace EliteRaid
                         int baseNum = group.Count;
                         int maxNum = Mathf.Max(1, (int)(baseNum * compressionRatio));
                         //     Log.Message($"[EliteRaid] 处理Pawn：{pawn.Name}，组ID={matchingGroupId}，组内数量={baseNum}，最大增强数={maxNum}");
-
+                        if (group.Count < EliteRaidMod.maxRaidEnemy)
+                        {
+                            return;
+                        }
                         // 新增：如果还没有生成等级分布，生成它
                         if (!groupData.IsLevelGenerated)
                         {
