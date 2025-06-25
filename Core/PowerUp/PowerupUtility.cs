@@ -102,6 +102,20 @@ namespace EliteRaid
             //    };
             //}
 
+            // 通用体型修改（使用BodySizePatch）
+            if (eliteLevel.ScaleFactor > 1.0f)
+            {
+                // 计算体型偏移量：ScaleFactor - 1.0f 得到偏移量
+                float sizeOffset = eliteLevel.ScaleFactor - 1.0f;
+                // 应用体型修改
+                BodySizePatch.SetBodySizeOffset(hediff.pawn, sizeOffset);
+                
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message($"[EliteRaid] 应用体型修改: {hediff.pawn.LabelCap} 体型系数={eliteLevel.ScaleFactor:F2}, 偏移量={sizeOffset:F2}");
+                }
+            }
+
             // 移速强化（乘算）
             if (eliteLevel.moveSpeedEnhance)
             {

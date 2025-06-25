@@ -27,6 +27,9 @@ namespace EliteRaid
             // harmony.PatchAll(Assembly.GetExecutingAssembly());
             BionicsDataStore.DataRestore();
             DrugHediffDataStore.DataRestore();
+            
+            // 初始化体型修改功能
+            Log.Message("[EliteRaid] 体型修改功能已初始化");
         }
 
         struct TargetMethod

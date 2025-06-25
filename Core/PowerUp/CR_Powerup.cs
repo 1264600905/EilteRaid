@@ -36,6 +36,10 @@ namespace EliteRaid
         {
             if (EliteRaidMod.displayMessageValue)
                 Log.Message($"[CompressedRaid] Removing powerup from pawn {pawn.LabelCap} (ID: {pawn.thingIDNumber})");
+            
+            // 清除体型修改
+            BodySizePatch.SetBodySizeOffset(pawn, 0f);
+            
             this.pawn.health.RemoveHediff(this);
             // 新增：生成白银
             if (EliteRaidMod.enableSilverDrop)
@@ -81,6 +85,12 @@ namespace EliteRaid
             }
 
             int tick = Find.TickManager.TicksGame;
+
+            // 定期清理无效的体型修改引用（每100秒执行一次）
+            if (tick % 6000 == 0)
+            {
+                BodySizePatch.CleanupInvalidPawns();
+            }
 
             // 恢复原版的 RestoreData() 触发逻辑
             if (Math.Abs(tick - m_GameTick) >= 10)
@@ -414,13 +424,18 @@ namespace EliteRaid
         {
             try
             {
-                ////修改体型?
-                //if(data != null && data.ScaleFactor > 1)
-                // {
-                //     BodySizePatch.SetBodySizeOffset(pawn, (data.ScaleFactor*0.5f));
-
-                // }
-
+                // 修改体型
+                if (data != null && data.ScaleFactor > 1.0f)
+                {
+                    // 计算体型偏移量：ScaleFactor - 1.0f 得到偏移量
+                    float sizeOffset = data.ScaleFactor - 1.0f;
+                    BodySizePatch.SetBodySizeOffset(pawn, sizeOffset);
+                    
+                    if (EliteRaidMod.displayMessageValue)
+                    {
+                        Log.Message($"[EliteRaid] 恢复体型修改: {pawn.LabelCap} 体型系数={data.ScaleFactor:F2}, 偏移量={sizeOffset:F2}");
+                    }
+                }
 
                 // 可添加其他根据精英等级数据应用的效果
             } catch (Exception e)
