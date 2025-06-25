@@ -198,13 +198,9 @@ namespace EliteRaid
 
                 // 3. 计算压缩后的数量
                 int baseNum = normalOptions.Count;
-                int maxPawnNum = EliteRaidMod.maxRaidEnemy;
-
-                if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
-                {
-                    int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
-                    maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
-                }
+                int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
+                maxPawnNum = Math.Max(1, maxPawnNum);
+                maxPawnNum = Math.Min(maxPawnNum, baseNum);
 
                 if (maxPawnNum >= baseNum)
                 {
@@ -283,16 +279,9 @@ namespace EliteRaid
             {
                 return StateFalse(baseNum);
             }
-            int maxPawnNum = EliteRaidMod.maxRaidEnemy;
-            // 新增压缩率计算（确保 baseNum >= compressionRatio 时才压缩）
-            if (EliteRaidMod.useCompressionRatio && baseNum >= StaticVariables.DEFAULT_MAX_ENEMY)
-            {
-                int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
-                maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
-            } else
-            {
-                maxPawnNum = EliteRaidMod.maxRaidEnemy; // 保持原有逻辑或调整为 baseNum
-            }
+            int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
+            maxPawnNum = Math.Max(1, maxPawnNum);
+            maxPawnNum = Math.Min(maxPawnNum, baseNum);
             if (maxPawnNum >= baseNum)
             {
                 return StateFalse(baseNum);
@@ -365,16 +354,9 @@ namespace EliteRaid
                 return StateFalse(baseNum);
             }
 
-            int maxPawnNum = EliteRaidMod.maxRaidEnemy;
-            // 新增压缩率计算（确保 baseNum >= compressionRatio 时才压缩）
-            if (EliteRaidMod.useCompressionRatio && baseNum >= StaticVariables.DEFAULT_MAX_ENEMY)
-            {
-                int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
-                maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
-            } else
-            {
-                maxPawnNum = EliteRaidMod.maxRaidEnemy; // 保持原有逻辑或调整为 baseNum
-            }
+            int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
+            maxPawnNum = Math.Max(1, maxPawnNum);
+            maxPawnNum = Math.Min(maxPawnNum, baseNum);
             if (maxPawnNum >= baseNum)
             {
                 return StateFalse(baseNum);

@@ -1,5 +1,4 @@
-﻿
-using EliteRaid;
+﻿using EliteRaid;
 using HarmonyLib;
 using RimWorld;
 using System;
@@ -381,26 +380,16 @@ namespace EliteRaid
                     ref maxLevelFloat, "maxAllowLevelDesc".Translate(), 0, 7);
                 settings.maxAllowLevel = (int)maxLevelFloat;
 
-              //  压缩倍率切换开关
-                DrawCheckbox(ref y, viewRect.width, "useCompressionRatio", "useCompressionRatio".Translate(),
-                    ref settings.useCompressionRatio, "useCompressionRatioDesc".Translate());
+                // 取消压缩倍率切换开关，始终显示两个滑块
+                float ratioFloat = settings.compressionRatio;
+                DrawSlider(ref y, viewRect.width, "compressionRatio", "compressionRatio".Translate(),
+                    ref ratioFloat, "compressionRatioDesc".Translate(), 1.0f, 10.0f);
+                settings.compressionRatio = (float)Math.Round(ratioFloat, 1);
 
-                // 根据勾选状态显示不同控件
-                if (settings.useCompressionRatio)
-                {
-                    settings.maxRaidEnemy = 20;
-                    EliteRaidMod.maxRaidEnemy = 20;
-                    float ratioFloat = settings.compressionRatio;
-                    DrawSlider(ref y, viewRect.width, "compressionRatio", "compressionRatio".Translate(),
-                        ref ratioFloat, "compressionRatioDesc".Translate(), 1.0f, 10.0f);
-                    settings.compressionRatio = (float)Math.Round(ratioFloat, 1);
-                } else
-                {
-                    float maxEnemyFloat = settings.maxRaidEnemy;
-                    DrawSlider(ref y, viewRect.width, "maxRaidEnemy", "maxRaidEnemy".Translate(),
-                        ref maxEnemyFloat, "maxRaidEnemyDesc".Translate(), 1, 200);
-                    settings.maxRaidEnemy = (int)maxEnemyFloat;
-                }
+                float maxEnemyFloat = settings.maxRaidEnemy;
+                DrawSlider(ref y, viewRect.width, "maxRaidEnemy", "maxRaidEnemy".Translate(),
+                    ref maxEnemyFloat, "maxRaidEnemyDesc".Translate(), 1, 200);
+                settings.maxRaidEnemy = (int)maxEnemyFloat;
 
                 // 最大袭击点数
                 float maxPointsFloat = settings.maxRaidPoint;
@@ -408,7 +397,6 @@ namespace EliteRaid
                     ref maxPointsFloat, "MaxRaidPointDesc".Translate(), 5000, 200000);
                 settings.maxRaidPoint = (int)maxPointsFloat;
 
-                // 袭击缩放倍率
                 // 袭击缩放倍率
                 float scaleFloat = settings.raidScale;
                 DrawSlider(ref y, viewRect.width, "raidScale", "RaidScale".Translate(),

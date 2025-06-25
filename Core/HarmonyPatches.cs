@@ -637,13 +637,9 @@ namespace EliteRaid
 
             List<Pawn> list = new List<Pawn>();
             int baseNum = (animalCount > 0) ? animalCount : AggressiveAnimalIncidentUtility.GetAnimalsCount(animalKind, points);
-            int maxPawnNum = EliteRaidMod.maxRaidEnemy;
-
-            if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
-            {
-                int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
-                maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
-            }
+            int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
+            maxPawnNum = Math.Max(1, maxPawnNum);
+            maxPawnNum = Math.Min(maxPawnNum, baseNum);
             // 新增：使用PatchContinuityHelper存储原始参数
             PatchContinuityHelper.SetCompressWork_GenerateAnimals(animalKind, baseNum);
 
@@ -730,15 +726,10 @@ namespace EliteRaid
             {
                 // 复用动物生成的处理逻辑（简化版）
                 
-                int maxPawnNum = EliteRaidMod.maxRaidEnemy;
-                int baseNum = __result.Count;
-
-                if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
-                {
-                    int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
-                    maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
-                }
-
+                int baseNum = (int)points;
+                int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
+                maxPawnNum = Math.Max(1, maxPawnNum);
+                maxPawnNum = Math.Min(maxPawnNum, baseNum);
 
                 if (maxPawnNum < baseNum && EliteRaidMod.allowEntitySwarmValue)
                 {
@@ -1088,7 +1079,9 @@ namespace EliteRaid
                 }
 
                 int baseNum = num;
-                int maxPawnNum = EliteRaidMod.maxRaidEnemy;
+                int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
+                maxPawnNum = Math.Max(1, maxPawnNum);
+                maxPawnNum = Math.Min(maxPawnNum, baseNum);
 
               //  Log.Message($"[EliteRaid] 虫族基础数量计算完成: {baseNum}");
              //   Log.Message($"[EliteRaid] 最大允许数量: {maxPawnNum}");
@@ -1097,14 +1090,6 @@ namespace EliteRaid
                 {
                   //  Log.Message($"[EliteRaid] 虫族数量不需要压缩 ({baseNum} ≤ {maxPawnNum})，使用原始逻辑");
                     return true;
-                }
-
-                // 应用压缩比例
-                if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
-                {
-                    int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
-                    maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
-                  //  Log.Message($"[EliteRaid] 应用压缩比例: {EliteRaidMod.compressionRatio}x → 压缩后数量: {maxPawnNum}");
                 }
 
                 // 生成压缩后的pawns列表
