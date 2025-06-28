@@ -842,46 +842,13 @@ namespace EliteRaid
                 float biocodeWeaponsChance = parms.biocodeWeaponsChance;
                 float biocodeApparelChance = parms.biocodeApparelChance;
 
-                Pawn pawn = null;
-                try
-                {
-                    if (parms.faction == Faction.OfHoraxCult)
-                    {
-                        PawnGenerationContext pawnGenerationContext = PawnGenerationContext.NonPlayer;
-                        int num = -1;
-                        bool flag = false;
-                        bool flag2 = false;
-                        bool flag3 = false;
-                        bool flag4 = true;
-                        bool flag5 = true;
-                        float num2 = 1f;
-                        bool flag6 = false;
-                        bool flag7 = true;
-                        bool flag8 = false;
-                        Log.Message("执行了，为心灵仪式定制的生成函数"+ parms.faction);
-                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L861] 调用PawnGenerator.GeneratePawn, pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}");
-                        pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, pawnGenerationContext, num, flag, flag2, flag3, flag4, flag5, num2, flag6, flag7, flag8,false, true, false, false, false, false, biocodeWeaponsChance, biocodeApparelChance, null, 1f, null, null, null, null, null, null, null, null, null, null, null, null, false, false, false, false, null, null, null, null, null, 0f, DevelopmentalStage.Adult, null, null, null, false, false, false, -1, 0, false)
-                        {
-                            BiocodeApparelChance = 1f,
-                             ForcedXenotype = XenotypeDefOf.Baseliner ,
-                             ProhibitedTraits=new List<TraitDef>() { TraitDef.Named("psychically deaf") }//禁止心灵仪式出现心灵失聪
-                         });
-                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L861] PawnGenerator.GeneratePawn结果: {(pawn == null ? "null" : pawn.LabelCap)}");
-                    } else
-                    {
-                        Log.Message("输出阵营" + parms.faction);
-                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L870] 调用PawnGenerator.GeneratePawn, pawnKind={parms.pawnKind?.defName}, faction={parms.faction?.Name ?? parms.faction?.ToString() ?? "null"}");
-                        pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
-                        {
-                            BiocodeApparelChance = 1f
-                        });
-                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L870] PawnGenerator.GeneratePawn结果: {(pawn == null ? "null" : pawn.LabelCap)}");
-                    }
-                } catch (Exception ex)
-                {
-                    Log.Error($"[EliteRaid] 生成pawn时出错: {ex.Message}");
-                    continue; // 尝试生成下一个pawn
-                }
+                Log.Message("捕获到当前生成的敌人阵营"+ parms.faction);
+                Messages.Message("捕获到当前生成的敌人阵营"+ parms.faction, MessageTypeDefOf.NeutralEvent);
+          
+                Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
+               {
+                   BiocodeApparelChance = 1f
+                });
 
                 if (pawn != null)
                 {
