@@ -68,16 +68,14 @@ namespace EliteRaid
             if (EliteRaidMod.useCompressionRatio && baseNum >= StaticVariables.DEFAULT_MAX_ENEMY)
             {
                 int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
-                maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
+                maxPawnNum = Math.Min(temp, EliteRaidMod.maxRaidEnemy);
               
             } else
             {
                 maxPawnNum = EliteRaidMod.maxRaidEnemy; // 保持原有逻辑或调整为 baseNum
             }
-            if (maxPawnNum >= baseNum)
-            {
-                return StateFalse(options);
-            }
+            // 确保至少为1，且不超过原始数量
+            maxPawnNum = Math.Max(1, Math.Min(maxPawnNum, baseNum));
 
             bool allowedCompress = true;
             if (!EliteRaidMod.allowMechanoidsValue && !options.Any(x => !(x.Option.kind?.RaceProps?.IsMechanoid ?? false)))
@@ -224,9 +222,7 @@ namespace EliteRaid
 
                 // 3. 计算压缩后的数量
                 int baseNum = normalOptions.Count;
-                int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
-                maxPawnNum = Math.Max(1, maxPawnNum);
-                maxPawnNum = Math.Min(maxPawnNum, baseNum);
+                int maxPawnNum = General.GetenhancePawnNumber(baseNum);
 
                 if (maxPawnNum >= baseNum)
                 {
@@ -313,9 +309,8 @@ namespace EliteRaid
             {
                 return StateFalse(baseNum);
             }
-            int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
-            maxPawnNum = Math.Max(1, maxPawnNum);
-            maxPawnNum = Math.Min(maxPawnNum, baseNum);
+            int maxPawnNum = General.GetenhancePawnNumber(baseNum);
+            
             if (maxPawnNum >= baseNum)
             {
                 return StateFalse(baseNum);
@@ -388,9 +383,8 @@ namespace EliteRaid
                 return StateFalse(baseNum);
             }
 
-            int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
-            maxPawnNum = Math.Max(1, maxPawnNum);
-            maxPawnNum = Math.Min(maxPawnNum, baseNum);
+            int maxPawnNum = CalculateCompressedPawnCount(baseNum);
+            
             if (maxPawnNum >= baseNum)
             {
                 return StateFalse(baseNum);
@@ -405,6 +399,13 @@ namespace EliteRaid
 
             int hashKey = parms.GetHashCode();
             m_CompressWork_EntitySwarm = new CompressWork(hashKey, baseNum, maxPawnNum);
+
+            // 记录实际压缩率到日志
+            if (EliteRaidMod.displayMessageValue)
+            {
+                float actualCompressionRatio = CalculateActualCompressionRatio(baseNum, maxPawnNum);
+                Log.Message($"[EliteRaid] 实体群压缩完成: {baseNum} → {maxPawnNum} (实际压缩率: {actualCompressionRatio:F2})");
+            }
 
 #if DEBUG
          //   Log.Message($"@@@ Compressed Raid: ENTITY_SWARM, BASE_NUM={baseNum}, COMPRESSED_NUM={maxPawnNum}");
@@ -432,6 +433,17 @@ namespace EliteRaid
             baseNum = m_CompressWork_EntitySwarm.baseNum;
             maxPawnNum = m_CompressWork_EntitySwarm.maxPawnNum;
             return true;
+        }
+
+        private static int CalculateCompressedPawnCount(int baseNum)
+        {
+            return General.GetenhancePawnNumber(baseNum);
+        }
+
+        private static float CalculateActualCompressionRatio(int baseNum, int maxPawnNum)
+        {
+            if (maxPawnNum <= 0) return 1f;
+            return (float)baseNum / maxPawnNum;
         }
     }
 }

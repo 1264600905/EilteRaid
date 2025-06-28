@@ -190,7 +190,7 @@ namespace EliteRaid
 
         public override string SettingsCategory()
         {
-            return "EliteRaidSettingsCategory".Translate()+"(v1.3.1)";
+            return "EliteRaidSettingsCategory".Translate()+"(v1.3.2)";
         }
         public int timer = 0;
         public void Tick()
@@ -679,6 +679,16 @@ namespace EliteRaid
             showDetailConfig = settings.showDetailConfig;
             EliteRaidMod.AllowModBionicsAndDrugs = settings.allowModBionicsAndDrugs;
             EliteRaidMod.raidScale = settings.raidScale;
+            
+            // 添加调试日志
+            if (EliteRaidMod.displayMessageValue)
+            {
+                Log.Message($"[EliteRaid] 设置同步: maxRaidEnemy={EliteRaidMod.maxRaidEnemy}, useCompressionRatio={EliteRaidMod.useCompressionRatio}, compressionRatio={EliteRaidMod.compressionRatio}");
+                
+                // 测试压缩逻辑
+                General.TestCompressionLogic();
+            }
+            
             ApplyRaidScaleIfNeeded();
             // 验证难度索引
             int index = settings.currentDifficultyIndex; // 不要减1！

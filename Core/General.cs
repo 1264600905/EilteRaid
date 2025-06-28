@@ -206,8 +206,9 @@ namespace EliteRaid
             if (enhancedCount > 0)
             {
                 int finalNum = GetenhancePawnNumber(baseNum);
+                float actualCompressionRatio = GetcompressionRatio(baseNum, finalNum);
                 Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum, finalNum,
-                    baseNum/finalNum, finalNum), MessageTypeDefOf.NeutralEvent, true);
+                    actualCompressionRatio.ToString("F2"), finalNum), MessageTypeDefOf.NeutralEvent, true);
             }
         }
         public static float GetcompressionRatio(int baseNum, int maxPawnNum)
@@ -218,14 +219,37 @@ namespace EliteRaid
 
         public static int GetenhancePawnNumber(int baseNum)
         {
-            int tempNum = (int)(baseNum / EliteRaidMod.compressionRatio);
+            if (baseNum <= 0) return 0;
+            
             if (EliteRaidMod.useCompressionRatio)
             {
-                return Math.Max(1, Math.Min(tempNum, EliteRaidMod.maxRaidEnemy));
+                // 先使用压缩率计算
+                int compressedByRatio = (int)(baseNum / EliteRaidMod.compressionRatio);
+                
+                // 取压缩率结果和最大袭击数量的较小值
+                int result = Math.Min(compressedByRatio, EliteRaidMod.maxRaidEnemy);
+                
+                // 确保至少为1，且不超过原始数量
+                int finalResult = Math.Max(1, Math.Min(result, baseNum));
+                
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message($"[EliteRaid] 压缩计算: baseNum={baseNum}, compressionRatio={EliteRaidMod.compressionRatio}, compressedByRatio={compressedByRatio}, maxRaidEnemy={EliteRaidMod.maxRaidEnemy}, result={finalResult}");
+                }
+                
+                return finalResult;
             }
             else
             {
-                return Math.Max(1, EliteRaidMod.maxRaidEnemy);
+                // 不使用压缩率，直接使用最大袭击数量，但不超过原始数量
+                int result = Math.Max(1, Math.Min(EliteRaidMod.maxRaidEnemy, baseNum));
+                
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message($"[EliteRaid] 非压缩计算: baseNum={baseNum}, maxRaidEnemy={EliteRaidMod.maxRaidEnemy}, result={result}");
+                }
+                
+                return result;
             }
         }
 
@@ -339,6 +363,41 @@ namespace EliteRaid
             SendLog_Debug(MessageTypes.Debug, "进入增强逻辑，实体数量：{0}，baseNum：{1}，maxPawnNum：{2}",
                  pawns.Count, baseNum, maxPawnNum); // 添加此行
             GenerateAnything_Impl(pawns, baseNum, maxPawnNum, raidFriendly: false);
+        }
+
+        // 测试方法：验证压缩计算逻辑
+        public static void TestCompressionLogic()
+        {
+            if (!EliteRaidMod.displayMessageValue) return;
+            
+            Log.Message("=== 压缩逻辑测试开始 ===");
+            
+            // 测试用例1：基础压缩
+            EliteRaidMod.useCompressionRatio = true;
+            EliteRaidMod.compressionRatio = 3f;
+            EliteRaidMod.maxRaidEnemy = 20;
+            
+            int test1 = GetenhancePawnNumber(60); // 60 / 3 = 20, 应该返回20
+            Log.Message($"测试1: baseNum=60, compressionRatio=3, maxRaidEnemy=20, 结果={test1}");
+            
+            // 测试用例2：压缩率限制
+            int test2 = GetenhancePawnNumber(90); // 90 / 3 = 30, 但maxRaidEnemy=20, 应该返回20
+            Log.Message($"测试2: baseNum=90, compressionRatio=3, maxRaidEnemy=20, 结果={test2}");
+            
+            // 测试用例3：原始数量限制
+            int test3 = GetenhancePawnNumber(10); // 10 / 3 = 3.33, 但baseNum=10, 应该返回10
+            Log.Message($"测试3: baseNum=10, compressionRatio=3, maxRaidEnemy=20, 结果={test3}");
+            
+            // 测试用例4：不使用压缩率
+            EliteRaidMod.useCompressionRatio = false;
+            int test4 = GetenhancePawnNumber(50); // 应该返回20（maxRaidEnemy）
+            Log.Message($"测试4: baseNum=50, useCompressionRatio=false, maxRaidEnemy=20, 结果={test4}");
+            
+            // 测试用例5：边界情况
+            int test5 = GetenhancePawnNumber(5); // 应该返回5（baseNum < maxRaidEnemy）
+            Log.Message($"测试5: baseNum=5, useCompressionRatio=false, maxRaidEnemy=20, 结果={test5}");
+            
+            Log.Message("=== 压缩逻辑测试结束 ===");
         }
     }
 }
