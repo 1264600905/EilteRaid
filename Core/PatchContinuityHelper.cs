@@ -65,7 +65,7 @@ namespace EliteRaid
             int baseNum = options.Count();
 
             // 新增压缩率计算（确保 baseNum >= compressionRatio 时才压缩）
-            if (EliteRaidMod.useCompressionRatio && baseNum >= StaticVariables.DEFAULT_MAX_ENEMY)
+            if (EliteRaidMod.useCompressionRatio && baseNum >= EliteRaidMod.compressionRatio)
             {
                 int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
                 maxPawnNum = Math.Min(temp, EliteRaidMod.maxRaidEnemy);

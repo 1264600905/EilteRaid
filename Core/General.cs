@@ -372,30 +372,39 @@ namespace EliteRaid
             
             Log.Message("=== 压缩逻辑测试开始 ===");
             
-            // 测试用例1：基础压缩
-            EliteRaidMod.useCompressionRatio = true;
-            EliteRaidMod.compressionRatio = 3f;
-            EliteRaidMod.maxRaidEnemy = 20;
+            // 测试不同难度级别的压缩计算
+            var testCases = new[]
+            {
+                new { Difficulty = "修士/扈从", MaxRaidEnemy = 20, CompressionRatio = 3f },
+                new { Difficulty = "骑士/法务官", MaxRaidEnemy = 30, CompressionRatio = 3f },
+                new { Difficulty = "领主/总督", MaxRaidEnemy = 40, CompressionRatio = 4f },
+                new { Difficulty = "都督/专制公", MaxRaidEnemy = 50, CompressionRatio = 5f },
+                new { Difficulty = "大公/执政官/将军", MaxRaidEnemy = 60, CompressionRatio = 6f },
+                new { Difficulty = "近卫总长/星系主宰", MaxRaidEnemy = 70, CompressionRatio = 8f },
+                new { Difficulty = "至高星主", MaxRaidEnemy = 80, CompressionRatio = 9f },
+                new { Difficulty = "星海皇帝", MaxRaidEnemy = 100, CompressionRatio = 10f }
+            };
             
-            int test1 = GetenhancePawnNumber(60); // 60 / 3 = 20, 应该返回20
-            Log.Message($"测试1: baseNum=60, compressionRatio=3, maxRaidEnemy=20, 结果={test1}");
-            
-            // 测试用例2：压缩率限制
-            int test2 = GetenhancePawnNumber(90); // 90 / 3 = 30, 但maxRaidEnemy=20, 应该返回20
-            Log.Message($"测试2: baseNum=90, compressionRatio=3, maxRaidEnemy=20, 结果={test2}");
-            
-            // 测试用例3：原始数量限制
-            int test3 = GetenhancePawnNumber(10); // 10 / 3 = 3.33, 但baseNum=10, 应该返回10
-            Log.Message($"测试3: baseNum=10, compressionRatio=3, maxRaidEnemy=20, 结果={test3}");
-            
-            // 测试用例4：不使用压缩率
-            EliteRaidMod.useCompressionRatio = false;
-            int test4 = GetenhancePawnNumber(50); // 应该返回20（maxRaidEnemy）
-            Log.Message($"测试4: baseNum=50, useCompressionRatio=false, maxRaidEnemy=20, 结果={test4}");
-            
-            // 测试用例5：边界情况
-            int test5 = GetenhancePawnNumber(5); // 应该返回5（baseNum < maxRaidEnemy）
-            Log.Message($"测试5: baseNum=5, useCompressionRatio=false, maxRaidEnemy=20, 结果={test5}");
+            foreach (var testCase in testCases)
+            {
+                Log.Message($"--- {testCase.Difficulty} 测试 ---");
+                Log.Message($"设置: MaxRaidEnemy={testCase.MaxRaidEnemy}, CompressionRatio={testCase.CompressionRatio}");
+                
+                // 临时设置参数
+                EliteRaidMod.maxRaidEnemy = testCase.MaxRaidEnemy;
+                EliteRaidMod.compressionRatio = testCase.CompressionRatio;
+                EliteRaidMod.useCompressionRatio = true;
+                
+                // 测试不同袭击人数
+                int[] testNumbers = { 200, 299, 400, 599, 800, 1000 };
+                foreach (int baseNum in testNumbers)
+                {
+                    int result = GetenhancePawnNumber(baseNum);
+                    float actualRatio = (float)baseNum / result;
+                    Log.Message($"  袭击{baseNum}人 → 压缩后{result}人 (实际压缩率: {actualRatio:F2})");
+                }
+                Log.Message("");
+            }
             
             Log.Message("=== 压缩逻辑测试结束 ===");
         }

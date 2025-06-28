@@ -16,6 +16,7 @@ namespace EliteRaid
         public int MaxEliteLevel { get; set; }    // 最大敌人等级
         public EliteRaidDifficulty EliteDifficulty { get; set; } // 精英难度
         public int CompressionRatio { get; set; } // 压缩倍率
+        public int MaxRaidEnemy { get; set; }     // 最大袭击人数
         public string Description { get; set; }   // 描述文本
 
         // 在EliteRaidMod类中更新难度配置字典
@@ -32,6 +33,7 @@ namespace EliteRaid
                 MaxEliteLevel = 3,
                 EliteDifficulty = EliteRaidDifficulty.Normal,
                 CompressionRatio = 3,
+                MaxRaidEnemy = 20,  // 修士
                 Description = "Beginner-friendly difficulty with fewer and weaker enemies"
             }},
 
@@ -44,6 +46,7 @@ namespace EliteRaid
                 MaxEliteLevel = 4,
                 EliteDifficulty = EliteRaidDifficulty.Normal,
                 CompressionRatio = 3,
+                MaxRaidEnemy = 20,  // 扈从
                 Description = "Basic difficulty with moderate enemy numbers"
             }},
 
@@ -56,6 +59,7 @@ namespace EliteRaid
                 MaxEliteLevel = 6,
                 EliteDifficulty = EliteRaidDifficulty.Hard,
                 CompressionRatio = 3,
+                MaxRaidEnemy = 30,  // 骑士
                 Description = "Standard difficulty balancing challenge and gameplay experience"
             }},
 
@@ -68,6 +72,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Hard,
                 CompressionRatio = 3,
+                MaxRaidEnemy = 30,  // 法务官
                 Description = "Slightly higher difficulty with increased enemy numbers and strength"
             }},
 
@@ -80,6 +85,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Hard,
                 CompressionRatio = 4,
+                MaxRaidEnemy = 40,  // 领主
                 Description = "High difficulty with frequent elite enemies"
             }},
 
@@ -92,6 +98,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 4,
+                MaxRaidEnemy = 40,  // 总督
                 Description = "Extremely difficult with significantly increased enemy numbers and elite presence"
             }},
 
@@ -104,6 +111,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 5,
+                MaxRaidEnemy = 50,  // 都督
                 Description = "Brutal difficulty with frequent boss-level enemies"
             }},
 
@@ -116,6 +124,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 5,
+                MaxRaidEnemy = 50,  // 专制公
                 Description = "Beyond极限，敌人几乎不可阻挡"
             }},
 
@@ -128,6 +137,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 6,
+                MaxRaidEnemy = 60,  // 大公
                 Description = "Theoretically 'impossible' difficulty"
             }},
 
@@ -140,6 +150,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 6,
+                MaxRaidEnemy = 60,  // 执政官
                 Description = "Developer-level challenge requiring perfect strategy and configuration"
             }},
 
@@ -152,6 +163,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 7,
+                MaxRaidEnemy = 60,  // 将军
                 Description = "Data-crushing difficulty testing game mechanics limits"
             }},
 
@@ -164,6 +176,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 7,
+                MaxRaidEnemy = 70,  // 近卫总长
                 Description = "Code-level stress test, may cause crashes"
             }},
 
@@ -176,6 +189,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 8,
+                MaxRaidEnemy = 70,  // 星系主宰
                 Description = "Self-inflicted difficulty beyond game design intentions"
             }},
 
@@ -188,6 +202,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 8,
+                MaxRaidEnemy = 80,  // 至高星主
                 Description = "For mod developers debugging only"
             }},
 
@@ -200,6 +215,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 9,
+                MaxRaidEnemy = 80,  // 星海皇帝
                 Description = "Mathematically 'infinite' difficulty (conceptual)"
             }},
 
@@ -207,11 +223,12 @@ namespace EliteRaid
             {
                 Name = "Galaxy Emperor",
                 DifficultyFactor = 200.0f,
-                RaidScale = 2500f,
+                RaidScale = 3000f,
                 MaxRaidPoint = 150000,
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 10,
+                MaxRaidEnemy = 100,  // 星海皇帝
                 Description = "Challenge the limits of the game's underlying code"
             }}
             };

@@ -571,15 +571,11 @@ namespace EliteRaid
                 mod.settings.Write();
             }
         }
-        // 修改ApplySelectedDifficulty方法，更新UI显示
-        // 修改 ApplySelectedDifficulty 方法，确保只应用存在的配置
+        // 修改ApplySelectedDifficulty方法，确保只应用存在的配置
         private void ApplySelectedDifficulty()
         {
             int index = settings.currentDifficultyIndex;
-            maxRaidEnemy = 20;
-            useCompressionRatio = true;
-            settings.maxRaidEnemy = 20;
-            settings.useCompressionRatio = useCompressionRatio;
+            
             // 确保索引有效
             if (index < 0 || index >= DifficultyOptions.Count)
             {
@@ -603,19 +599,21 @@ namespace EliteRaid
                 raidScale = config.RaidScale/100f;
                 maxAllowLevel = config.MaxEliteLevel;
                 useCompressionRatio = true;
-                maxRaidEnemy= StaticVariables.DEFAULT_MAX_ENEMY;
+                maxRaidEnemy = config.MaxRaidEnemy;  // 使用配置中的最大袭击人数
+                
                 // 同步配置值到设置对象
                 settings.eliteRaidDifficulty = eliteRaidDifficulty;
                 settings.compressionRatio = compressionRatio;
                 settings.maxRaidPoint = maxRaidPoint;
                 settings.raidScale = raidScale;
                 settings.maxAllowLevel = maxAllowLevel;
-
                 settings.useCompressionRatio = true;
-                settings.maxRaidEnemy = StaticVariables.DEFAULT_MAX_ENEMY;
+                settings.maxRaidEnemy = config.MaxRaidEnemy;  // 同步到设置
 
-
-            //    Log.Message($"[EliteRaid] 应用难度配置: {config.Name} (系数: {config.DifficultyFactor})");
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message($"[EliteRaid] 应用难度配置: {config.Name} (系数: {config.DifficultyFactor}, 最大袭击人数: {config.MaxRaidEnemy})");
+                }
             } else
             {
                 Log.Error($"[EliteRaid] 缺少难度级别 {level} 的配置，使用默认配置");
@@ -629,6 +627,7 @@ namespace EliteRaid
                     maxRaidPoint = firstConfig.MaxRaidPoint;
                     raidScale = firstConfig.RaidScale;
                     maxAllowLevel = firstConfig.MaxEliteLevel;
+                    maxRaidEnemy = firstConfig.MaxRaidEnemy;
                 } else
                 {
                     Log.Error($"[EliteRaid] 没有可用的难度配置!");
@@ -735,16 +734,17 @@ namespace EliteRaid
                     maxRaidPoint = config.MaxRaidPoint;
                     raidScale = config.RaidScale / 100f;
                     maxAllowLevel = config.MaxEliteLevel;
-                    maxRaidEnemy = 20;
+                    maxRaidEnemy = config.MaxRaidEnemy;  // 使用配置中的最大袭击人数
                     useCompressionRatio = true;
+                    
                     // 同步到设置文件
                     settings.eliteRaidDifficulty = config.EliteDifficulty;
                     settings.compressionRatio = config.CompressionRatio;
                     settings.maxRaidPoint = config.MaxRaidPoint;
                     settings.raidScale = config.RaidScale / 100f;
-                    settings.maxRaidPoint = config.MaxRaidPoint;
-                    settings.maxRaidEnemy = 20;
-                    settings.useCompressionRatio= useCompressionRatio;
+                    settings.maxAllowLevel = config.MaxEliteLevel;
+                    settings.maxRaidEnemy = config.MaxRaidEnemy;  // 同步最大袭击人数
+                    settings.useCompressionRatio = useCompressionRatio;
                 }
 
                 // 重置标志
