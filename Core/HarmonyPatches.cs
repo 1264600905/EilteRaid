@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using RimwoldEliteRaidProject.Core;
 using Verse.Noise;
 using RimWorld.Planet;
+using static EliteRaid.DropPodUtility_Patch;
 
 namespace EliteRaid
 {
@@ -196,93 +197,101 @@ namespace EliteRaid
             //    Log.Error($"[EliteRaid] 注册DefaultThreatPointsNow补丁失败: {ex}");
             //}
 
-            //try
-            //{
-            //    Type targetClass = typeof(ActiveDropPod);
-            //    MethodInfo targetMethod = AccessTools.Method(
-            //        targetClass,
-            //        "PodOpen", // 私有方法名
-            //        Type.EmptyTypes
-            //    );
+            try
+            {
+               Type targetClass = typeof(ActiveTransporter);
+               Log.Message($"[EliteRaid] 开始注册ActiveTransporter.PodOpen补丁，目标类: {targetClass.FullName}");
+               
+               MethodInfo targetMethod = AccessTools.Method(
+                   targetClass,
+                   "PodOpen", // 私有方法名
+                   Type.EmptyTypes
+               );
 
-            //    if (targetMethod == null)
-            //    {
-            //        Log.Error($"[EliteRaid] 找不到 ActiveDropPod.PodOpen 方法！");
-            //        return;
-            //    }
+               if (targetMethod == null)
+               {
+                   Log.Error($"[EliteRaid] 找不到 ActiveDropPod.PodOpen 方法！");
+                   return;
+               }
+               Log.Message($"[EliteRaid] 成功找到目标方法: {targetMethod.Name}");
 
-            //    // 定义 Transpiler 补丁方法（IL 指令修改）
-            //    var transpiler = new HarmonyMethod(
-            //        typeof(ActiveDropPod_PodOpen_Patch),
-            //        nameof(ActiveDropPod_PodOpen_Patch.Transpiler) // 指向 Transpiler 方法
-            //    );
+               // 定义 Transpiler 补丁方法（IL 指令修改）
+               var transpiler = new HarmonyMethod(
+                   typeof(ActiveDropPod_PodOpen_Patch),
+                   nameof(ActiveDropPod_PodOpen_Patch.Transpiler) // 指向 Transpiler 方法
+               );
+               Log.Message($"[EliteRaid] 创建Transpiler补丁方法: {typeof(ActiveDropPod_PodOpen_Patch).FullName}.{nameof(ActiveDropPod_PodOpen_Patch.Transpiler)}");
 
-            //    harmony.Patch(
-            //        original: targetMethod,
-            //        transpiler: transpiler // 通过 transpiler 参数注入 IL 修改逻辑
-            //    );
+               harmony.Patch(
+                   original: targetMethod,
+                   transpiler: transpiler // 通过 transpiler 参数注入 IL 修改逻辑
+               );
 
-            //   // Log.Message($"[EliteRaid] 成功为 ActiveDropPod.PodOpen 添加 Transpiler 补丁！");
-            //} catch (Exception ex)
-            //{
-            //    Log.Error($"[EliteRaid] 注册补丁失败: {ex.Message}");
-            //    Log.Error(ex.StackTrace);
-            //}
-            //try
-            //{
-            //    // --------------------------
-            //    // 目标方法：DropPodUtility.DropThingGroupsNear
-            //    // --------------------------
-            //    Type targetClass = typeof(DropPodUtility);
-            //    MethodInfo targetMethod = AccessTools.Method(
-            //        targetClass,
-            //        nameof(DropPodUtility.DropThingGroupsNear),
-            //        new Type[] {
-            //    typeof(IntVec3),
-            //    typeof(Map),
-            //    typeof(List<List<Thing>>),
-            //    typeof(int),
-            //    typeof(bool),
-            //    typeof(bool),
-            //    typeof(bool),
-            //    typeof(bool),
-            //    typeof(bool),
-            //    typeof(bool),
-            //    typeof(Faction)
-            //        }
-            //    );
+               Log.Message($"[EliteRaid] 成功为 ActiveDropPod.PodOpen 添加 Transpiler 补丁！");
+            } catch (Exception ex)
+            {
+               Log.Error($"[EliteRaid] 注册补丁失败: {ex.Message}");
+               Log.Error(ex.StackTrace);
+            }
+            try
+            {
+               // --------------------------
+               // 目标方法：DropPodUtility.DropThingGroupsNear
+               // --------------------------
+               Type targetClass = typeof(DropPodUtility);
+               Log.Message($"[EliteRaid] 开始注册DropPodUtility.DropThingGroupsNear补丁，目标类: {targetClass.FullName}");
+               
+               MethodInfo targetMethod = AccessTools.Method(
+                   targetClass,
+                   nameof(DropPodUtility.DropThingGroupsNear),
+                   new Type[] {
+               typeof(IntVec3),
+               typeof(Map),
+               typeof(List<List<Thing>>),
+               typeof(int),        // openDelay
+               typeof(bool),      // instaDrop
+               typeof(bool),      // leaveSlag
+               typeof(bool),      // canRoofPunch
+               typeof(bool),      // forbid
+               typeof(bool),      // allowFogged
+               typeof(bool),      // canTransfer
+               typeof(Faction)
+                   }
+               );
 
-            //    if (targetMethod == null)
-            //    {
-            //        Log.Error($"[EliteRaid] 找不到 {nameof(DropPodUtility.DropThingGroupsNear)} 方法！");
-            //        return;
-            //    }
+               if (targetMethod == null)
+               {
+                   Log.Error($"[EliteRaid] 找不到 {nameof(DropPodUtility.DropThingGroupsNear)} 方法！");
+                   return;
+               }
+               Log.Message($"[EliteRaid] 成功找到目标方法: {targetMethod.Name}");
 
-            //    // --------------------------
-            //    // 定义补丁方法（Postfix）
-            //    // --------------------------
-            //    var postfix = new HarmonyMethod(
-            //        typeof(DropPodUtility_Patch),
-            //        nameof(DropPodUtility_Patch.DropThingGroupsNear_Postfix)
-            //    );
+               // --------------------------
+               // 定义补丁方法（Postfix）
+               // --------------------------
+               var postfix = new HarmonyMethod(
+                   typeof(DropPodUtility_Patch),
+                   nameof(DropPodUtility_Patch.DropThingGroupsNear_Postfix)
+               );
+               Log.Message($"[EliteRaid] 创建Postfix补丁方法: {typeof(DropPodUtility_Patch).FullName}.{nameof(DropPodUtility_Patch.DropThingGroupsNear_Postfix)}");
 
-            //    // 设置补丁执行顺序（可选：确保在其他补丁之后执行）
-            //    postfix.after = new[] { "other.mod.id.patch" };
+               // 设置补丁执行顺序（可选：确保在其他补丁之后执行）
+               postfix.after = new[] { "other.mod.id.patch" };
 
-            //    // --------------------------
-            //    // 应用 Postfix 补丁
-            //    // --------------------------
-            //    harmony.Patch(
-            //        original: targetMethod,
-            //        postfix: postfix
-            //    );
+               // --------------------------
+               // 应用 Postfix 补丁
+               // --------------------------
+               harmony.Patch(
+                   original: targetMethod,
+                   postfix: postfix
+               );
 
-            //  //  Log.Message($"[EliteRaid] 成功为 {nameof(DropPodUtility.DropThingGroupsNear)} 添加 Postfix 补丁！");
-            //} catch (Exception ex)
-            //{
-            //    Log.Error($"[EliteRaid] 注册 DropThingGroupsNear 补丁失败: {ex.Message}");
-            //    Log.Error(ex.StackTrace);
-            //}
+               Log.Message($"[EliteRaid] 成功为 {nameof(DropPodUtility.DropThingGroupsNear)} 添加 Postfix 补丁！");
+            } catch (Exception ex)
+            {
+               Log.Error($"[EliteRaid] 注册 DropThingGroupsNear 补丁失败: {ex.Message}");
+               Log.Error(ex.StackTrace);
+            }
        
 
             //GeneratePawns
