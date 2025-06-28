@@ -11,8 +11,8 @@ using System.Reflection.Emit;
 using static EliteRaid.StaticVariables_ModCompatibility;
 using System.Runtime.InteropServices;
 using RimwoldEliteRaidProject.Core;
-using static EliteRaid.DropPodUtility_Patch;
 using Verse.Noise;
+using RimWorld.Planet;
 
 namespace EliteRaid
 {
@@ -27,6 +27,9 @@ namespace EliteRaid
             // harmony.PatchAll(Assembly.GetExecutingAssembly());
             BionicsDataStore.DataRestore();
             DrugHediffDataStore.DataRestore();
+            
+            // 初始化体型修改功能
+            Log.Message("[EliteRaid] 体型修改功能已初始化");
         }
 
         struct TargetMethod
@@ -190,93 +193,93 @@ namespace EliteRaid
             //    Log.Error($"[EliteRaid] 注册DefaultThreatPointsNow补丁失败: {ex}");
             //}
 
-            try
-            {
-                Type targetClass = typeof(ActiveDropPod);
-                MethodInfo targetMethod = AccessTools.Method(
-                    targetClass,
-                    "PodOpen", // 私有方法名
-                    Type.EmptyTypes
-                );
+            //try
+            //{
+            //    Type targetClass = typeof(ActiveDropPod);
+            //    MethodInfo targetMethod = AccessTools.Method(
+            //        targetClass,
+            //        "PodOpen", // 私有方法名
+            //        Type.EmptyTypes
+            //    );
 
-                if (targetMethod == null)
-                {
-                    Log.Error($"[EliteRaid] 找不到 ActiveDropPod.PodOpen 方法！");
-                    return;
-                }
+            //    if (targetMethod == null)
+            //    {
+            //        Log.Error($"[EliteRaid] 找不到 ActiveDropPod.PodOpen 方法！");
+            //        return;
+            //    }
 
-                // 定义 Transpiler 补丁方法（IL 指令修改）
-                var transpiler = new HarmonyMethod(
-                    typeof(ActiveDropPod_PodOpen_Patch),
-                    nameof(ActiveDropPod_PodOpen_Patch.Transpiler) // 指向 Transpiler 方法
-                );
+            //    // 定义 Transpiler 补丁方法（IL 指令修改）
+            //    var transpiler = new HarmonyMethod(
+            //        typeof(ActiveDropPod_PodOpen_Patch),
+            //        nameof(ActiveDropPod_PodOpen_Patch.Transpiler) // 指向 Transpiler 方法
+            //    );
 
-                harmony.Patch(
-                    original: targetMethod,
-                    transpiler: transpiler // 通过 transpiler 参数注入 IL 修改逻辑
-                );
+            //    harmony.Patch(
+            //        original: targetMethod,
+            //        transpiler: transpiler // 通过 transpiler 参数注入 IL 修改逻辑
+            //    );
 
-               // Log.Message($"[EliteRaid] 成功为 ActiveDropPod.PodOpen 添加 Transpiler 补丁！");
-            } catch (Exception ex)
-            {
-                Log.Error($"[EliteRaid] 注册补丁失败: {ex.Message}");
-                Log.Error(ex.StackTrace);
-            }
-            try
-            {
-                // --------------------------
-                // 目标方法：DropPodUtility.DropThingGroupsNear
-                // --------------------------
-                Type targetClass = typeof(DropPodUtility);
-                MethodInfo targetMethod = AccessTools.Method(
-                    targetClass,
-                    nameof(DropPodUtility.DropThingGroupsNear),
-                    new Type[] {
-                typeof(IntVec3),
-                typeof(Map),
-                typeof(List<List<Thing>>),
-                typeof(int),
-                typeof(bool),
-                typeof(bool),
-                typeof(bool),
-                typeof(bool),
-                typeof(bool),
-                typeof(bool),
-                typeof(Faction)
-                    }
-                );
+            //   // Log.Message($"[EliteRaid] 成功为 ActiveDropPod.PodOpen 添加 Transpiler 补丁！");
+            //} catch (Exception ex)
+            //{
+            //    Log.Error($"[EliteRaid] 注册补丁失败: {ex.Message}");
+            //    Log.Error(ex.StackTrace);
+            //}
+            //try
+            //{
+            //    // --------------------------
+            //    // 目标方法：DropPodUtility.DropThingGroupsNear
+            //    // --------------------------
+            //    Type targetClass = typeof(DropPodUtility);
+            //    MethodInfo targetMethod = AccessTools.Method(
+            //        targetClass,
+            //        nameof(DropPodUtility.DropThingGroupsNear),
+            //        new Type[] {
+            //    typeof(IntVec3),
+            //    typeof(Map),
+            //    typeof(List<List<Thing>>),
+            //    typeof(int),
+            //    typeof(bool),
+            //    typeof(bool),
+            //    typeof(bool),
+            //    typeof(bool),
+            //    typeof(bool),
+            //    typeof(bool),
+            //    typeof(Faction)
+            //        }
+            //    );
 
-                if (targetMethod == null)
-                {
-                    Log.Error($"[EliteRaid] 找不到 {nameof(DropPodUtility.DropThingGroupsNear)} 方法！");
-                    return;
-                }
+            //    if (targetMethod == null)
+            //    {
+            //        Log.Error($"[EliteRaid] 找不到 {nameof(DropPodUtility.DropThingGroupsNear)} 方法！");
+            //        return;
+            //    }
 
-                // --------------------------
-                // 定义补丁方法（Postfix）
-                // --------------------------
-                var postfix = new HarmonyMethod(
-                    typeof(DropPodUtility_Patch),
-                    nameof(DropPodUtility_Patch.DropThingGroupsNear_Postfix)
-                );
+            //    // --------------------------
+            //    // 定义补丁方法（Postfix）
+            //    // --------------------------
+            //    var postfix = new HarmonyMethod(
+            //        typeof(DropPodUtility_Patch),
+            //        nameof(DropPodUtility_Patch.DropThingGroupsNear_Postfix)
+            //    );
 
-                // 设置补丁执行顺序（可选：确保在其他补丁之后执行）
-                postfix.after = new[] { "other.mod.id.patch" };
+            //    // 设置补丁执行顺序（可选：确保在其他补丁之后执行）
+            //    postfix.after = new[] { "other.mod.id.patch" };
 
-                // --------------------------
-                // 应用 Postfix 补丁
-                // --------------------------
-                harmony.Patch(
-                    original: targetMethod,
-                    postfix: postfix
-                );
+            //    // --------------------------
+            //    // 应用 Postfix 补丁
+            //    // --------------------------
+            //    harmony.Patch(
+            //        original: targetMethod,
+            //        postfix: postfix
+            //    );
 
-              //  Log.Message($"[EliteRaid] 成功为 {nameof(DropPodUtility.DropThingGroupsNear)} 添加 Postfix 补丁！");
-            } catch (Exception ex)
-            {
-                Log.Error($"[EliteRaid] 注册 DropThingGroupsNear 补丁失败: {ex.Message}");
-                Log.Error(ex.StackTrace);
-            }
+            //  //  Log.Message($"[EliteRaid] 成功为 {nameof(DropPodUtility.DropThingGroupsNear)} 添加 Postfix 补丁！");
+            //} catch (Exception ex)
+            //{
+            //    Log.Error($"[EliteRaid] 注册 DropThingGroupsNear 补丁失败: {ex.Message}");
+            //    Log.Error(ex.StackTrace);
+            //}
        
 
             //GeneratePawns
@@ -335,7 +338,7 @@ namespace EliteRaid
             //GenerateAnimals
             orgType = typeof(AggressiveAnimalIncidentUtility);
             orgName = nameof(AggressiveAnimalIncidentUtility.GenerateAnimals);
-            method = AccessTools.Method(orgType, orgName, new Type[] { typeof(PawnKindDef), typeof(int), typeof(float), typeof(int) });
+            method = AccessTools.Method(orgType, orgName, new Type[] { typeof(PawnKindDef), typeof(int[]), typeof(float), typeof(int) });
             if (General.m_CanTranspilerGenerateAnimals)
             {
                 try
@@ -350,22 +353,35 @@ namespace EliteRaid
                         null,
                         null,
                         new HarmonyMethod(typeof(ManhunterPackIncidentUtility_Patch), nameof(ManhunterPackIncidentUtility_Patch.GenerateAnimals_Finalizer), new Type[] { typeof(Exception), typeof(List<Pawn>).MakeByRefType(), typeof(PawnKindDef) }) { methodType = MethodType.Normal });
-                    General.SendLog_Debug(General.MessageTypes.Debug, String.Format("[{0}.{1}] Transpiler patched!!", orgType.FullName, orgName));
+                  //  Log.Message("GenerateAnimals_Transpiler和GenerateAnimals_Finalizer成功注册!");
                 } catch (Exception ex)
                 {
-                    General.SendLog_Debug(General.MessageTypes.DebugError, String.Format("[{0}.{1}] Patch Failed!! reason:{2}{3}", orgType.FullName, orgName, Environment.NewLine, ex.ToString()));
+                  //  Log.Message("GenerateAnimals_Transpiler和GenerateAnimals_Finalizer注册失败!");
                 }
             } else
             {
                 try
                 {
-                    harmony.Patch(method,
-                        new HarmonyMethod(typeof(ManhunterPackIncidentUtility_Patch), nameof(ManhunterPackIncidentUtility_Patch.GenerateAnimals_Prefix), new Type[] { typeof(List<Pawn>).MakeByRefType(), typeof(PawnKindDef), typeof(int), typeof(float), typeof(int) }) { methodType = MethodType.Normal });
+                    harmony.Patch(
+          method,
+          new HarmonyMethod(
+              typeof(ManhunterPackIncidentUtility_Patch),
+              nameof(ManhunterPackIncidentUtility_Patch.GenerateAnimals_Prefix),
+              new Type[] {
+                typeof(List<Pawn>).MakeByRefType(),
+                typeof(PawnKindDef),
+                typeof(int[]),
+                typeof(float),
+                typeof(int)
+              }
+          )
+          { methodType = MethodType.Normal }
+      );
 
-                    General.SendLog_Debug(General.MessageTypes.Debug, String.Format("[{0}.{1}] Prefix patched!!", orgType.FullName, orgName));
+                 //   Log.Message("GenerateAnimals_Prefix成功注册!");
                 } catch (Exception ex)
                 {
-                    General.SendLog_Debug(General.MessageTypes.DebugError, String.Format("[{0}.{1}] Patch Failed!! reason:{2}{3}", orgType.FullName, orgName, Environment.NewLine, ex.ToString()));
+                  //  Log.Message("GenerateAnimals_Prefix注册失败!");
                 }
             }
 
@@ -455,7 +471,7 @@ namespace EliteRaid
             MethodInfo methodGenerateAnimals_TestTramspiler = AccessTools.Method(typeof(ManhunterPackIncidentUtility_Patch), nameof(ManhunterPackIncidentUtility_Patch.GenerateAnimals_Test_Transpiler), new Type[] { typeof(IEnumerable<CodeInstruction>) });
             try
             {
-                orgMethod = AccessTools.Method(typeof(AggressiveAnimalIncidentUtility), nameof(AggressiveAnimalIncidentUtility.GenerateAnimals), new Type[] { typeof(PawnKindDef), typeof(int), typeof(float), typeof(int) });
+                orgMethod = AccessTools.Method(typeof(AggressiveAnimalIncidentUtility), nameof(AggressiveAnimalIncidentUtility.GenerateAnimals), new Type[] { typeof(PawnKindDef), typeof(int[]), typeof(float), typeof(int) });
                 harmony.Patch(orgMethod,
                     null,
                     null,
@@ -611,8 +627,9 @@ namespace EliteRaid
             return __exception;
         }
 
-        internal static bool GenerateAnimals_Prefix(ref List<Pawn> __result, PawnKindDef animalKind, int tile, float points, int animalCount = 0)
+        internal static bool GenerateAnimals_Prefix(ref List<Pawn> __result, PawnKindDef animalKind, int[] tile, float points, int animalCount = 0)
         {
+            Log.Message("[EliteRaid] GenerateAnimals_Prefix 被调用！");
             if (EliteRaidMod.modEnabled || !EliteRaidMod.allowAnimalsValue)
             {
                 return true;
@@ -620,13 +637,9 @@ namespace EliteRaid
 
             List<Pawn> list = new List<Pawn>();
             int baseNum = (animalCount > 0) ? animalCount : AggressiveAnimalIncidentUtility.GetAnimalsCount(animalKind, points);
-            int maxPawnNum = EliteRaidMod.maxRaidEnemy;
-
-            if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
-            {
-                int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
-                maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
-            }
+            int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
+            maxPawnNum = Math.Max(1, maxPawnNum);
+            maxPawnNum = Math.Min(maxPawnNum, baseNum);
             // 新增：使用PatchContinuityHelper存储原始参数
             PatchContinuityHelper.SetCompressWork_GenerateAnimals(animalKind, baseNum);
 
@@ -713,15 +726,10 @@ namespace EliteRaid
             {
                 // 复用动物生成的处理逻辑（简化版）
                 
-                int maxPawnNum = EliteRaidMod.maxRaidEnemy;
-                int baseNum = __result.Count;
-
-                if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
-                {
-                    int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
-                    maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
-                }
-
+                int baseNum = (int)points;
+                int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
+                maxPawnNum = Math.Max(1, maxPawnNum);
+                maxPawnNum = Math.Min(maxPawnNum, baseNum);
 
                 if (maxPawnNum < baseNum && EliteRaidMod.allowEntitySwarmValue)
                 {
@@ -821,7 +829,7 @@ namespace EliteRaid
             List<Pawn> nonCompressiblePawns = new List<Pawn>(); // 存储不可压缩的pawn
 
             // 添加安全退出条件，防止无限循环
-            int maxAttempts = Math.Max(baseNum * 2, 100); // 最多尝试2倍的基础数量或100次
+            int maxAttempts = Math.Min(Math.Max(baseNum * 2, 100), 500); // 最多尝试2倍基础数量，最大不超过500次
             int attempts = 0;
 
             // 修改循环逻辑，确保生成足够的pawn
@@ -834,42 +842,12 @@ namespace EliteRaid
                 float biocodeWeaponsChance = parms.biocodeWeaponsChance;
                 float biocodeApparelChance = parms.biocodeApparelChance;
 
-                Pawn pawn = null;
-                try
-                {
-                    if (parms.faction == Faction.OfHoraxCult)
-                    {
-                        PawnGenerationContext pawnGenerationContext = PawnGenerationContext.NonPlayer;
-                        int num = -1;
-                        bool flag = false;
-                        bool flag2 = false;
-                        bool flag3 = false;
-                        bool flag4 = true;
-                        bool flag5 = true;
-                        float num2 = 1f;
-                        bool flag6 = false;
-                        bool flag7 = true;
-                        bool flag8 = false;
-                        Log.Message("执行了，为心灵仪式定制的生成函数"+ parms.faction);
-                        pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, pawnGenerationContext, num, flag, flag2, flag3, flag4, flag5, num2, flag6, flag7, flag8,false, true, false, false, false, false, biocodeWeaponsChance, biocodeApparelChance, null, 1f, null, null, null, null, null, null, null, null, null, null, null, null, false, false, false, false, null, null, null, null, null, 0f, DevelopmentalStage.Adult, null, null, null, false, false, false, -1, 0, false)
-                        {
-                            BiocodeApparelChance = 1f,
-                             ForcedXenotype = XenotypeDefOf.Baseliner ,
-                             ProhibitedTraits=new List<TraitDef>() { TraitDef.Named("psychically deaf") }//禁止心灵仪式出现心灵失聪
-                         });
-                    } else
-                    {
-                        Log.Message("输出阵营" + parms.faction);
-                        pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
-                        {
-                            BiocodeApparelChance = 1f
-                        });
-                    }
-                } catch (Exception ex)
-                {
-                    Log.Error($"[EliteRaid] 生成pawn时出错: {ex.Message}");
-                    continue; // 尝试生成下一个pawn
-                }
+                Log.Message("捕获到当前生成的敌人阵营"+ parms.faction);
+          
+                Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
+               {
+                   BiocodeApparelChance = 1f
+                });
 
                 if (pawn != null)
                 {
@@ -899,7 +877,7 @@ namespace EliteRaid
                                     bool powerupEnable = PowerupUtility.TrySetStatModifierToHediff(powerup, eliteLevel);
                                     if (powerupEnable)
                                     {
-                                        enhancedCount++;
+                                 //       Log.Message($"[EliteRaid] 虫族已增强: {pawn.LabelCap} → Level {eliteLevel.Level}");
                                     }
                                 }
                             }
@@ -971,6 +949,20 @@ namespace EliteRaid
                 // 未能生成任何pawn时让原始方法处理
                 return true;
             }
+
+            // 新增：尝试次数超限时警告并用当前结果
+            if (attempts >= maxAttempts)
+            {
+                Log.Warning($"[EliteRaid] 生成敌人达到最大尝试次数({maxAttempts})，实际生成{list.Count}，期望{parms.pawnCount}。可能有pawnKind/faction配置问题。");
+                if (list.Count == 0)
+                {
+                    Messages.Message("EliteRaid: 敌人生成失败，未能生成任何单位！", MessageTypeDefOf.NegativeEvent, true);
+                }
+                else
+                {
+                    Messages.Message($"EliteRaid: 只生成了{list.Count}个敌人（期望{parms.pawnCount}），请检查mod兼容性或pawnKind配置。", MessageTypeDefOf.NegativeEvent, true);
+                }
+            }
         }
 
 
@@ -991,16 +983,10 @@ namespace EliteRaid
             }
         }
 
-        public static float GetcompressionRatio(int baseNum,int maxPawnNum)
+        public static float GetcompressionRatio(int baseNum, int maxPawnNum)
         {
-            float compressionRatio = (float)(Math.Ceiling((double)(baseNum / maxPawnNum)));
-            if (EliteRaidMod.useCompressionRatio)
-            {
-                return EliteRaidMod.compressionRatio;
-            } else
-            {
-                return compressionRatio;
-            }
+            if (maxPawnNum <= 0) return 1f;
+            return (float)baseNum / maxPawnNum;
         }
     }
     #endregion
@@ -1071,7 +1057,9 @@ namespace EliteRaid
                 }
 
                 int baseNum = num;
-                int maxPawnNum = EliteRaidMod.maxRaidEnemy;
+                int maxPawnNum = Math.Min((int)(baseNum / EliteRaidMod.compressionRatio), EliteRaidMod.maxRaidEnemy);
+                maxPawnNum = Math.Max(1, maxPawnNum);
+                maxPawnNum = Math.Min(maxPawnNum, baseNum);
 
               //  Log.Message($"[EliteRaid] 虫族基础数量计算完成: {baseNum}");
              //   Log.Message($"[EliteRaid] 最大允许数量: {maxPawnNum}");
@@ -1080,14 +1068,6 @@ namespace EliteRaid
                 {
                   //  Log.Message($"[EliteRaid] 虫族数量不需要压缩 ({baseNum} ≤ {maxPawnNum})，使用原始逻辑");
                     return true;
-                }
-
-                // 应用压缩比例
-                if (EliteRaidMod.useCompressionRatio && baseNum > StaticVariables.DEFAULT_MAX_ENEMY)
-                {
-                    int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
-                    maxPawnNum = Math.Max(temp, EliteRaidMod.maxRaidEnemy);
-                  //  Log.Message($"[EliteRaid] 应用压缩比例: {EliteRaidMod.compressionRatio}x → 压缩后数量: {maxPawnNum}");
                 }
 
                 // 生成压缩后的pawns列表
@@ -1142,7 +1122,9 @@ namespace EliteRaid
                       forceNoGear: false
                   );
 
+                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L1160] 调用PawnGenerator.GeneratePawn, pawnKind={request.KindDef?.defName}, faction={request.Faction?.Name ?? request.Faction?.ToString() ?? "null"}");
                         Pawn pawn = PawnGenerator.GeneratePawn(request);
+                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L1160] PawnGenerator.GeneratePawn结果: {(pawn == null ? "null" : pawn.LabelCap)}");
                         if (pawn != null)
                         {
                             list.Add(pawn);
