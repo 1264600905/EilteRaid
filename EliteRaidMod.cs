@@ -289,9 +289,9 @@ namespace EliteRaid
             DrawCheckbox(ref y, viewRect.width, "allowMechanoidsValue", "allowMechanoidsValue".Translate(),
                 ref settings.allowMechanoidsValue, "allowMechanoidsValueDesc".Translate());
 
-            //// 昆虫
-            //DrawCheckbox(ref y, viewRect.width, "allowInsectoidsValue", "allowInsectoidsValue".Translate(),
-            //    ref settings.allowInsectoidsValue, "allowInsectoidsValueDesc".Translate());
+            // 昆虫
+            DrawCheckbox(ref y, viewRect.width, "allowInsectoidsValue", "allowInsectoidsValue".Translate(),
+                ref settings.allowInsectoidsValue, "allowInsectoidsValueDesc".Translate());
 
             // 群体实体
             DrawCheckbox(ref y, viewRect.width, "allowEntitySwarmValue", "allowEntitySwarmValue".Translate(),

@@ -30,6 +30,9 @@ namespace EliteRaid
             
             // 初始化体型修改功能
             Log.Message("[EliteRaid] 体型修改功能已初始化");
+            
+            // 确认虫巢生成补丁已加载
+            Log.Message("[EliteRaid] HiveSpawnLoggerPatch 补丁已加载");
         }
 
         struct TargetMethod
