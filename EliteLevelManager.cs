@@ -338,13 +338,13 @@ namespace EliteRaid
                 int elitesActuallyGenerated = phase1Result.elitesActuallyGenerated;
              //   Log.Message($"[EliteRaid] Phase 1 complete: {elitesActuallyGenerated} elites, consuming {currentSlotsFilled}/{originalCount} slots.");
 
-                // 阶段2: 升级低等级精英以填满空间
+                // 阶段2: 升级低等级精英以填满空间（改进版）
                 var phase2Result = UpgradeElitesToFillSpace(validConfigs, currentLevelDistribution, currentSlotsFilled, originalCount);
                 currentSlotsFilled = phase2Result.currentSlotsFilled;
                 int currentElites = phase2Result.currentElites;
              //   Log.Message($"[EliteRaid] After upgrade: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots.");
 
-                // 阶段3: 降级高等级精英以调整数量
+                // 阶段3: 降级高等级精英以调整数量（改进版）
                 currentElites = DowngradeElitesToAdjustCount(validConfigs, currentLevelDistribution, currentSlotsFilled, originalCount, currentElites, targetMinElites, targetMaxElites);
                 Log.Message($"[EliteRaid] After downgrade: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots.");
 
@@ -425,10 +425,10 @@ namespace EliteRaid
             int finalSlotsFilled = currentLevelDistribution.Sum(e => e.Key.CompressionRatio * e.Value);
             double finalUtilization = (double)finalSlotsFilled / originalCount;
             int finalElitesGenerated = currentLevelDistribution.Sum(e => e.Value);
-           // Log.Message("[EliteRaid] Final Generated Elite Distribution:");
+            Log.Message("[EliteRaid] Final Generated Elite Distribution:");
             foreach (var entry in currentLevelDistribution.OrderBy(e => e.Key.Level))
             {
-                Console.WriteLine($"  Level {entry.Key.Level}: Count={entry.Value} (CR: {entry.Key.CompressionRatio})");
+                Log.Message($"  Level {entry.Key.Level}: Count={entry.Value} (CR: {entry.Key.CompressionRatio})");
             }
 
          //   Log.Message($"[EliteRaid] Total elites: {currentLevelDistribution.Sum(e => e.Value)}");
@@ -489,6 +489,12 @@ namespace EliteRaid
                     int currentLevelCount = generatedByLevel.GetValueOrDefault(config.Level, 0);
                     double levelBalanceFactor = 1.0 / (currentLevelCount + 1);
 
+                    // 新增：在高压缩率情况下，大幅降低0级敌人的生成概率
+                    if (config.Level == 0 && EliteRaidMod.compressionRatio >= 5)
+                    {
+                        levelBalanceFactor *= 0.1; // 降低90%的0级敌人生成概率
+                    }
+
                     double dynamicProb = baseProb * crFactor * levelBalanceFactor;
                     dynamicProbabilities[config] = dynamicProb;
                     dynamicTotalProb += dynamicProb;
@@ -546,9 +552,9 @@ namespace EliteRaid
             // 强制补足保底数量（更智能的补足策略）
             if (elitesActuallyGenerated < minGuaranteedElites)
             {
-                // 优先使用低压缩比精英补足
+                // 优先使用低压缩比精英补足，但避免0级敌人
                 var lowCrConfigs = validConfigs
-                    .Where(c => c.CompressionRatio <= 3)
+                    .Where(c => c.CompressionRatio <= 3 && c.Level > 0) // 排除0级敌人
                     .OrderBy(c => c.CompressionRatio)
                     .ToList();
 
@@ -566,7 +572,24 @@ namespace EliteRaid
                         elitesActuallyGenerated += addCount;
                     }
                 }
+                else
+                {
+                    // 如果实在没有其他选择，才使用0级敌人
+                    var zeroLevelConfig = validConfigs.FirstOrDefault(c => c.Level == 0);
+                    if (zeroLevelConfig != null)
+                    {
+                        int neededElites = minGuaranteedElites - elitesActuallyGenerated;
+                        int availableSlots = originalCount - currentSlotsFilled;
+                        int addCount = Math.Min(neededElites, availableSlots);
 
+                        if (addCount > 0)
+                        {
+                            currentLevelDistribution[zeroLevelConfig] = currentLevelDistribution.GetValueOrDefault(zeroLevelConfig, 0) + addCount;
+                            currentSlotsFilled += addCount;
+                            elitesActuallyGenerated += addCount;
+                        }
+                    }
+                }
             }
 
             if (iterations >= maxIterations)
@@ -599,22 +622,26 @@ namespace EliteRaid
                 }
             }
 
-            // 阶段2.1：优先升级0级精英
+            // 阶段2.1：优先升级0级精英（但限制升级数量）
             var zeroLevelConfig = validConfigs.FirstOrDefault(c => c.Level == 0);
             if (zeroLevelConfig != null && levelDistribution.TryGetValue(zeroLevelConfig, out int zeroCount) && zeroCount > 0)
             {
+                // 在高压缩率情况下，限制0级敌人的升级数量
+                int maxUpgradesFromZero = EliteRaidMod.compressionRatio >= 5 ? 
+                    Math.Min(zeroCount, 2) : zeroCount; // 高压缩率时最多升级2个0级敌人
+
                 // 寻找可以升级的最低等级
                 var upgradeCandidates = validConfigs
-      .Where(c => levelDistribution.ContainsKey(c) && levelDistribution[c] > 0 && c.Level < EliteRaidMod.maxAllowLevel)
-      .OrderByDescending(c => c.CompressionRatio)
-      .ToList();
+                    .Where(c => levelDistribution.ContainsKey(c) && levelDistribution[c] > 0 && c.Level < EliteRaidMod.maxAllowLevel)
+                    .OrderByDescending(c => c.CompressionRatio)
+                    .ToList();
 
                 foreach (var candidate in upgradeCandidates)
                 {
                     int slotsPerUpgrade = candidate.CompressionRatio - zeroLevelConfig.CompressionRatio;
                     if (slotsPerUpgrade <= 0) continue;
 
-                    int maxUpgrades = Math.Min(zeroCount, (originalCount - currentSlotsFilled) / slotsPerUpgrade);
+                    int maxUpgrades = Math.Min(maxUpgradesFromZero, (originalCount - currentSlotsFilled) / slotsPerUpgrade);
                     if (maxUpgrades <= 0) continue;
 
                     levelDistribution[zeroLevelConfig] -= maxUpgrades;
@@ -623,9 +650,9 @@ namespace EliteRaid
                     currentElites = levelDistribution.Sum(e => e.Value);
 
                     Console.WriteLine($"[EliteRaid] Upgraded {maxUpgrades} x Level0 to Level{candidate.Level}.");
-                    zeroCount -= maxUpgrades;
+                    maxUpgradesFromZero -= maxUpgrades;
 
-                    if (currentSlotsFilled >= originalCount || zeroCount <= 0) break;
+                    if (currentSlotsFilled >= originalCount || maxUpgradesFromZero <= 0) break;
                 }
             }
 
@@ -638,8 +665,8 @@ namespace EliteRaid
 
                 // 寻找最佳升级目标（最大化空间利用）
                 var possibleTargets = validConfigs
-          .Where(c => c.Level > sourceLevel && c.Level <= EliteRaidMod.maxAllowLevel)
-          .ToList();
+                    .Where(c => c.Level > sourceLevel && c.Level <= EliteRaidMod.maxAllowLevel)
+                    .ToList();
 
                 foreach (var targetConfig in possibleTargets)
                 {
@@ -690,9 +717,9 @@ namespace EliteRaid
                 if (!levelDistribution.TryGetValue(sourceConfig, out int sourceCount) || sourceCount <= 0)
                     continue;
 
-                // 寻找最佳降级目标（最大化精英数量）
+                // 寻找最佳降级目标（最大化精英数量，但避免0级）
                 var possibleTargets = validConfigs
-                    .Where(c => c.Level < sourceConfig.Level && c.CompressionRatio > 0)
+                    .Where(c => c.Level < sourceConfig.Level && c.Level > 0 && c.CompressionRatio > 0) // 不降到0级
                     .ToList();
 
                 foreach (var targetConfig in possibleTargets)
@@ -724,9 +751,9 @@ namespace EliteRaid
                 }
             }
 
-            // 如果仍然不足，使用0级精英补足
+            // 如果仍然不足，且压缩率不高，才使用0级精英补足
             var zeroLevelConfig = validConfigs.FirstOrDefault(c => c.Level == 0);
-            if (zeroLevelConfig != null && currentElites < targetMinElites)
+            if (zeroLevelConfig != null && currentElites < targetMinElites && EliteRaidMod.compressionRatio < 5)
             {
                 int neededElites = targetMinElites - currentElites;
                 int availableSlots = originalCount - currentSlotsFilled;
@@ -840,7 +867,7 @@ namespace EliteRaid
                     int currentCount = levelDistribution[sourceConfig];
                     if (currentCount <= 0) continue;
 
-                    // 寻找最佳降级目标（压缩比适中，能增加数量的）
+                    // 寻找最佳降级目标（压缩比适中，能增加数量的，但避免0级）
                     var possibleTargets = validConfigs
                         .Where(c => c.Level < sourceConfig.Level && c.Level > 0) // 不降到0级
                         .OrderBy(c => c.CompressionRatio)
@@ -880,18 +907,27 @@ namespace EliteRaid
                 }
             }
 
-            // 策略3: 用0级精英填充剩余空间
+            // 策略3: 用0级精英填充剩余空间（但限制使用）
             if (currentSlotsFilled < originalCount)
             {
                 var zeroLevelConfig = validConfigs.FirstOrDefault(c => c.Level == 0);
                 if (zeroLevelConfig != null)
                 {
-                    int addCount = originalCount - currentSlotsFilled;
-                    levelDistribution[zeroLevelConfig] = levelDistribution.GetValueOrDefault(zeroLevelConfig, 0) + addCount;
-                    currentSlotsFilled = originalCount;
-                    currentElites = levelDistribution.Sum(e => e.Value);
+                    // 在高压缩率情况下，限制0级敌人的使用
+                    int maxZeroLevelToAdd = EliteRaidMod.compressionRatio >= 5 ? 
+                        Math.Min(originalCount - currentSlotsFilled, 3) : // 高压缩率时最多添加3个0级敌人
+                        originalCount - currentSlotsFilled;
+                    
+                    int addCount = maxZeroLevelToAdd;
+                    
+                    if (addCount > 0)
+                    {
+                        levelDistribution[zeroLevelConfig] = levelDistribution.GetValueOrDefault(zeroLevelConfig, 0) + addCount;
+                        currentSlotsFilled = originalCount;
+                        currentElites = levelDistribution.Sum(e => e.Value);
 
-                    Console.WriteLine($"[EliteRaid] Final optimization: Added {addCount} x Level0 to fill remaining space.");
+                        Console.WriteLine($"[EliteRaid] Final optimization: Added {addCount} x Level0 to fill remaining space.");
+                    }
                 }
             }
 
@@ -1070,6 +1106,52 @@ namespace EliteRaid
         {
             if (maxPawnNum <= 0) return 1f;
             return (float)baseNum / maxPawnNum;
+        }
+
+        // 添加调试方法：验证0级敌人生成控制效果
+        public static void TestZeroLevelGeneration()
+        {
+            if (!EliteRaidMod.displayMessageValue) return;
+            
+            Log.Message("=== 0级敌人生成控制测试 ===");
+            
+            // 测试不同压缩率下的0级敌人生成
+            var testCases = new[]
+            {
+                new { CompressionRatio = 3f, MaxRaidEnemy = 30, Description = "低压缩率" },
+                new { CompressionRatio = 5f, MaxRaidEnemy = 50, Description = "中压缩率" },
+                new { CompressionRatio = 8f, MaxRaidEnemy = 70, Description = "高压缩率" },
+                new { CompressionRatio = 10f, MaxRaidEnemy = 100, Description = "极高压缩率" }
+            };
+            
+            foreach (var testCase in testCases)
+            {
+                Log.Message($"--- {testCase.Description} 测试 (压缩率={testCase.CompressionRatio}, 最大袭击人数={testCase.MaxRaidEnemy}) ---");
+                
+                // 临时设置参数
+                EliteRaidMod.compressionRatio = testCase.CompressionRatio;
+                EliteRaidMod.maxRaidEnemy = testCase.MaxRaidEnemy;
+                EliteRaidMod.useCompressionRatio = true;
+                
+                // 测试不同原始袭击人数
+                int[] testNumbers = { 100, 200, 500, 1000 };
+                foreach (int originalCount in testNumbers)
+                {
+                    // 生成分布
+                    GenerateLevelDistribution(originalCount);
+                    
+                    // 统计0级敌人数量
+                    var zeroLevelConfig = GetEliteLevelConfigByLevel(0);
+                    int zeroLevelCount = currentLevelDistribution.TryGetValue(zeroLevelConfig, out int count) ? count : 0;
+                    int totalElites = currentLevelDistribution.Sum(e => e.Value);
+                    double zeroLevelRatio = totalElites > 0 ? (double)zeroLevelCount / totalElites : 0;
+                    
+                    Log.Message($"  原始{originalCount}人 → 0级敌人{zeroLevelCount}/{totalElites} ({zeroLevelRatio:P1})");
+                }
+                Log.Message("");
+            }
+            
+            Log.Message("=== 0级敌人生成控制测试结束 ===");
         }
     }
 

@@ -91,6 +91,7 @@ namespace EliteRaid
         // 在 GenerateAnything_Impl 方法中重构等级分配逻辑
         public static void GenerateAnything_Impl(List<Pawn> pawns, int baseNum, int maxPawnNum, bool raidFriendly)
         {
+            Log.Message($"[EliteRaid] GenerateAnything_Impl: baseNum={baseNum}, maxPawnNum={maxPawnNum}, raidFriendly={raidFriendly}");
             EliteLevelManager.GenerateLevelDistribution(baseNum);
             int enhancePawnNumber = EliteLevelManager.getCurrentLevelDistributionNum();
             int enhancedCount = 0;

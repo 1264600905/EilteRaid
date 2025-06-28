@@ -190,7 +190,7 @@ namespace EliteRaid
 
         public override string SettingsCategory()
         {
-            return "EliteRaidSettingsCategory".Translate()+"(v1.3.2)";
+            return "EliteRaidSettingsCategory".Translate()+"(v1.3.3)";
         }
         public int timer = 0;
         public void Tick()
@@ -684,8 +684,9 @@ namespace EliteRaid
             {
                 Log.Message($"[EliteRaid] 设置同步: maxRaidEnemy={EliteRaidMod.maxRaidEnemy}, useCompressionRatio={EliteRaidMod.useCompressionRatio}, compressionRatio={EliteRaidMod.compressionRatio}");
                 
-                // 测试压缩逻辑
-                General.TestCompressionLogic();
+                
+                // 测试0级敌人生成控制
+                EliteLevelManager.TestZeroLevelGeneration();
             }
             
             ApplyRaidScaleIfNeeded();
