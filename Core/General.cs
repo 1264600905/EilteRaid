@@ -207,39 +207,27 @@ namespace EliteRaid
             {
                 int finalNum = GetenhancePawnNumber(baseNum);
                 Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum, finalNum,
-                    GetcompressionRatio(baseNum, maxPawnNum), finalNum), MessageTypeDefOf.NeutralEvent, true);
+                    baseNum/finalNum, finalNum), MessageTypeDefOf.NeutralEvent, true);
             }
         }
         public static float GetcompressionRatio(int baseNum, int maxPawnNum)
         {
-            float compressionRatio = (float)(Math.Ceiling((double)(baseNum  / maxPawnNum)));
-            if (EliteRaidMod.useCompressionRatio)
-            {
-                return EliteRaidMod.compressionRatio;
-            } else
-            {
-                return compressionRatio;
-            }
+            if (maxPawnNum <= 0) return 1f;
+            return (float)baseNum / maxPawnNum;
         }
-
 
         public static int GetenhancePawnNumber(int baseNum)
         {
             int tempNum = (int)(baseNum / EliteRaidMod.compressionRatio);
-          //  Log.Message("baseNum是" + baseNum + "EliteRaidMod" + EliteRaidMod.compressionRatio + "结果是" + tempNum);
             if (EliteRaidMod.useCompressionRatio)
             {
-                if(tempNum< EliteRaidMod.maxRaidEnemy)
-                {
-                    return EliteRaidMod.maxRaidEnemy;
-                }
-                return tempNum;
-            } else
+                return Math.Max(1, Math.Min(tempNum, EliteRaidMod.maxRaidEnemy));
+            }
+            else
             {
-                return EliteRaidMod.maxRaidEnemy;
+                return Math.Max(1, EliteRaidMod.maxRaidEnemy);
             }
         }
-
 
         internal static void GeneratePawns_Impl(PawnGroupMakerParms parms, List<Pawn> pawns)
         {
@@ -286,16 +274,28 @@ namespace EliteRaid
                     if (pawns[i] != null )
                     {
                         // 生成保底人类单位
+                        string pawnKindName = pawns[i].RaceProps.Animal ? pawns[i].kindDef.defName : "null";
+                        string factionName = pawns[i].Faction != null ? (pawns[i].Faction.Name ?? pawns[i].Faction.ToString()) : "null";
+                        Log.Message($"[EliteRaid][General.cs@L288] 调用PawnGenerator.GeneratePawn, pawnKind={pawnKindName}, faction={factionName}");
                         Pawn atleastOnePerson = PawnGenerator.GeneratePawn(new PawnGenerationRequest(
-                             parms.faction.RandomPawnKind(),
-                             parms.faction,
+                             pawns[i].RaceProps.Animal ? pawns[i].kindDef : null,
+                             pawns[i].Faction,
                              PawnGenerationContext.NonPlayer,
                              -1,
-                             forceGenerateNewPawn: true,
+                             forceGenerateNewPawn: false,
+                             allowDead: false,
+                             allowDowned: false,
+                             canGeneratePawnRelations: false,
                              mustBeCapableOfViolence: true,
-                             biocodeWeaponChance: 0.7f,
-                             biocodeApparelChance: 0.7f
-                         ));
+                             colonistRelationChanceFactor: 1f,
+                             forceAddFreeWarmLayerIfNeeded: false,
+                             allowGay: true,
+                             allowFood: false,
+                             allowAddictions: false,
+                             inhabitant: false,
+                             certainlyBeenInCryptosleep: false,
+                             forceRedressWorldPawnIfFormerColonist: false));
+                        Log.Message($"[EliteRaid][General.cs@L288] PawnGenerator.GeneratePawn结果: {(atleastOnePerson == null ? "null" : atleastOnePerson.LabelCap)}");
                         PawnWeaponChager.CheckAndReplaceMainWeapon(atleastOnePerson);
                         pawns.Replace(animalPawns[i],atleastOnePerson);
                          Log.Message($"[EliteRaid] 添加保底人类单位: {atleastOnePerson.LabelCap}");

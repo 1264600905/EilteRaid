@@ -433,7 +433,7 @@ namespace EliteRaid
                     
                     if (EliteRaidMod.displayMessageValue)
                     {
-                        Log.Message($"[EliteRaid] 恢复体型修改: {pawn.LabelCap} 体型系数={data.ScaleFactor:F2}, 偏移量={sizeOffset:F2}");
+                      //  Log.Message($"[EliteRaid] 恢复体型修改: {pawn.LabelCap} 体型系数={data.ScaleFactor:F2}, 偏移量={sizeOffset:F2}");
                     }
                 }
 

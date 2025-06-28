@@ -121,34 +121,51 @@ namespace EliteRaid
         }
         public static Pawn TryGeneratePawn(PawnKindDef pawnKind, Faction faction)
         {
+            Log.Message($"[EliteRaid][PatchContinuityHelper.cs:TryGeneratePawn@L141] 调用PawnGenerator.GeneratePawn, pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}");
             Pawn pawn = null;
-            if (faction == Faction.OfHoraxCult)
+            try
             {
-                PawnGenerationContext pawnGenerationContext = PawnGenerationContext.NonPlayer;
-                int num = -1;
-                bool flag = false;
-                bool flag2 = false;
-                bool flag3 = false;
-                bool flag4 = true;
-                bool flag5 = true;
-                float num2 = 1f;
-                bool flag6 = false;
-                bool flag7 = true;
-                bool flag8 = false;
-                Log.Message("执行了，为心灵仪式定制的生成函数" + faction);
-                pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, pawnGenerationContext, num, flag, flag2, flag3, flag4, flag5, num2, flag6, flag7, flag8, false, true, false, false, false, false, 0.7f, 0.8f, null, 1f, null, null, null, null, null, null, null, null, null, null, null, null, false, false, false, false, null, null, null, null, null, 0f, DevelopmentalStage.Adult, null, null, null, false, false, false, -1, 0, false)
+                if (faction == Faction.OfHoraxCult)
                 {
-                    BiocodeApparelChance = 1f,
-                    ForcedXenotype = XenotypeDefOf.Baseliner,
-                    ProhibitedTraits = new List<TraitDef>() { TraitDef.Named("psychically deaf") }//禁止心灵仪式出现心灵失聪
-                });
-            } else
+                    PawnGenerationContext pawnGenerationContext = PawnGenerationContext.NonPlayer;
+                    int num = -1;
+                    bool flag = false;
+                    bool flag2 = false;
+                    bool flag3 = false;
+                    bool flag4 = true;
+                    bool flag5 = true;
+                    float num2 = 1f;
+                    bool flag6 = false;
+                    bool flag7 = true;
+                    bool flag8 = false;
+                    Log.Message($"[EliteRaid][TryGeneratePawn] HoraxCult专用生成: pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}");
+                    pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, pawnGenerationContext, num, flag, flag2, flag3, flag4, flag5, num2, flag6, flag7, flag8, false, true, false, false, false, false, 0.7f, 0.8f, null, 1f, null, null, null, null, null, null, null, null, null, null, null, null, false, false, false, false, null, null, null, null, null, 0f, DevelopmentalStage.Adult, null, null, null, false, false, false, -1, 0, false)
+                    {
+                        BiocodeApparelChance = 1f,
+                        ForcedXenotype = XenotypeDefOf.Baseliner,
+                        ProhibitedTraits = new List<TraitDef>() { TraitDef.Named("psychically deaf") }
+                    });
+                }
+                else
+                {
+                    Log.Message($"[EliteRaid][TryGeneratePawn] 普通阵营生成: pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}");
+                    pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: 0.8f, biocodeApparelChance: 0.8f, allowFood: true)
+                    {
+                        BiocodeApparelChance = 1f
+                    });
+                }
+                if (pawn == null)
+                {
+                    Log.Warning($"[EliteRaid][TryGeneratePawn] 生成失败: pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}");
+                }
+                else
+                {
+                    Log.Message($"[EliteRaid][TryGeneratePawn] 生成成功: pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}, pawn={pawn.LabelCap} ({pawn.GetType().Name})");
+                }
+            }
+            catch (Exception ex)
             {
-                Log.Message("输出阵营" + faction);
-                pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: 0.8f, biocodeApparelChance: 0.8f, allowFood: true)
-                {
-                    BiocodeApparelChance = 1f
-                });
+                Log.Error($"[EliteRaid][TryGeneratePawn] 生成异常: pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}, Exception={ex}");
             }
             return pawn;
         }

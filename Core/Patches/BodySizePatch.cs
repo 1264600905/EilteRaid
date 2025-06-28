@@ -54,7 +54,7 @@ namespace EliteRaid
 
             if (invalidPawns.Count > 0 && EliteRaidMod.displayMessageValue)
             {
-                Log.Message($"[EliteRaid] 清理了 {invalidPawns.Count} 个无效的体型修改引用");
+             //   Log.Message($"[EliteRaid] 清理了 {invalidPawns.Count} 个无效的体型修改引用");
             }
         }
 
@@ -67,19 +67,19 @@ namespace EliteRaid
             if (pawn == null || pawn.Destroyed) return;
 
             float originalSize = pawn.BodySize;
-            Log.Message($"[EliteRaid] 测试体型修改 - {pawn.LabelCap} 原始体型: {originalSize:F2}");
+          //  Log.Message($"[EliteRaid] 测试体型修改 - {pawn.LabelCap} 原始体型: {originalSize:F2}");
             
             // 测试增大体型
             SetBodySizeOffset(pawn, 0.5f);
-            Log.Message($"[EliteRaid] 测试体型修改 - {pawn.LabelCap} 增大后体型: {pawn.BodySize:F2}");
+           // Log.Message($"[EliteRaid] 测试体型修改 - {pawn.LabelCap} 增大后体型: {pawn.BodySize:F2}");
             
             // 测试减小体型
             SetBodySizeOffset(pawn, -0.3f);
-            Log.Message($"[EliteRaid] 测试体型修改 - {pawn.LabelCap} 减小后体型: {pawn.BodySize:F2}");
+           // Log.Message($"[EliteRaid] 测试体型修改 - {pawn.LabelCap} 减小后体型: {pawn.BodySize:F2}");
             
             // 恢复原始体型
             SetBodySizeOffset(pawn, 0f);
-            Log.Message($"[EliteRaid] 测试体型修改 - {pawn.LabelCap} 恢复后体型: {pawn.BodySize:F2}");
+           // Log.Message($"[EliteRaid] 测试体型修改 - {pawn.LabelCap} 恢复后体型: {pawn.BodySize:F2}");
         }
     }
 
@@ -102,7 +102,7 @@ namespace EliteRaid
                 
                 if (EliteRaidMod.displayMessageValue && Math.Abs(originalSize - __result) > 0.01f)
                 {
-                    Log.Message($"[EliteRaid] 体型修改: {__instance.LabelCap} 原始={originalSize:F2}, 修改后={__result:F2}, 偏移={offset:F2}");
+                  //  Log.Message($"[EliteRaid] 体型修改: {__instance.LabelCap} 原始={originalSize:F2}, 修改后={__result:F2}, 偏移={offset:F2}");
                 }
             }
         }

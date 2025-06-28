@@ -144,7 +144,7 @@ namespace EliteRaid
 
             // 计算最大可能的精英数量
             int maxPossibleElites = EliteRaidMod.useCompressionRatio
-                ? Math.Max(EliteRaidMod.maxRaidEnemy, (int)(originalCount / EliteRaidMod.compressionRatio))
+                ? Math.Min(EliteRaidMod.maxRaidEnemy, (int)(originalCount / EliteRaidMod.compressionRatio))
                 : EliteRaidMod.maxRaidEnemy;
 
             // 计算最高等级精英所需的原始人数
@@ -183,7 +183,7 @@ namespace EliteRaid
 
             // 计算最大可能的精英数量
             int maxPossibleElites = EliteRaidMod.useCompressionRatio
-                ? Math.Max(EliteRaidMod.maxRaidEnemy, (int)(originalCount / EliteRaidMod.compressionRatio))
+                ? Math.Min(EliteRaidMod.maxRaidEnemy, (int)(originalCount / EliteRaidMod.compressionRatio))
                 : EliteRaidMod.maxRaidEnemy;
 
             // 计算实际可以生成的精英数量
@@ -235,7 +235,7 @@ namespace EliteRaid
                 originalCount / validConfig.CompressionRatio,
                 EliteRaidMod.useCompressionRatio
                     ? (int)(originalCount / EliteRaidMod.compressionRatio)
-                    : StaticVariables.DEFAULT_MAX_ENEMY
+                    : EliteRaidMod.maxRaidEnemy
             );
            
             if (maxPossible > 0)
@@ -275,13 +275,13 @@ namespace EliteRaid
             }
 
             //  Log.Message($"[EliteRaid] Generating level distribution for originalCount: {originalCount}. MaxAllowedLevel: {7}, TargetMaxRaidEnemy: {20}, Difficulty: {EliteRaidMod.eliteRaidDifficulty}");
-            int maxRaidEnemy = StaticVariables.DEFAULT_MAX_ENEMY;
-            if (EliteRaidMod.useCompressionRatio&&originalCount>maxRaidEnemy)
+            int maxRaidEnemy = EliteRaidMod.maxRaidEnemy;
+            if (EliteRaidMod.useCompressionRatio && originalCount > maxRaidEnemy)
             {
                 int temp = (int)(originalCount / EliteRaidMod.compressionRatio);
-                maxRaidEnemy =Math.Max(temp,StaticVariables.DEFAULT_MAX_ENEMY);
+                maxRaidEnemy = Math.Min(temp, EliteRaidMod.maxRaidEnemy);
             }
-            maxRaidEnemy = General.GetenhancePawnNumber(originalCount);
+            maxRaidEnemy = GetenhancePawnNumber(originalCount);
             Log.Message("最大袭击人数"+maxRaidEnemy);
             const double minUtilizationThreshold = 0.80; // 80%的利用率阈值
             const int maxAttempts = 20; // 最大尝试次数
@@ -1073,6 +1073,25 @@ namespace EliteRaid
             }
 
             return availableConfigs;
+        }
+
+        public static int GetenhancePawnNumber(int baseNum)
+        {
+            int tempNum = (int)(baseNum / EliteRaidMod.compressionRatio);
+            if (EliteRaidMod.useCompressionRatio)
+            {
+                return Math.Max(1, Math.Min(tempNum, EliteRaidMod.maxRaidEnemy));
+            }
+            else
+            {
+                return Math.Max(1, EliteRaidMod.maxRaidEnemy);
+            }
+        }
+
+        public static float GetcompressionRatio(int baseNum, int maxPawnNum)
+        {
+            if (maxPawnNum <= 0) return 1f;
+            return (float)baseNum / maxPawnNum;
         }
     }
 

@@ -829,7 +829,7 @@ namespace EliteRaid
             List<Pawn> nonCompressiblePawns = new List<Pawn>(); // 存储不可压缩的pawn
 
             // 添加安全退出条件，防止无限循环
-            int maxAttempts = Math.Max(baseNum * 2, 100); // 最多尝试2倍的基础数量或100次
+            int maxAttempts = Math.Min(Math.Max(baseNum * 2, 100), 500); // 最多尝试2倍基础数量，最大不超过500次
             int attempts = 0;
 
             // 修改循环逻辑，确保生成足够的pawn
@@ -859,19 +859,23 @@ namespace EliteRaid
                         bool flag7 = true;
                         bool flag8 = false;
                         Log.Message("执行了，为心灵仪式定制的生成函数"+ parms.faction);
+                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L861] 调用PawnGenerator.GeneratePawn, pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}");
                         pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, pawnGenerationContext, num, flag, flag2, flag3, flag4, flag5, num2, flag6, flag7, flag8,false, true, false, false, false, false, biocodeWeaponsChance, biocodeApparelChance, null, 1f, null, null, null, null, null, null, null, null, null, null, null, null, false, false, false, false, null, null, null, null, null, 0f, DevelopmentalStage.Adult, null, null, null, false, false, false, -1, 0, false)
                         {
                             BiocodeApparelChance = 1f,
                              ForcedXenotype = XenotypeDefOf.Baseliner ,
                              ProhibitedTraits=new List<TraitDef>() { TraitDef.Named("psychically deaf") }//禁止心灵仪式出现心灵失聪
                          });
+                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L861] PawnGenerator.GeneratePawn结果: {(pawn == null ? "null" : pawn.LabelCap)}");
                     } else
                     {
                         Log.Message("输出阵营" + parms.faction);
+                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L870] 调用PawnGenerator.GeneratePawn, pawnKind={parms.pawnKind?.defName}, faction={parms.faction?.Name ?? parms.faction?.ToString() ?? "null"}");
                         pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
                         {
                             BiocodeApparelChance = 1f
                         });
+                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L870] PawnGenerator.GeneratePawn结果: {(pawn == null ? "null" : pawn.LabelCap)}");
                     }
                 } catch (Exception ex)
                 {
@@ -907,7 +911,7 @@ namespace EliteRaid
                                     bool powerupEnable = PowerupUtility.TrySetStatModifierToHediff(powerup, eliteLevel);
                                     if (powerupEnable)
                                     {
-                                        enhancedCount++;
+                                 //       Log.Message($"[EliteRaid] 虫族已增强: {pawn.LabelCap} → Level {eliteLevel.Level}");
                                     }
                                 }
                             }
@@ -979,6 +983,20 @@ namespace EliteRaid
                 // 未能生成任何pawn时让原始方法处理
                 return true;
             }
+
+            // 新增：尝试次数超限时警告并用当前结果
+            if (attempts >= maxAttempts)
+            {
+                Log.Warning($"[EliteRaid] 生成敌人达到最大尝试次数({maxAttempts})，实际生成{list.Count}，期望{parms.pawnCount}。可能有pawnKind/faction配置问题。");
+                if (list.Count == 0)
+                {
+                    Messages.Message("EliteRaid: 敌人生成失败，未能生成任何单位！", MessageTypeDefOf.NegativeEvent, true);
+                }
+                else
+                {
+                    Messages.Message($"EliteRaid: 只生成了{list.Count}个敌人（期望{parms.pawnCount}），请检查mod兼容性或pawnKind配置。", MessageTypeDefOf.NegativeEvent, true);
+                }
+            }
         }
 
 
@@ -999,16 +1017,10 @@ namespace EliteRaid
             }
         }
 
-        public static float GetcompressionRatio(int baseNum,int maxPawnNum)
+        public static float GetcompressionRatio(int baseNum, int maxPawnNum)
         {
-            float compressionRatio = (float)(Math.Ceiling((double)(baseNum / maxPawnNum)));
-            if (EliteRaidMod.useCompressionRatio)
-            {
-                return EliteRaidMod.compressionRatio;
-            } else
-            {
-                return compressionRatio;
-            }
+            if (maxPawnNum <= 0) return 1f;
+            return (float)baseNum / maxPawnNum;
         }
     }
     #endregion
@@ -1144,7 +1156,9 @@ namespace EliteRaid
                       forceNoGear: false
                   );
 
+                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L1160] 调用PawnGenerator.GeneratePawn, pawnKind={request.KindDef?.defName}, faction={request.Faction?.Name ?? request.Faction?.ToString() ?? "null"}");
                         Pawn pawn = PawnGenerator.GeneratePawn(request);
+                        Log.Message($"[EliteRaid][HarmonyPatches.cs@L1160] PawnGenerator.GeneratePawn结果: {(pawn == null ? "null" : pawn.LabelCap)}");
                         if (pawn != null)
                         {
                             list.Add(pawn);

@@ -112,7 +112,7 @@ namespace EliteRaid
                 
                 if (EliteRaidMod.displayMessageValue)
                 {
-                    Log.Message($"[EliteRaid] 应用体型修改: {hediff.pawn.LabelCap} 体型系数={eliteLevel.ScaleFactor:F2}, 偏移量={sizeOffset:F2}");
+                   // Log.Message($"[EliteRaid] 应用体型修改: {hediff.pawn.LabelCap} 体型系数={eliteLevel.ScaleFactor:F2}, 偏移量={sizeOffset:F2}");
                 }
             }
 
