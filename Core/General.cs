@@ -96,7 +96,6 @@ namespace EliteRaid
             int enhancePawnNumber = EliteLevelManager.getCurrentLevelDistributionNum();
             int enhancedCount = 0;
             int order = PowerupUtility.GetNewOrder(); // 保留原有逻辑（若需要）
-
             // 记录日志（根据配置）
             if (EliteRaidMod.useCompressionRatio && EliteRaidMod.displayMessageValue)
             {
@@ -279,11 +278,6 @@ namespace EliteRaid
 
            // Log.Message($"[EliteRaid] TryGetCompressWork_GeneratePawnsValues 结果: {tryGetSuccess}");
           //  Log.Message($"[EliteRaid] baseNum: {baseNum}, maxPawnNum: {maxPawnNum}, raidFriendly: {raidFriendly}");
-
-           if (pawns.Count<EliteRaidMod.maxRaidEnemy)
-            {
-                return;
-            }
 
             //平衡生成的动物和人类的数量
             int humanCount = pawns.Where(p => !p.RaceProps.Animal).ToList().Count ;
