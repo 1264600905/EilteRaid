@@ -28,12 +28,7 @@ namespace EliteRaid
             // harmony.PatchAll(Assembly.GetExecutingAssembly());
             BionicsDataStore.DataRestore();
             DrugHediffDataStore.DataRestore();
-            
-            // 初始化体型修改功能
-            Log.Message("[EliteRaid] 体型修改功能已初始化");
-            
-            // 确认虫巢生成补丁已加载
-            Log.Message("[EliteRaid] HiveSpawnLoggerPatch 补丁已加载");
+        
         }
 
         struct TargetMethod
@@ -410,6 +405,12 @@ namespace EliteRaid
             {
                 try
                 {
+                    // 应用 Prefix 补丁来拦截生成过程
+                    harmony.Patch(
+                        generateEntitiesMethod,
+                        new HarmonyMethod(typeof(EntitySwarmIncidentUtility_Patch), nameof(EntitySwarmIncidentUtility_Patch.GenerateEntities_Prefix))
+                    );
+
                     // 应用 Transpiler 补丁
                     harmony.Patch(
                         generateEntitiesMethod,
@@ -430,12 +431,84 @@ namespace EliteRaid
                     );
 
                     General.SendLog_Debug(General.MessageTypes.Debug,
-                        $"[IncidentWorker_EntitySwarm.GenerateEntities] Transpiler + Finalizer patched!!");
+                        $"[IncidentWorker_EntitySwarm.GenerateEntities] Prefix + Transpiler + Finalizer patched!!");
                 } catch (Exception ex)
                 {
                     General.SendLog_Debug(General.MessageTypes.DebugError,
                         $"[IncidentWorker_EntitySwarm.GenerateEntities] Patch Failed!! reason:{Environment.NewLine}{ex.ToString()}");
                 }
+            }
+
+            // 新增：蹒跚怪袭击补丁
+            try
+            {
+                
+                Type shamblerAssaultType = typeof(IncidentWorker_ShamblerAssault);
+  // 补丁蹒跚怪袭击的后处理方法Add commentMore actions
+                MethodInfo postProcessMethod = AccessTools.Method(
+                    shamblerAssaultType,
+                    "PostProcessSpawnedPawns",
+                    new Type[] { typeof(IncidentParms), typeof(List<Pawn>) }
+                );
+
+                if (postProcessMethod != null)
+                {
+                    // 应用 Postfix 补丁来处理蹒跚怪袭击的后处理
+                    harmony.Patch(
+                        postProcessMethod,
+                        null,
+                        new HarmonyMethod(typeof(ShamblerAssault_Patch), nameof(ShamblerAssault_Patch.PostProcessSpawnedPawns_Postfix))
+                    );
+
+                    Log.Message($"[EliteRaid] 成功为 IncidentWorker_ShamblerAssault.PostProcessSpawnedPawns 添加 Postfix 补丁！");
+                }
+                // 添加TryGenerateRaidInfo补丁注册
+                MethodInfo tryGenerateRaidInfoMethod = AccessTools.Method(
+                    typeof(IncidentWorker_Raid),
+                    "TryGenerateRaidInfo",
+                    new Type[] { typeof(IncidentParms), typeof(List<Pawn>).MakeByRefType(), typeof(bool) }
+                );
+
+                if (tryGenerateRaidInfoMethod != null)
+                {
+                    harmony.Patch(
+                        tryGenerateRaidInfoMethod,
+                        new HarmonyMethod(typeof(ShamblerAssault_Patch), nameof(ShamblerAssault_Patch.TryGenerateRaidInfo_Prefix))
+                    );
+
+                    Log.Message($"[EliteRaid] 成功为 IncidentWorker_Raid.TryGenerateRaidInfo 添加 Prefix 补丁！");
+                }
+                
+            } catch (Exception ex)
+            {
+                Log.Error($"[EliteRaid] 注册蹒跚怪袭击补丁失败: {ex.Message}");
+                Log.Error(ex.StackTrace);
+            }
+
+            // 新增：蹒跚怪动物群补丁
+            try
+            {
+                Type shamblerSwarmAnimalsType = typeof(IncidentWorker_ShamblerSwarmAnimals);
+                MethodInfo shamblerSwarmAnimalsGenerateEntitiesMethod = AccessTools.Method(
+                    shamblerSwarmAnimalsType,
+                    "GenerateEntities",
+                    new Type[] { typeof(IncidentParms), typeof(float) }
+                );
+
+                if (shamblerSwarmAnimalsGenerateEntitiesMethod != null)
+                {
+                    // 应用 Postfix 补丁来处理蹒跚怪动物群
+                    harmony.Patch(
+                        shamblerSwarmAnimalsGenerateEntitiesMethod,
+                        null,
+                        new HarmonyMethod(typeof(ShamblerSwarmAnimals_Patch), nameof(ShamblerSwarmAnimals_Patch.GenerateEntities_Postfix))
+                    );
+
+                    Log.Message($"[EliteRaid] 成功为 IncidentWorker_ShamblerSwarmAnimals.GenerateEntities 添加 Postfix 补丁！");
+                }
+            } catch (Exception ex)
+            {
+                Log.Error($"[EliteRaid] 注册 IncidentWorker_ShamblerSwarmAnimals 补丁失败: {ex.Message}");
             }
         }
 
@@ -491,6 +564,7 @@ namespace EliteRaid
                 harmony.Unpatch(orgMethod, methodGenerateAnimals_TestTramspiler);
             } catch
             {
+
                 General.m_CanTranspilerGenerateAnimals = false;
             }
         }
@@ -730,34 +804,76 @@ namespace EliteRaid
             }
         }
 
-        // Finalizer：处理生成结果
+        // Prefix：拦截生成过程，实现真正的压缩
+        public static bool GenerateEntities_Prefix(IncidentWorker_EntitySwarm __instance, IncidentParms parms, float points, ref List<Pawn> __result)
+        {
+            if (!EliteRaidMod.modEnabled || !EliteRaidMod.allowEntitySwarmValue)
+            {
+                return true; // 继续执行原始方法
+            }
+
+            // 检查是否为蹒跚怪袭击
+            bool isShamblerRaid = parms.faction == Faction.OfEntities || 
+                                 parms.pawnKind?.defName?.Contains("Shambler") == true ||
+                                 parms.pawnKind?.defName?.Contains("Gorehulk") == true;
+
+            if (!isShamblerRaid)
+            {
+                return true; // 继续执行原始方法
+            }
+
+            // 计算基础数量（根据points估算）
+            int estimatedBaseNum = Mathf.RoundToInt(points / 100f); // 假设每个pawn约100点
+            int maxPawnNum = General.GetenhancePawnNumber(estimatedBaseNum);
+
+            if (maxPawnNum >= estimatedBaseNum)
+            {
+                return true; // 不需要压缩，继续执行原始方法
+            }
+
+            Log.Message($"[EliteRaid] 蹒跚怪袭击Prefix压缩: 估算{estimatedBaseNum} → {maxPawnNum}");
+
+            // 修改parms中的点数，实现真正的压缩
+            float originalPoints = parms.points;
+            parms.points = maxPawnNum * 100f; // 根据压缩后的数量调整点数
+
+            // 让原始方法执行，但使用修改后的点数
+            bool result = true; // 这里应该调用原始方法，但我们用Postfix来处理
+
+            // 在Postfix中处理增强
+            return true; // 继续执行原始方法
+        }
+
+        // Finalizer：处理生成结果并增强
         internal static Exception GenerateEntities_Finalizer(Exception __exception, ref List<Pawn> __result, IncidentParms parms, float points)
         {
-            if (__exception == null && __result != null)
+            if (__exception == null && __result != null && __result.Count > 0)
             {
-                // 复用动物生成的处理逻辑（简化版）
-                
-                int baseNum = (int)points;
-                int maxPawnNum = General.GetenhancePawnNumber(baseNum);
+                // 检查是否为蹒跚怪袭击
+                bool isShamblerRaid = __result.Any(p => p.Faction == Faction.OfEntities ||
+                                                       p.kindDef?.defName?.Contains("Shambler") == true ||
+                                                       p.kindDef?.defName?.Contains("Gorehulk") == true);
 
-                if (maxPawnNum < baseNum && EliteRaidMod.allowEntitySwarmValue)
+                if (isShamblerRaid && EliteRaidMod.modEnabled && EliteRaidMod.allowEntitySwarmValue)
                 {
-                    bool allowedCompress = true;
-                    // 检查生物类型限制（如机械族、昆虫族）
-                    if (!EliteRaidMod.allowMechanoidsValue && __result.Any(p => p.RaceProps.IsMechanoid))
-                        allowedCompress = false;
-                    if (!EliteRaidMod.allowInsectoidsValue && __result.Any(p => p.RaceProps.FleshType == FleshTypeDefOf.Insectoid))
-                        allowedCompress = false;
+                    int baseNum = __result.Count;
+                    int maxPawnNum = General.GetenhancePawnNumber(baseNum);
 
-                    if (allowedCompress)
+                    if (maxPawnNum < baseNum)
                     {
-                        // 压缩数量并增强
+                        Log.Message($"[EliteRaid] 蹒跚怪袭击Finalizer压缩: {baseNum} → {maxPawnNum}");
+
+                        // 压缩数量
                         __result = __result.Take(maxPawnNum).ToList();
-                        General.GenerateEntitys_Impl(__result, baseNum, maxPawnNum); // 复用通用增强方法
+
+                        // 增强压缩后的pawn
+                        General.GenerateEntitys_Impl(__result, baseNum, maxPawnNum);
 
                         // 显示消息
-                        if(EliteRaidMod.displayMessageValue)
-                        Messages.Message("袭击信息：压缩了" + baseNum + "为" + maxPawnNum, MessageTypeDefOf.NeutralEvent);
+                        if (EliteRaidMod.displayMessageValue)
+                        {
+                            Messages.Message($"蹒跚怪袭击已压缩: {baseNum} → {maxPawnNum}", MessageTypeDefOf.NeutralEvent);
+                        }
                     }
                 }
             }
@@ -778,6 +894,8 @@ namespace EliteRaid
         [HarmonyPatch(new Type[] { typeof(IncidentParms) })]
         public static bool SpawnThreats_Prefix(RaidStrategyWorker __instance, ref List<Pawn> __result, IncidentParms parms)
         {
+             Log.Message($"[EliteRaid] SpawnThreats_Prefix 被触发");
+    
             if (EliteRaidMod.displayMessageValue)
                 Log.Message("输出人数" + parms.pawnCount + "输出种类" + parms.pawnKind);
 
@@ -798,10 +916,10 @@ namespace EliteRaid
                 return true; // 让原始方法处理
             }
 
-            if (!EliteRaidMod.AllowCompress(parms))
-            {
-                return true; // 不允许压缩，让原始方法处理
-            }
+            // if (!EliteRaidMod.AllowCompress(parms))
+            // {
+            //     return true; // 不允许压缩，让原始方法处理
+            // }
 
             bool allowedCompress = true;
             if (!EliteRaidMod.allowMechanoidsValue && (parms?.pawnKind?.RaceProps?.IsMechanoid ?? false))
@@ -1214,4 +1332,151 @@ namespace EliteRaid
     }
 
     #endregion
+
+    #region ShamblerAssault Patch
+    [StaticConstructorOnStartup]
+    class ShamblerAssault_Patch
+    {
+        public static int SaveBaseNum=0;
+        public static int SaveMaxPawnNum=0;
+       public static void PostProcessSpawnedPawns_Postfix(IncidentWorker_ShamblerAssault __instance, IncidentParms parms, List<Pawn> pawns)
+        {
+            if (pawns == null || pawns.Count == 0)
+            {
+                return;
+            }
+
+            if (!EliteRaidMod.modEnabled || !EliteRaidMod.allowEntitySwarmValue)
+            {
+                return;
+            }
+
+            // 检查是否为蹒跚怪袭击
+            bool isShamblerAssault = pawns.Any(p => p.Faction == Faction.OfEntities || 
+                                                   p.kindDef?.defName?.Contains("Shambler") == true ||
+                                                   p.kindDef?.defName?.Contains("Gorehulk") == true);
+
+            if (!isShamblerAssault)
+            {
+                return;
+            }
+
+           
+
+            if (SaveMaxPawnNum >= SaveBaseNum)
+            {
+                return;
+            }
+
+            Log.Message($"[EliteRaid] 蹒跚怪袭击PostProcess压缩: {SaveBaseNum} → {SaveMaxPawnNum}");
+
+            // 压缩数量并增强
+            var compressedPawns = pawns.Take(SaveMaxPawnNum).ToList();
+            Log.Message($"[EliteRaid] 蹒跚怪袭击PostProcess压缩: {compressedPawns.Count}");
+            // 调用增强逻辑
+            General.GenerateAnything_Impl(compressedPawns, SaveBaseNum, SaveMaxPawnNum, false);
+
+            // 显示消息
+            if (EliteRaidMod.displayMessageValue)
+            {
+                Messages.Message($"蹒跚怪袭击已压缩: {SaveBaseNum} → {SaveMaxPawnNum}", MessageTypeDefOf.NeutralEvent);
+            }
+        }
+        
+        [HarmonyPatch(typeof(IncidentWorker_Raid))]
+        [HarmonyPatch("TryGenerateRaidInfo")]
+        public static bool TryGenerateRaidInfo_Prefix(IncidentWorker_Raid __instance, ref IncidentParms parms, ref List<Pawn> pawns)
+        {
+            Log.Message($"[EliteRaid] TryGenerateRaidInfo_Prefix开始处理: instance={__instance.GetType().Name}");
+            
+            if (!EliteRaidMod.modEnabled)
+            {
+                return true;
+            }
+
+            // 检查是否为蹒跚怪袭击
+            if (__instance is IncidentWorker_ShamblerAssault)
+            {
+                Log.Message($"[EliteRaid] 检测到蹒跚怪袭击");
+                
+                // 计算原始数量
+                int baseNum = (int)(parms.points/50f);
+                
+                Log.Message($"[EliteRaid] 蹒跚怪袭击原始参数: points={parms.points}, pawnCount={parms.pawnCount}, baseNum={baseNum}");
+                
+                // 使用AllowCompress检查是否允许压缩
+                if (EliteRaidMod.AllowCompress(parms))
+                {
+                    // 计算压缩后的数量
+                    int maxPawnNum = General.GetenhancePawnNumber(baseNum);
+                    SaveBaseNum=baseNum;
+                    SaveMaxPawnNum=maxPawnNum;
+                    // 修改参数
+                    if (maxPawnNum < baseNum)
+                    {
+                        Log.Message($"[EliteRaid] 蹒跚怪袭击压缩: {baseNum} → {maxPawnNum}");
+                        
+                        // 修改生成参数
+                        parms.pawnCount = maxPawnNum;
+                        parms.points=maxPawnNum*50f;
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+    #endregion
+
+    #region ShamblerSwarmAnimals Patch
+    [StaticConstructorOnStartup]
+    class ShamblerSwarmAnimals_Patch
+    {
+        public static void GenerateEntities_Postfix(IncidentWorker_ShamblerSwarmAnimals __instance, IncidentParms parms, float points, ref List<Pawn> __result)
+        {
+            if (__result == null || __result.Count == 0)
+            {
+                return;
+            }
+
+            if (!EliteRaidMod.modEnabled || !EliteRaidMod.allowEntitySwarmValue)
+            {
+                return;
+            }
+
+            // 检查是否为蹒跚怪动物群
+            bool isShamblerAnimals = __result.Any(p => p.Faction == Faction.OfEntities || 
+                                                       p.kindDef?.defName?.Contains("Shambler") == true ||
+                                                       p.kindDef?.defName?.Contains("Chimera") == true);
+
+            if (!isShamblerAnimals)
+            {
+                return;
+            }
+
+            int baseNum = __result.Count;
+            int maxPawnNum = General.GetenhancePawnNumber(baseNum);
+
+            if (maxPawnNum >= baseNum)
+            {
+                return; // 不需要压缩
+            }
+
+            Log.Message($"[EliteRaid] 蹒跚怪动物群压缩: {baseNum} → {maxPawnNum}");
+
+            // 压缩数量并增强
+            __result = __result.Take(maxPawnNum).ToList();
+            
+            // 调用增强逻辑
+            General.GenerateEntitys_Impl(__result, baseNum, maxPawnNum);
+
+            // 显示消息
+            if (EliteRaidMod.displayMessageValue)
+            {
+                Messages.Message($"蹒跚怪动物群已压缩: {baseNum} → {maxPawnNum}", MessageTypeDefOf.NeutralEvent);
+            }
+        }
+    }
+    #endregion
+
 }

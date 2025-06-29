@@ -104,9 +104,12 @@ namespace EliteRaid
                     return false;
                 }
             }
+            
+            // 修改：更准确地识别实体群类型，包括蹒跚怪
             bool isEntitySwarm = pawn?.RaceProps.FleshType == FleshTypeDefOf.Fleshbeast ||
                                  pawn?.RaceProps.FleshType == FleshTypeDefOf.EntityMechanical ||
-                                 pawn?.RaceProps.FleshType == FleshTypeDefOf.EntityFlesh;
+                                 pawn?.RaceProps.FleshType == FleshTypeDefOf.EntityFlesh ||
+                                 pawn?.Faction == Faction.OfEntities; // 新增：蹒跚怪属于OfEntities派系
 
             if (!allowEntitySwarmValue && isEntitySwarm)
             {
@@ -679,15 +682,15 @@ namespace EliteRaid
             EliteRaidMod.AllowModBionicsAndDrugs = settings.allowModBionicsAndDrugs;
             EliteRaidMod.raidScale = settings.raidScale;
             
-            // 添加调试日志
-            if (EliteRaidMod.displayMessageValue)
-            {
-                Log.Message($"[EliteRaid] 设置同步: maxRaidEnemy={EliteRaidMod.maxRaidEnemy}, useCompressionRatio={EliteRaidMod.useCompressionRatio}, compressionRatio={EliteRaidMod.compressionRatio}");
+            //// 添加调试日志
+            //if (EliteRaidMod.displayMessageValue)
+            //{
+            //    Log.Message($"[EliteRaid] 设置同步: maxRaidEnemy={EliteRaidMod.maxRaidEnemy}, useCompressionRatio={EliteRaidMod.useCompressionRatio}, compressionRatio={EliteRaidMod.compressionRatio}");
                 
                 
-                // 测试0级敌人生成控制
-                EliteLevelManager.TestZeroLevelGeneration();
-            }
+            //    // 测试0级敌人生成控制
+            //    EliteLevelManager.TestZeroLevelGeneration();
+            //}
             
             ApplyRaidScaleIfNeeded();
             // 验证难度索引
