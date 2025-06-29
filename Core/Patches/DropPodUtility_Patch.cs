@@ -59,6 +59,10 @@ namespace EliteRaid
        {
            Log.Warning($"[EliteRaid] ===== DropThingGroupsNear_Postfix 被调用！=====");
            Log.Message($"[EliteRaid] DropThingGroupsNear_Postfix 执行，派系：{faction?.Name ?? "无"}，组数：{thingsGroups.Count}");
+           
+           // 新增：输出当前袭击记录状态（调试用）
+           string debugInfo = PatchContinuityHelper.GetRaidRecordsDebugInfo();
+           Log.Message($"[EliteRaid] 当前袭击记录状态:\n{debugInfo}");
 
            if (!EliteRaidMod.allowDropPodRaidValue)
            {
@@ -78,77 +82,118 @@ namespace EliteRaid
                }
            }
 
-           if (allPawns.Any())
-           {
-               Log.Message($"[EliteRaid] 总共抽取到 {allPawns.Count} 个Pawn: {string.Join(", ", allPawns.Select(p => p.Name.ToStringShort))}");
-               // 判断是否为新的Raid
-               bool isNewRaid = currentRaidTag == null;
+          if (allPawns.Any())
+{
+    Log.Message($"[EliteRaid] 总共抽取到 {allPawns.Count} 个Pawn: {string.Join(", ", allPawns.Select(p => p.Name.ToStringShort))}");
+    // 判断是否为新的Raid
+    bool isNewRaid = currentRaidTag == null;
 
-               if (isNewRaid)
-               {
-                   // 创建新的RaidTag
-                   currentRaidTag = $"Raid_{DateTime.Now.Ticks}";
-                   Log.Message($"[EliteRaid] 创建新的RaidTag: {currentRaidTag}");
-                   
-                   // 清空之前的等级映射和标记
-                   pawnLevelMapping.Clear();
-                   isLevelDistributionGenerated = false;
-               }
+    if (isNewRaid)
+    {
+        // 创建新的RaidTag
+        currentRaidTag = $"Raid_{DateTime.Now.Ticks}";
+        Log.Message($"[EliteRaid] 创建新的RaidTag: {currentRaidTag}");
+        
+        // 清空之前的等级映射和标记
+        pawnLevelMapping.Clear();
+        isLevelDistributionGenerated = false;
+    }
 
-               var groupId = Guid.NewGuid();
-               var groupData = new GroupData
-               {
-                   Pawns = allPawns,
-                   CreationTime = DateTime.Now,
-                   Faction = faction ?? allPawns[0].Faction,
-                   RaidTag = currentRaidTag,
-                   IsComplete = false // 初始状态为未完成
-               };
-               groupData.IsLevelGenerated = false;
-               pendingHostileGroups[groupId] = groupData;
-               Log.Message($"[EliteRaid] 记录Pawn组：{allPawns.Count} 单位，ID={groupId}，RaidTag={currentRaidTag}，派系：{groupData.Faction?.Name}");
-               
-               // 如果是新的Raid且还没有生成等级分布，生成等级分布并预分配等级
-               if (isNewRaid && !isLevelDistributionGenerated)
-               {
-                   Log.Message($"[EliteRaid] 新Raid开始，使用已生成的等级分布");
-                   isLevelDistributionGenerated = true;
-                   
-                   // 为当前组的所有Pawn预分配等级
-                   for (int i = 0; i < allPawns.Count; i++)
-                   {
-                       var eliteLevel = EliteLevelManager.GetRandomEliteLevel();
-                       if (eliteLevel != null && IsLevelValid(eliteLevel))
-                       {
-                           pawnLevelMapping[allPawns[i].thingIDNumber] = eliteLevel;
-                           Log.Message($"[EliteRaid] 预分配等级: {allPawns[i].Name} -> Level {eliteLevel.Level}");
-                       }
-                   }
-               } else if (!isNewRaid)
-               {
-                   // 不是新Raid，为当前组的Pawn分配等级
-                   Log.Message($"[EliteRaid] 继续Raid，为当前组分配等级");
-                   for (int i = 0; i < allPawns.Count; i++)
-                   {
-                       var eliteLevel = EliteLevelManager.GetRandomEliteLevel();
-                       if (eliteLevel != null && IsLevelValid(eliteLevel))
-                       {
-                           pawnLevelMapping[allPawns[i].thingIDNumber] = eliteLevel;
-                           Log.Message($"[EliteRaid] 分配等级: {allPawns[i].Name} -> Level {eliteLevel.Level}");
-                       }
-                   }
-               }
-               
-               ApplyHostileBuff(groupId, allPawns);
+    var groupId = Guid.NewGuid();
+    var groupData = new GroupData
+    {
+        Pawns = allPawns,
+        CreationTime = DateTime.Now,
+        Faction = faction ?? allPawns[0].Faction,
+        RaidTag = currentRaidTag,
+        IsComplete = false // 初始状态为未完成
+    };
+    groupData.IsLevelGenerated = false;
+    pendingHostileGroups[groupId] = groupData;
+    Log.Message($"[EliteRaid] 记录Pawn组：{allPawns.Count} 单位，ID={groupId}，RaidTag={currentRaidTag}，派系：{groupData.Faction?.Name}");
+    
+    // ====== 修改：使用PatchContinuityHelper获取准确的原始袭击数量 ======
+    int baseNum = allPawns.Count; // 默认使用当前数量
+    
+    // 尝试从袭击记录中获取原始数量
+    if (PatchContinuityHelper.TryFindClosestRaidRecord(groupData.Faction, out var raidRecord, 30))
+    {
+        baseNum = raidRecord.BaseNum;
+        Log.Message($"[EliteRaid] 从袭击记录获取原始数量: {baseNum} (当前数量: {allPawns.Count})");
+        
+        // 如果找到的是空投袭击记录，清理该记录避免重复使用
+        if (raidRecord.IsDropPodRaid)
+        {
+            PatchContinuityHelper.ClearRaidRecordsForFaction(groupData.Faction);
+            Log.Message($"[EliteRaid] 清理空投袭击记录，避免重复使用");
+        }
+    } else
+    {
+        Log.Warning($"[EliteRaid] 未找到派系 {groupData.Faction?.Name ?? "无"} 的袭击记录，使用当前数量: {baseNum}");
+    }
 
-               // 如果这是最后一个空投舱，标记Raid完成
-               if (IsLastDropPod(thingsGroups, map))
-               {
-                   Log.Message($"[EliteRaid] 检测到最后一个空投舱，标记Raid完成: {currentRaidTag}");
-                   MarkRaidComplete(currentRaidTag);
-                   currentRaidTag = null; // 重置当前RaidTag
-               }
-           }
+    // ====== 新增：和General.GenerateAnything_Impl一致的分组分配等级逻辑 ======
+    // 1. 生成等级分布
+    EliteLevelManager.GenerateLevelDistribution(baseNum);
+    int enhancePawnNumber = EliteLevelManager.getCurrentLevelDistributionNum();
+    Log.Message($"[EliteRaid] 生成等级分布完成，增强Pawn数量：{enhancePawnNumber}");
+    
+    // 2. 分组分配等级（每级最多10个，按等级升序，同级内随机）
+    var dropPodLevelGroups = new Dictionary<int, List<EliteLevel>>();
+    for (int i = 0; i < enhancePawnNumber; i++)
+    {
+        var eliteLevel = EliteLevelManager.GetRandomEliteLevel();
+        int cappedLevel = Math.Min(eliteLevel.Level, 7); // 限制最大等级为7
+        if (!dropPodLevelGroups.ContainsKey(cappedLevel))
+        {
+            dropPodLevelGroups[cappedLevel] = new List<EliteLevel>();
+        }
+        if (dropPodLevelGroups[cappedLevel].Count < 10) // 每个等级最多10个
+        {
+            dropPodLevelGroups[cappedLevel].Add(eliteLevel);
+        }
+        else
+        {
+            // 等级已满，随机替换一个现有等级
+            var randomLevel = dropPodLevelGroups.Values.SelectMany(g => g).OrderBy(_ => Rand.Range(0, 100)).First();
+            dropPodLevelGroups[cappedLevel].Remove(randomLevel);
+            dropPodLevelGroups[cappedLevel].Add(eliteLevel);
+        }
+    }
+    
+    // 展平分组数据为顺序列表（按等级升序排列，同等级内随机顺序）
+    var orderedLevelsList = dropPodLevelGroups
+        .OrderBy(kvp => kvp.Key)
+        .SelectMany(kvp => kvp.Value.OrderBy(l => Rand.Range(0, 100)))
+        .ToList();
+    
+    // 3. 分配等级到Pawn（只分配给前enhancePawnNumber个Pawn）
+    int levelIndex = 0;
+    for (int i = 0; i < allPawns.Count; i++)
+    {
+        if (i < enhancePawnNumber && levelIndex < orderedLevelsList.Count)
+        {
+            pawnLevelMapping[allPawns[i].thingIDNumber] = orderedLevelsList[levelIndex++];
+            Log.Message($"[EliteRaid] 分配等级: {allPawns[i].Name} -> Level {orderedLevelsList[levelIndex-1].Level}");
+        }
+        else
+        {
+            // 超出分配数量，不分配等级（保持原样）
+            Log.Message($"[EliteRaid] 超出分配数量，不分配等级: {allPawns[i].Name}");
+        }
+    }
+    // ====== 分配结束 ======
+    
+    ApplyHostileBuff(groupId, allPawns);
+
+    // 如果这是最后一个空投舱，标记Raid完成
+    if (IsLastDropPod(thingsGroups, map))
+    {
+        Log.Message($"[EliteRaid] 检测到最后一个空投舱，标记Raid完成: {currentRaidTag}");
+        MarkRaidComplete(currentRaidTag);
+        currentRaidTag = null; // 重置当前RaidTag
+    }
+}
        }
 
        // 判断是否为最后一个空投舱（需要根据游戏逻辑实现）

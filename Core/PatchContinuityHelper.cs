@@ -13,6 +13,29 @@ namespace EliteRaid
 {
     internal static class PatchContinuityHelper
     {
+        // 新增：袭击记录结构体
+        public struct RaidRecord
+        {
+            public DateTime RecordTime;
+            public int BaseNum;
+            public Faction Faction;
+            public Type PawnGroupWorker;
+            public bool IsDropPodRaid;
+            
+            public RaidRecord(DateTime recordTime, int baseNum, Faction faction, Type pawnGroupWorker, bool isDropPodRaid = false)
+            {
+                RecordTime = recordTime;
+                BaseNum = baseNum;
+                Faction = faction;
+                PawnGroupWorker = pawnGroupWorker;
+                IsDropPodRaid = isDropPodRaid;
+            }
+        }
+
+        // 新增：存储袭击记录的列表
+        private static readonly List<RaidRecord> raidRecords = new List<RaidRecord>();
+        private static readonly object raidRecordsLock = new object();
+
         struct CompressWork
         {
             public bool allowedCompress;
@@ -43,6 +66,88 @@ namespace EliteRaid
         private static CompressWork m_CompressWork_GeneratePawns = default(CompressWork);
         private static CompressWork m_CompressWork_GenerateAnimals = default(CompressWork);
 
+        // 新增：记录袭击信息的方法
+        internal static void RecordRaidInfo(int baseNum, Faction faction, Type pawnGroupWorker, bool isDropPodRaid = false)
+        {
+            lock (raidRecordsLock)
+            {
+                var record = new RaidRecord(DateTime.Now, baseNum, faction, pawnGroupWorker, isDropPodRaid);
+                raidRecords.Add(record);
+                
+                // 清理超过5分钟的旧记录
+                var cutoffTime = DateTime.Now.AddMinutes(-5);
+                raidRecords.RemoveAll(r => r.RecordTime < cutoffTime);
+                
+                Log.Message($"[EliteRaid] 记录袭击信息: 时间={record.RecordTime:HH:mm:ss.fff}, 数量={baseNum}, 派系={faction?.Name ?? "无"}, 类型={pawnGroupWorker?.Name ?? "无"}, 空投={isDropPodRaid}");
+            }
+        }
+
+        // 新增：查找最接近的袭击记录
+        internal static bool TryFindClosestRaidRecord(Faction faction, out RaidRecord record, int maxTimeDiffSeconds = 30)
+        {
+            record = default(RaidRecord);
+            
+            lock (raidRecordsLock)
+            {
+                if (raidRecords.Count == 0)
+                {
+                    Log.Message("[EliteRaid] 没有找到任何袭击记录");
+                    return false;
+                }
+
+                var now = DateTime.Now;
+                var cutoffTime = now.AddSeconds(-maxTimeDiffSeconds);
+                
+                // 查找指定派系且时间在范围内的记录
+                var validRecords = raidRecords
+                    .Where(r => r.Faction == faction && r.RecordTime >= cutoffTime)
+                    .OrderByDescending(r => r.RecordTime)
+                    .ToList();
+
+                if (validRecords.Count == 0)
+                {
+                    Log.Message($"[EliteRaid] 没有找到派系 {faction?.Name ?? "无"} 在 {maxTimeDiffSeconds} 秒内的袭击记录");
+                    return false;
+                }
+
+                // 返回时间最接近的记录
+                record = validRecords.First();
+                Log.Message($"[EliteRaid] 找到最接近的袭击记录: 时间={record.RecordTime:HH:mm:ss.fff}, 数量={record.BaseNum}, 派系={record.Faction?.Name ?? "无"}, 空投={record.IsDropPodRaid}");
+                return true;
+            }
+        }
+
+        // 新增：清理指定派系的袭击记录
+        internal static void ClearRaidRecordsForFaction(Faction faction)
+        {
+            lock (raidRecordsLock)
+            {
+                int removedCount = raidRecords.RemoveAll(r => r.Faction == faction);
+                if (removedCount > 0)
+                {
+                    Log.Message($"[EliteRaid] 清理了 {removedCount} 条派系 {faction?.Name ?? "无"} 的袭击记录");
+                }
+            }
+        }
+
+        // 新增：获取所有袭击记录的调试信息
+        internal static string GetRaidRecordsDebugInfo()
+        {
+            lock (raidRecordsLock)
+            {
+                if (raidRecords.Count == 0)
+                    return "没有袭击记录";
+
+                var sb = new StringBuilder();
+                sb.AppendLine($"当前有 {raidRecords.Count} 条袭击记录:");
+                foreach (var record in raidRecords.OrderByDescending(r => r.RecordTime))
+                {
+                    sb.AppendLine($"  时间: {record.RecordTime:HH:mm:ss.fff}, 数量: {record.BaseNum}, 派系: {record.Faction?.Name ?? "无"}, 空投: {record.IsDropPodRaid}");
+                }
+                return sb.ToString();
+            }
+        }
+
         internal static IEnumerable<PawnGenOptionWithXenotype> SetCompressWork_GeneratePawns(IEnumerable<PawnGenOptionWithXenotype> options, PawnGroupMakerParms groupParms)
         {
             if (options.EnumerableNullOrEmpty() || groupParms == null)
@@ -63,6 +168,10 @@ namespace EliteRaid
             }
             int maxPawnNum = EliteRaidMod.maxRaidEnemy, pawnCount = 0;
             int baseNum = options.Count();
+
+            // 新增：记录袭击信息（包括空投袭击）
+            bool isDropPodRaid = IsDropPodRaid(groupParms);
+            RecordRaidInfo(baseNum, groupParms.faction, groupParms.groupKind.workerClass, isDropPodRaid);
 
             // 新增压缩率计算（确保 baseNum >= compressionRatio 时才压缩）
             if (EliteRaidMod.useCompressionRatio && baseNum >= EliteRaidMod.compressionRatio)
@@ -117,56 +226,21 @@ namespace EliteRaid
                 return ret;
             }
         }
-        // public static Pawn TryGeneratePawn(PawnKindDef pawnKind, Faction faction)
-        // {
-        //     Log.Message($"[EliteRaid][PatchContinuityHelper.cs:TryGeneratePawn@L141] 调用PawnGenerator.GeneratePawn, pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}");
-        //     Pawn pawn = null;
-        //     try
-        //     {
-        //         if (faction == Faction.OfHoraxCult)
-        //         {
-        //             PawnGenerationContext pawnGenerationContext = PawnGenerationContext.NonPlayer;
-        //             int num = -1;
-        //             bool flag = false;
-        //             bool flag2 = false;
-        //             bool flag3 = false;
-        //             bool flag4 = true;
-        //             bool flag5 = true;
-        //             float num2 = 1f;
-        //             bool flag6 = false;
-        //             bool flag7 = true;
-        //             bool flag8 = false;
-        //             Log.Message($"[EliteRaid][TryGeneratePawn] HoraxCult专用生成: pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}");
-        //             pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, pawnGenerationContext, num, flag, flag2, flag3, flag4, flag5, num2, flag6, flag7, flag8, false, true, false, false, false, false, 0.7f, 0.8f, null, 1f, null, null, null, null, null, null, null, null, null, null, null, null, false, false, false, false, null, null, null, null, null, 0f, DevelopmentalStage.Adult, null, null, null, false, false, false, -1, 0, false)
-        //             {
-        //                 BiocodeApparelChance = 1f,
-        //                 ForcedXenotype = XenotypeDefOf.Baseliner,
-        //                 ProhibitedTraits = new List<TraitDef>() { TraitDef.Named("psychically deaf") }
-        //             });
-        //         }
-        //         else
-        //         {
-        //             Log.Message($"[EliteRaid][TryGeneratePawn] 普通阵营生成: pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}");
-        //             pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(pawnKind, faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: 0.8f, biocodeApparelChance: 0.8f, allowFood: true)
-        //             {
-        //                 BiocodeApparelChance = 1f
-        //             });
-        //         }
-        //         if (pawn == null)
-        //         {
-        //             Log.Warning($"[EliteRaid][TryGeneratePawn] 生成失败: pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}");
-        //         }
-        //         else
-        //         {
-        //             Log.Message($"[EliteRaid][TryGeneratePawn] 生成成功: pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}, pawn={pawn.LabelCap} ({pawn.GetType().Name})");
-        //         }
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         Log.Error($"[EliteRaid][TryGeneratePawn] 生成异常: pawnKind={pawnKind?.defName}, faction={faction?.Name ?? faction?.ToString() ?? "null"}, Exception={ex}");
-        //     }
-        //     return pawn;
-        // }
+
+        // 新增：判断是否为空投袭击的辅助方法
+        private static bool IsDropPodRaid(PawnGroupMakerParms groupParms)
+        {
+            // 检查是否为空投袭击
+            // 可以通过检查袭击策略或其他参数来判断
+            if (groupParms?.raidStrategy != null)
+            {
+                string strategyName = groupParms.raidStrategy.defName?.ToLower();
+                return strategyName?.Contains("drop") == true || 
+                       strategyName?.Contains("pod") == true ||
+                       strategyName?.Contains("sky") == true;
+            }
+            return false;
+        }
 
         internal static void SetCompressWork_GeneratePawns(PawnGroupMakerParms groupParms, ref IEnumerable<PawnGenOption> __result)
         {
@@ -222,6 +296,11 @@ namespace EliteRaid
 
                 // 3. 计算压缩后的数量
                 int baseNum = normalOptions.Count;
+                
+                // 新增：记录袭击信息（包括空投袭击）
+                bool isDropPodRaid = IsDropPodRaid(groupParms);
+                RecordRaidInfo(baseNum, groupParms.faction, groupParms.groupKind.workerClass, isDropPodRaid);
+                
                 int maxPawnNum = General.GetenhancePawnNumber(baseNum);
 
                 if (maxPawnNum >= baseNum)
@@ -444,6 +523,47 @@ namespace EliteRaid
         {
             if (maxPawnNum <= 0) return 1f;
             return (float)baseNum / maxPawnNum;
+        }
+
+        // 新增：测试袭击记录系统的方法
+        internal static void TestRaidRecordSystem()
+        {
+            Log.Message("=== 袭击记录系统测试开始 ===");
+            
+            // 清理现有记录
+            lock (raidRecordsLock)
+            {
+                raidRecords.Clear();
+            }
+            
+            // 创建测试派系
+            var testFaction = Faction.OfMechanoids; // 使用机械族作为测试派系
+            
+            // 记录一些测试袭击
+            RecordRaidInfo(100, testFaction, typeof(PawnGroupKindWorker_Normal), false);
+            System.Threading.Thread.Sleep(100); // 等待100ms
+            RecordRaidInfo(150, testFaction, typeof(PawnGroupKindWorker_Normal), true); // 空投袭击
+            System.Threading.Thread.Sleep(100); // 等待100ms
+            RecordRaidInfo(200, testFaction, typeof(PawnGroupKindWorker_Normal), false);
+            
+            // 输出所有记录
+            Log.Message(GetRaidRecordsDebugInfo());
+            
+            // 测试查找功能
+            if (TryFindClosestRaidRecord(testFaction, out var record, 30))
+            {
+                Log.Message($"找到最接近的记录: 数量={record.BaseNum}, 时间={record.RecordTime:HH:mm:ss.fff}, 空投={record.IsDropPodRaid}");
+            } else
+            {
+                Log.Warning("未找到任何记录");
+            }
+            
+            // 测试清理功能
+            ClearRaidRecordsForFaction(testFaction);
+            Log.Message("清理后的记录状态:");
+            Log.Message(GetRaidRecordsDebugInfo());
+            
+            Log.Message("=== 袭击记录系统测试结束 ===");
         }
     }
 }
