@@ -180,7 +180,7 @@ namespace EliteRaid
         //UI部分
         public EliteRaidSettings settings;
 
-        private const float LABEL_WIDTH = 180f;
+        private const float LABEL_WIDTH = 270f;
         private const float GAP_SMALL = 12f;
         private const float GAP_LARGE = 24f;
         private const float ROW_HEIGHT = 30f;
@@ -790,7 +790,7 @@ namespace EliteRaid
             Rect labelRect = new Rect(0, y, LABEL_WIDTH, ROW_HEIGHT);
             Widgets.Label(labelRect, label);
 
-            float sliderAvailableWidth = width - LABEL_WIDTH - GAP_SMALL - 80f;
+            float sliderAvailableWidth = width - LABEL_WIDTH - GAP_SMALL - 40f;
             Rect sliderRect = new Rect(
                 LABEL_WIDTH + GAP_SMALL,
                 y,  // 从顶部开始
@@ -834,7 +834,7 @@ namespace EliteRaid
 
             Widgets.Label(labelRect, displayValue);
 
-            float sliderAvailableWidth = width - LABEL_WIDTH - GAP_SMALL - 60f;
+            float sliderAvailableWidth = width - LABEL_WIDTH - GAP_SMALL - 40f;
             Rect sliderRect = new Rect(
                 LABEL_WIDTH + GAP_SMALL,
                 y,
