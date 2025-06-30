@@ -272,9 +272,15 @@ namespace EliteRaid
                         null,
                         null,
                         new HarmonyMethod(typeof(PawnGroupMakerUtility_Patch), nameof(PawnGroupMakerUtility_Patch.ChoosePawnGenOptionsByPoints_Finalizer), new Type[] { typeof(Exception), typeof(float), typeof(List<PawnGenOption>), typeof(PawnGroupMakerParms), typeof(IEnumerable<PawnGenOption>).MakeByRefType() }) { methodType = MethodType.Normal });
+                        if (EliteRaidMod.displayMessageValue)
+                        {
+                            Log.Message($"[EliteRaid] PawnGroupMakerUtility_Patch.ChoosePawnGenOptionsByPoints_Finalizer注册成功");
+                        }
                 } catch (Exception ex)
                 {
-                    General.SendLog_Debug(General.MessageTypes.DebugError, String.Format("[{0}.{1}] Patch Failed!! reason:{2}{3}", orgType.FullName, orgName, Environment.NewLine, ex.ToString()));
+                    
+                        Log.Error($"[EliteRaid] PawnGroupMakerUtility_Patch.ChoosePawnGenOptionsByPoints_Finalizer注册失败: {ex.ToString()}");
+                    
                 }
             }
 
@@ -297,12 +303,17 @@ namespace EliteRaid
                             null,
                             null,
                             new HarmonyMethod(typeof(PawnGroupKindWorker_Patch), nameof(PawnGroupKindWorker_Patch.GeneratePawns_Transpiler), new Type[] { typeof(IEnumerable<CodeInstruction>), typeof(MethodBase) }) { methodType = MethodType.Normal });
-                        General.SendLog_Debug(General.MessageTypes.Debug, String.Format("[{0}] Transpiler patched!!", targetMethod));
+                        if (EliteRaidMod.displayMessageValue)
+                        {
+                            Log.Message($"[EliteRaid] PawnGroupKindWorker_Patch.GeneratePawns_Transpiler注册成功");
+                        }
                     }
                     General.m_AllowPawnGroupKindWorkerTypes.Add(workerType);
                 } catch (Exception ex)
                 {
-                    General.SendLog_Debug(General.MessageTypes.DebugError, String.Format("[{0}] Patch Failed!! reason:{1}{2}", targetMethod, Environment.NewLine, ex.ToString()));
+                  
+                        Log.Error($"[EliteRaid] PawnGroupKindWorker_Patch.GeneratePawns_Finalizer注册失败: {ex.ToString()}");
+                   
                 }
             }
 
@@ -599,6 +610,12 @@ namespace EliteRaid
         {
             if (__exception == null)
             {
+                // 日志：输出压缩前的分布
+    if (EliteRaidMod.displayMessageValue && options != null)
+    {
+       
+        Log.Message($"[EliteRaid] ChoosePawnGenOptionsByPoints_Finalizer存储了袭击种类分布信息");
+    }
                 PatchContinuityHelper.SetCompressWork_GeneratePawns(groupParms, ref __result);
             }
             return __exception;
@@ -899,8 +916,20 @@ namespace EliteRaid
             bool usedCompressedOptions = false;
             if (PatchContinuityHelper.CompressedPawnGenOptions != null && PatchContinuityHelper.CompressedPawnGenOptions.Count > 0)
             {
+                // 日志：输出乱序前的种类分布
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    var beforeKinds = string.Join(", ", PatchContinuityHelper.CompressedPawnGenOptions.Select(x => x.kind?.defName ?? "null"));
+                    Log.Message($"[EliteRaid] 压缩分布乱序前: {beforeKinds}");
+                }
                 // 乱序后只取前parms.pawnCount个
                 var options = PatchContinuityHelper.CompressedPawnGenOptions.OrderBy(x => Rand.Value).Take(parms.pawnCount).ToList();
+                // 日志：输出乱序后的种类分布
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    var afterKinds = string.Join(", ", options.Select(x => x.kind?.defName ?? "null"));
+                    Log.Message($"[EliteRaid] 压缩分布乱序后: {afterKinds}");
+                }
                 foreach (var option in options)
                 {
                     Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(option.kind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
@@ -1020,6 +1049,41 @@ namespace EliteRaid
                             Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum
                             , finalNum, General.GetcompressionRatio(baseNum, maxPawnNum)
                             , finalNum), MessageTypeDefOf.NeutralEvent, true);
+                        }
+
+                        // 保底：如果没有生成人类，则强制生成一个人类pawn
+                        if (!list.Any(p => !p.RaceProps.Animal))
+                        {
+                            PawnKindDef humanKind = null;
+                            // 优先从压缩分布中找一个非动物kind
+                            if (PatchContinuityHelper.CompressedPawnGenOptions != null)
+                            {
+                                var humanOption = PatchContinuityHelper.CompressedPawnGenOptions.FirstOrDefault(x => !(x.kind?.RaceProps?.Animal ?? true));
+                                if (humanOption != null)
+                                    humanKind = humanOption.kind;
+                            }
+                            // 如果找不到，兜底用parms.pawnKind
+                            if (humanKind == null && parms.pawnKind != null && !(parms.pawnKind.RaceProps?.Animal ?? true))
+                            {
+                                humanKind = parms.pawnKind;
+                            }
+                            // 生成保底人类
+                            if (humanKind != null)
+                            {
+                                // 日志：输出保底生成人类的种类
+                                if (EliteRaidMod.displayMessageValue)
+                                {
+                                    Log.Message($"[EliteRaid] 保底生成人类: {humanKind.defName}");
+                                }
+                                Pawn humanPawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(humanKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
+                                {
+                                    BiocodeApparelChance = 1f
+                                });
+                                if (humanPawn != null)
+                                {
+                                    list.Insert(0, humanPawn); // 插入到最前面
+                                }
+                            }
                         }
 
                         return false; // 跳过原始方法
@@ -1260,7 +1324,7 @@ namespace EliteRaid
             }
             else if (EliteRaidMod.displayMessageValue)
             {
-                Log.Warning($"[EliteRaid] 未找到袭击点数上限的硬编码值，可能游戏版本已变化");
+              //  Log.Warning($"[EliteRaid] 未找到袭击点数上限的硬编码值，可能游戏版本已变化");
             }
 
             return codes;

@@ -75,7 +75,7 @@ namespace EliteRaid
 
         public EliteLevelManager(ModContentPack mod):base(mod)
         {
-            Console.WriteLine("[EliteRaid] EliteLevelManager Mod constructor called, initializing level manager data.");
+            if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] EliteLevelManager Mod constructor called, initializing level manager data.");
             Initialize();
         }
 
@@ -119,7 +119,7 @@ namespace EliteRaid
     new EliteLevelConfig { Level=6, DamageFactor=0.18f, MoveSpeedFactor=0.5f, ScaleFactor=1.85f, MaxTraits=5, IsBoss=false, CompressionRatio=8 },
     new EliteLevelConfig { Level=7, DamageFactor=0.14f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=6, IsBoss=true, CompressionRatio=10 },
 };
-            Console.WriteLine($"[EliteRaid] EliteLevelManager Initialized with {difficultyConfigs.Count} difficulty settings.");
+            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] EliteLevelManager Initialized with {difficultyConfigs.Count} difficulty settings.");
         }
 
         // 添加辅助函数：判断是否应该使用简化生成策略
@@ -155,7 +155,7 @@ namespace EliteRaid
         // 添加简化生成函数：直接生成最高等级的精英分布
         private static void GenerateSimplifiedLevelDistribution(int originalCount)
         {
-            Console.WriteLine($"[EliteRaid] 使用简化生成策略：直接生成最高等级精英分布。");
+            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 使用简化生成策略：直接生成最高等级精英分布。");
 
             currentLevelDistribution.Clear();
             lastResortConfig = null;
@@ -163,7 +163,7 @@ namespace EliteRaid
             // 获取当前难度配置
             if (!difficultyConfigs.TryGetValue(EliteRaidMod.eliteRaidDifficulty, out List<EliteLevelConfig> configs))
             {
-                Console.WriteLine($"[EliteRaid] 找不到当前难度的配置，无法生成简化分布。");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 找不到当前难度的配置，无法生成简化分布。");
                 return;
             }
 
@@ -175,7 +175,7 @@ namespace EliteRaid
 
             if (maxLevelConfig == null)
             {
-                Console.WriteLine($"[EliteRaid] 找不到符合条件的最高等级配置，无法生成简化分布。");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 找不到符合条件的最高等级配置，无法生成简化分布。");
                 return;
             }
 
@@ -192,7 +192,7 @@ namespace EliteRaid
             // 计算占用的原始人数
             int slotsFilled = eliteCount * maxLevelConfig.CompressionRatio;
 
-            Console.WriteLine($"[EliteRaid] 简化生成结果：{eliteCount} 个等级 {maxLevelConfig.Level} 的精英，占用 {slotsFilled}/{originalCount} 个原始名额。");
+            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 简化生成结果：{eliteCount} 个等级 {maxLevelConfig.Level} 的精英，占用 {slotsFilled}/{originalCount} 个原始名额。");
         }
 
         // 检查是否只有一种有效配置
@@ -211,7 +211,7 @@ namespace EliteRaid
         // 生成单一配置分布
         private static void GenerateSingleConfigDistribution(int originalCount)
         {
-            Console.WriteLine($"[EliteRaid] 使用单一配置分布策略。");
+            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 使用单一配置分布策略。");
 
             currentLevelDistribution.Clear();
             lastResortConfig = null;
@@ -243,7 +243,7 @@ namespace EliteRaid
             if (originalCount <= 0)
             {
                 currentLevelDistribution.Clear();
-                Console.WriteLine($"[EliteRaid] 原始数量为0，生成空分布");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 原始数量为0，生成空分布");
                 return;
             }
 
@@ -268,7 +268,7 @@ namespace EliteRaid
 
             //  Log.Message($"[EliteRaid] Generating level distribution for originalCount: {originalCount}. MaxAllowedLevel: {7}, TargetMaxRaidEnemy: {20}, Difficulty: {EliteRaidMod.eliteRaidDifficulty}");
             int maxRaidEnemy = General.GetenhancePawnNumber(originalCount);
-            Log.Message("最大袭击人数"+maxRaidEnemy);
+            if (EliteRaidMod.displayMessageValue) Log.Message("最大袭击人数"+maxRaidEnemy);
             const double minUtilizationThreshold = 0.80; // 80%的利用率阈值
             const int maxAttempts = 20; // 最大尝试次数
             int attempt = 1;
@@ -279,20 +279,20 @@ namespace EliteRaid
 
             while (attempt <= maxAttempts)
             {
-                Console.WriteLine($"[EliteRaid] Attempt {attempt}/{maxAttempts}...");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Attempt {attempt}/{maxAttempts}...");
 
                 currentLevelDistribution.Clear();
                 lastResortConfig = null;
 
                 if (originalCount <= 0)
                 {
-                    Console.WriteLine("[EliteRaid] originalCount is 0 or less, no elites will be generated.");
+                    if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] originalCount is 0 or less, no elites will be generated.");
                     return;
                 }
 
                 if (!difficultyConfigs.TryGetValue(EliteRaidMod.eliteRaidDifficulty, out List<EliteLevelConfig> availableConfigsForDifficulty))
                 {
-                    Console.WriteLine($"[EliteRaid] No EliteLevelConfig found for difficulty: {EliteRaidMod.eliteRaidDifficulty}. Cannot generate distribution.");
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] No EliteLevelConfig found for difficulty: {EliteRaidMod.eliteRaidDifficulty}. Cannot generate distribution.");
                     return;
                 }
 
@@ -303,7 +303,7 @@ namespace EliteRaid
 
                 if (!validConfigs.Any())
                 {
-                    Console.WriteLine($"[EliteRaid] No valid EliteLevelConfigs after filtering. Aborting generation.");
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] No valid EliteLevelConfigs after filtering. Aborting generation.");
                     return;
                 }
 
@@ -346,7 +346,7 @@ namespace EliteRaid
 
                 // 阶段3: 降级高等级精英以调整数量（改进版）
                 currentElites = DowngradeElitesToAdjustCount(validConfigs, currentLevelDistribution, currentSlotsFilled, originalCount, currentElites, targetMinElites, targetMaxElites);
-                Log.Message($"[EliteRaid] After downgrade: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots.");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] After downgrade: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots.");
 
                 // 限制数量不超过上限
                 if (currentElites > targetMaxElites)
@@ -384,7 +384,7 @@ namespace EliteRaid
                 double utilization = (double)currentSlotsFilled / originalCount;
                 if (utilization >= 0.9)
                 {
-                    Console.WriteLine($"[EliteRaid] Early termination: Good utilization ({utilization:P2}) achieved in attempt {attempt}.");
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Early termination: Good utilization ({utilization:P2}) achieved in attempt {attempt}.");
                     break;
                 }
 
@@ -413,7 +413,7 @@ namespace EliteRaid
                 // 如果达到利用率阈值，退出循环
                 if (utilization >= minUtilizationThreshold)
                 {
-                    Log.Warning($"[EliteRaid] Success: Utilization meets threshold ({utilization:P2}) after {attempt} attempts.");
+                    if (EliteRaidMod.displayMessageValue) Log.Warning($"[EliteRaid] Success: Utilization meets threshold ({utilization:P2}) after {attempt} attempts.");
                     break;
                 }
 
@@ -425,22 +425,22 @@ namespace EliteRaid
             int finalSlotsFilled = currentLevelDistribution.Sum(e => e.Key.CompressionRatio * e.Value);
             double finalUtilization = (double)finalSlotsFilled / originalCount;
             int finalElitesGenerated = currentLevelDistribution.Sum(e => e.Value);
-            Log.Message("[EliteRaid] Final Generated Elite Distribution:");
+            if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] Final Generated Elite Distribution:");
             foreach (var entry in currentLevelDistribution.OrderBy(e => e.Key.Level))
             {
-                Log.Message($"  Level {entry.Key.Level}: Count={entry.Value} (CR: {entry.Key.CompressionRatio})");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"  Level {entry.Key.Level}: Count={entry.Value} (CR: {entry.Key.CompressionRatio})");
             }
 
          //   Log.Message($"[EliteRaid] Total elites: {currentLevelDistribution.Sum(e => e.Value)}");
           //  Log.Message($"[EliteRaid] Total slots consumed: {finalSlotsFilled} / {originalCount}");
-///Log.Message($"[EliteRaid] Space utilization: {finalUtilization:P2}"); // 正确的利用率
+///if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Space utilization: {finalUtilization:P2}"); // 正确的利用率
 
 
 
             // 如果未达到阈值，输出警告
             if (finalUtilization < minUtilizationThreshold)
             {
-                Log.Warning($"[EliteRaid] Warning: Could not reach {minUtilizationThreshold:P0} utilization after {maxAttempts} attempts. Best result: {finalUtilization:P2}");
+                if (EliteRaidMod.displayMessageValue) Log.Warning($"[EliteRaid] Warning: Could not reach {minUtilizationThreshold:P0} utilization after {maxAttempts} attempts. Best result: {finalUtilization:P2}");
             }
         }
 
@@ -594,7 +594,7 @@ namespace EliteRaid
 
             if (iterations >= maxIterations)
             {
-                Console.WriteLine($"[EliteRaid] Warning: Reached maximum iterations ({maxIterations}) during generation phase.");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Warning: Reached maximum iterations ({maxIterations}) during generation phase.");
             }
 
             return (currentSlotsFilled, elitesActuallyGenerated);
@@ -610,7 +610,7 @@ namespace EliteRaid
             int currentElites = levelDistribution.Sum(e => e.Value);
             if (currentSlotsFilled >= originalCount) return (currentSlotsFilled, currentElites);
 
-            Console.WriteLine($"[EliteRaid] Filling space by upgrading elites: {currentSlotsFilled}/{originalCount}.");
+            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Filling space by upgrading elites: {currentSlotsFilled}/{originalCount}.");
 
             // 计算每个等级的总压缩比贡献
             Dictionary<int, int> levelCrContribution = new Dictionary<int, int>();
@@ -649,7 +649,7 @@ namespace EliteRaid
                     currentSlotsFilled += maxUpgrades * slotsPerUpgrade;
                     currentElites = levelDistribution.Sum(e => e.Value);
 
-                    Console.WriteLine($"[EliteRaid] Upgraded {maxUpgrades} x Level0 to Level{candidate.Level}.");
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Upgraded {maxUpgrades} x Level0 to Level{candidate.Level}.");
                     maxUpgradesFromZero -= maxUpgrades;
 
                     if (currentSlotsFilled >= originalCount || maxUpgradesFromZero <= 0) break;
@@ -685,7 +685,7 @@ namespace EliteRaid
                     currentSlotsFilled += maxUpgrades * slotsPerUpgrade;
                     currentElites = levelDistribution.Sum(e => e.Value);
 
-                    Console.WriteLine($"[EliteRaid] Upgraded {maxUpgrades} x Level{sourceLevel} to Level{targetConfig.Level}.");
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Upgraded {maxUpgrades} x Level{sourceLevel} to Level{targetConfig.Level}.");
 
                     if (currentSlotsFilled >= originalCount) break;
                 }
@@ -709,7 +709,7 @@ namespace EliteRaid
             if (currentElites >= targetMinElites)
                 return currentElites;
 
-            Console.WriteLine($"[EliteRaid] Elite count ({currentElites}) too low. Downgrading high-level elites.");
+            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Elite count ({currentElites}) too low. Downgrading high-level elites.");
 
             // 按压缩比排序，优先降级高压缩比精英
             foreach (var sourceConfig in validConfigs.OrderByDescending(c => c.CompressionRatio).Where(c => c.Level > 0))
@@ -743,8 +743,8 @@ namespace EliteRaid
                     currentSlotsFilled = levelDistribution.Sum(e => e.Key.CompressionRatio * e.Value);
                     currentElites = levelDistribution.Sum(e => e.Value);
 
-                    Console.WriteLine($"[EliteRaid] Downgraded {requiredDowngrades} x Level{sourceConfig.Level} to Level{targetConfig.Level} ({elitesPerDowngrade}x).");
-                    Console.WriteLine($"[EliteRaid] Current elites: {currentElites}, Slots: {currentSlotsFilled}/{originalCount}");
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Downgraded {requiredDowngrades} x Level{sourceConfig.Level} to Level{targetConfig.Level} ({elitesPerDowngrade}x).");
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Current elites: {currentElites}, Slots: {currentSlotsFilled}/{originalCount}");
 
                     if (currentElites >= targetMinElites)
                         return currentElites; // 达到目标下限，立即返回
@@ -778,7 +778,7 @@ namespace EliteRaid
             int originalCount,
             int currentElites)
         {
-            Console.WriteLine($"[EliteRaid] Starting final optimization: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots.");
+            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Starting final optimization: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots.");
 
             // 计算当前利用率
             double utilization = (double)currentSlotsFilled / originalCount;
@@ -786,7 +786,7 @@ namespace EliteRaid
             // 如果利用率已经很高，或者空间已经填满，无需优化
             if (utilization >= 0.95 || currentSlotsFilled >= originalCount)
             {
-                Console.WriteLine($"[EliteRaid] Final optimization skipped: high utilization ({utilization:P2}).");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Final optimization skipped: high utilization ({utilization:P2}).");
                 return (currentSlotsFilled, currentElites);
             }
 
@@ -828,12 +828,12 @@ namespace EliteRaid
                     currentSlotsFilled += maxUpgrades * slotsSavedPerUpgrade;
                     currentElites = levelDistribution.Sum(e => e.Value);
 
-                    Console.WriteLine($"[EliteRaid] Final optimization: Upgraded {maxUpgrades} x Level{sourceConfig.Level} to Level{targetConfig.Level}.");
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Final optimization: Upgraded {maxUpgrades} x Level{sourceConfig.Level} to Level{targetConfig.Level}.");
 
                     // 检查是否达到满利用率
                     if (currentSlotsFilled >= originalCount)
                     {
-                        Console.WriteLine($"[EliteRaid] Final optimization: Reached full utilization ({currentSlotsFilled}/{originalCount}).");
+                        if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Final optimization: Reached full utilization ({currentSlotsFilled}/{originalCount}).");
                         return (currentSlotsFilled, currentElites);
                     }
 
@@ -841,7 +841,7 @@ namespace EliteRaid
                     utilization = (double)currentSlotsFilled / originalCount;
                     if (utilization >= 0.95)
                     {
-                        Console.WriteLine($"[EliteRaid] Final optimization: High utilization achieved ({utilization:P2}).");
+                        if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Final optimization: High utilization achieved ({utilization:P2}).");
                         return (currentSlotsFilled, currentElites);
                     }
 
@@ -853,7 +853,7 @@ namespace EliteRaid
             // 策略2: 如果空间利用率仍然很低，尝试降级部分精英以增加总数量
             if (utilization < 0.7)
             {
-                Console.WriteLine($"[EliteRaid] Final optimization: Low utilization ({utilization:P2}), attempting downgrades.");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Final optimization: Low utilization ({utilization:P2}), attempting downgrades.");
 
                 // 优先选择压缩比高且数量少的精英进行降级
                 var downgradeCandidates = validConfigs
@@ -888,7 +888,7 @@ namespace EliteRaid
                         levelDistribution[targetConfig] = levelDistribution.GetValueOrDefault(targetConfig, 0) + (maxDowngrades * elitesAddedPerDowngrade);
                         currentElites = levelDistribution.Sum(e => e.Value);
 
-                        Console.WriteLine($"[EliteRaid] Final optimization: Downgraded {maxDowngrades} x Level{sourceConfig.Level} to Level{targetConfig.Level}.");
+                        if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Final optimization: Downgraded {maxDowngrades} x Level{sourceConfig.Level} to Level{targetConfig.Level}.");
 
                         // 重新计算利用率
                         currentSlotsFilled = levelDistribution.Sum(e => e.Key.CompressionRatio * e.Value);
@@ -897,7 +897,7 @@ namespace EliteRaid
                         // 如果利用率提高到可接受范围，停止降级
                         if (utilization >= 0.8)
                         {
-                            Console.WriteLine($"[EliteRaid] Final optimization: Utilization improved to {utilization:P2}.");
+                            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Final optimization: Utilization improved to {utilization:P2}.");
                             return (currentSlotsFilled, currentElites);
                         }
 
@@ -926,12 +926,12 @@ namespace EliteRaid
                         currentSlotsFilled = originalCount;
                         currentElites = levelDistribution.Sum(e => e.Value);
 
-                        Console.WriteLine($"[EliteRaid] Final optimization: Added {addCount} x Level0 to fill remaining space.");
+                        if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Final optimization: Added {addCount} x Level0 to fill remaining space.");
                     }
                 }
             }
 
-            Console.WriteLine($"[EliteRaid] Final optimization results: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots, utilization {utilization:P2}.");
+            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Final optimization results: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots, utilization {utilization:P2}.");
             return (currentSlotsFilled, currentElites);
         }
         // 根据等级获取精英配置
@@ -992,17 +992,17 @@ namespace EliteRaid
 
             if (!availableToPick.Any())
             {
-                Console.WriteLine("[EliteRaid] GetRandomEliteLevel: No elites with count > 0 in distribution.");
+                if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GetRandomEliteLevel: No elites with count > 0 in distribution.");
                 if (lastResortConfig != null)
                 {
-                    Console.WriteLine($"[EliteRaid] Using lastResortConfig (L{lastResortConfig.Level}) to create EliteLevel.");
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Using lastResortConfig (L{lastResortConfig.Level}) to create EliteLevel.");
                     return new EliteLevel(
                         lastResortConfig.Level, lastResortConfig.DamageFactor, lastResortConfig.MoveSpeedFactor,
                         lastResortConfig.ScaleFactor, lastResortConfig.MaxTraits, lastResortConfig.IsBoss
                     );
                 }
 
-                Console.WriteLine("[EliteRaid] No lastResortConfig available. Falling back to absolute default L1 EliteLevel.");
+                if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] No lastResortConfig available. Falling back to absolute default L1 EliteLevel.");
                 // Attempt to get a L1 config from current difficulty as a better fallback
                 if (difficultyConfigs.TryGetValue(EliteRaidMod.eliteRaidDifficulty, out var currentDiffConfigs))
                 {
@@ -1029,7 +1029,7 @@ namespace EliteRaid
             // This check should ideally not be needed if availableToPick.Any() is true
             if (!selectionPool.Any())
             {
-                Console.WriteLine("[EliteRaid] GetRandomEliteLevel: Selection pool became empty unexpectedly. This indicates a logic error. Using fallback.");
+                if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GetRandomEliteLevel: Selection pool became empty unexpectedly. This indicates a logic error. Using fallback.");
                 // Repeating fallback logic from above for safety
                 if (lastResortConfig != null) { /* ... same as above ... */ }
                 return new EliteLevel(1, 0.7f, 1.0f, 1.0f, 1, false);
@@ -1043,11 +1043,11 @@ namespace EliteRaid
             if (currentLevelDistribution.ContainsKey(selectedConfig))
             {
                 currentLevelDistribution[selectedConfig]--;
-                Console.WriteLine($"[EliteRaid] Selected EliteLevel L{selectedConfig.Level}. Remaining for this level: {currentLevelDistribution[selectedConfig]}.");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Selected EliteLevel L{selectedConfig.Level}. Remaining for this level: {currentLevelDistribution[selectedConfig]}.");
             } else
             {
                 // This should not happen if selectedConfig came from currentLevelDistribution
-                Console.WriteLine($"[EliteRaid] GetRandomEliteLevel: selectedConfig (L{selectedConfig.Level}) not found in currentLevelDistribution after selection. This is a bug.");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GetRandomEliteLevel: selectedConfig (L{selectedConfig.Level}) not found in currentLevelDistribution after selection. This is a bug.");
             }
 
             lastResortConfig = selectedConfig; // Update lastResortConfig to the one just picked
@@ -1113,7 +1113,7 @@ namespace EliteRaid
         {
             if (!EliteRaidMod.displayMessageValue) return;
             
-            Log.Message("=== 0级敌人生成控制测试 ===");
+            if (EliteRaidMod.displayMessageValue) Log.Message("=== 0级敌人生成控制测试 ===");
             
             // 测试不同压缩率下的0级敌人生成
             var testCases = new[]
@@ -1126,7 +1126,7 @@ namespace EliteRaid
             
             foreach (var testCase in testCases)
             {
-                Log.Message($"--- {testCase.Description} 测试 (压缩率={testCase.CompressionRatio}, 最大袭击人数={testCase.MaxRaidEnemy}) ---");
+                if (EliteRaidMod.displayMessageValue) Log.Message($"--- {testCase.Description} 测试 (压缩率={testCase.CompressionRatio}, 最大袭击人数={testCase.MaxRaidEnemy}) ---");
                 
                 // 临时设置参数
                 EliteRaidMod.compressionRatio = testCase.CompressionRatio;
@@ -1146,12 +1146,12 @@ namespace EliteRaid
                     int totalElites = currentLevelDistribution.Sum(e => e.Value);
                     double zeroLevelRatio = totalElites > 0 ? (double)zeroLevelCount / totalElites : 0;
                     
-                    Log.Message($"  原始{originalCount}人 → 0级敌人{zeroLevelCount}/{totalElites} ({zeroLevelRatio:P1})");
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"  原始{originalCount}人 → 0级敌人{zeroLevelCount}/{totalElites} ({zeroLevelRatio:P1})");
                 }
-                Log.Message("");
+                if (EliteRaidMod.displayMessageValue) Log.Message("");
             }
             
-            Log.Message("=== 0级敌人生成控制测试结束 ===");
+            if (EliteRaidMod.displayMessageValue) Log.Message("=== 0级敌人生成控制测试结束 ===");
         }
     }
 
