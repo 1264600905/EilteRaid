@@ -381,7 +381,7 @@ namespace EliteRaid
                 {
                     Log.Message("捕获到当前生成的敌人阵营11"+ faction);
                 }
-                Messages.Message("捕获到当前生成的敌人阵营11"+ faction, MessageTypeDefOf.NeutralEvent);
+                
                 // 确保不压缩关键角色类型
                 if (!PawnStateChecker.CanCompressPawn(
                  

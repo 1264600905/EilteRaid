@@ -280,48 +280,37 @@ namespace EliteRaid
           //  Log.Message($"[EliteRaid] baseNum: {baseNum}, maxPawnNum: {maxPawnNum}, raidFriendly: {raidFriendly}");
 
             //平衡生成的动物和人类的数量
-            int humanCount = pawns.Where(p => !p.RaceProps.Animal).ToList().Count ;
+            int humanCount = pawns.Where(p => !p.RaceProps.Animal).ToList().Count;
             int OthersCount = pawns.Count - humanCount;
-            if (humanCount<=0||(pawns.Count>0&&OthersCount/humanCount>1))
+            // 如果全部是动物，则只添加一个保底单位（人类），保底单位用Pirate
+            if (humanCount <= 0 && pawns.Count > 0)
             {
-                int needReplaceCount =(int)Mathf.Ceil( OthersCount / 2);
                 List<Pawn> animalPawns = pawns.Where(p => p.RaceProps.Animal).ToList();
-                for (int i = 0; i < needReplaceCount; i++) {
-
-                   
-
-                    if (pawns[i] != null )
-                    {
-                        // 生成保底人类单位
-                        string pawnKindName = pawns[i].RaceProps.Animal ? pawns[i].kindDef.defName : "null";
-                        string factionName = pawns[i].Faction != null ? (pawns[i].Faction.Name ?? pawns[i].Faction.ToString()) : "null";
-                        Log.Message($"[EliteRaid][General.cs@L288] 调用PawnGenerator.GeneratePawn, pawnKind={pawnKindName}, faction={factionName}");
-                        Pawn atleastOnePerson = PawnGenerator.GeneratePawn(new PawnGenerationRequest(
-                             pawns[i].RaceProps.Animal ? pawns[i].kindDef : null,
-                             pawns[i].Faction,
-                             PawnGenerationContext.NonPlayer,
-                             -1,
-                             forceGenerateNewPawn: false,
-                             allowDead: false,
-                             allowDowned: false,
-                             canGeneratePawnRelations: false,
-                             mustBeCapableOfViolence: true,
-                             colonistRelationChanceFactor: 1f,
-                             forceAddFreeWarmLayerIfNeeded: false,
-                             allowGay: true,
-                             allowFood: false,
-                             allowAddictions: false,
-                             inhabitant: false,
-                             certainlyBeenInCryptosleep: false,
-                             forceRedressWorldPawnIfFormerColonist: false));
-                        Log.Message($"[EliteRaid][General.cs@L288] PawnGenerator.GeneratePawn结果: {(atleastOnePerson == null ? "null" : atleastOnePerson.LabelCap)}");
-                        PawnWeaponChager.CheckAndReplaceMainWeapon(atleastOnePerson);
-                        pawns.Replace(animalPawns[i],atleastOnePerson);
-                         Log.Message($"[EliteRaid] 添加保底人类单位: {atleastOnePerson.LabelCap}");
-                    }
-                }
-                PawnWeaponChager.ResetCounter();
-               // Log.Warning("[Elite Raid] 压缩率过高导致没有正常生成人类  Excessive compression rate caused failure to normally generate human units.");
+                PawnKindDef humanKind = PawnKindDefOf.Pirate;
+                Faction faction = animalPawns[0].Faction;
+                Log.Message($"[EliteRaid][General.cs@L288] 全是动物，添加保底人类单位，kind={humanKind.defName}, faction={faction?.Name ?? "null"}");
+                Pawn atleastOnePerson = PawnGenerator.GeneratePawn(new PawnGenerationRequest(
+                    humanKind,
+                    faction,
+                    PawnGenerationContext.NonPlayer,
+                    -1,
+                    forceGenerateNewPawn: false,
+                    allowDead: false,
+                    allowDowned: false,
+                    canGeneratePawnRelations: false,
+                    mustBeCapableOfViolence: true,
+                    colonistRelationChanceFactor: 1f,
+                    forceAddFreeWarmLayerIfNeeded: false,
+                    allowGay: true,
+                    allowFood: false,
+                    allowAddictions: false,
+                    inhabitant: false,
+                    certainlyBeenInCryptosleep: false,
+                    forceRedressWorldPawnIfFormerColonist: false));
+                Log.Message($"[EliteRaid][General.cs@L288] PawnGenerator.GeneratePawn结果: {(atleastOnePerson == null ? "null" : atleastOnePerson.LabelCap)}");
+                PawnWeaponChager.CheckAndReplaceMainWeapon(atleastOnePerson);
+                pawns.Replace(animalPawns[0], atleastOnePerson);
+                Log.Message($"[EliteRaid] 添加保底人类单位: {atleastOnePerson.LabelCap}");
             }
             GenerateAnything_Impl(pawns, baseNum, maxPawnNum, raidFriendly);
         }
