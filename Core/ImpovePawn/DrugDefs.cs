@@ -20,6 +20,12 @@ namespace EliteRaid
     //    public List<string> drugs;
     //}
 
+    /// <summary>
+    /// 定义允许的PawnGroupKindWorker类型
+    /// 功能：存储和管理允许的PawnGroupKindWorker类型名称列表
+    /// 输入：通过XML配置文件加载workerTypeNames
+    /// 输出：提供workerTypeNames列表供其他系统使用
+    /// </summary>
     [StaticConstructorOnStartup]
     public class AllowPawnGroupKindWorkerTypeDef : Def
     {

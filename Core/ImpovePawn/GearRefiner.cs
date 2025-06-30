@@ -8,9 +8,21 @@ using RimWorld;
 
 namespace EliteRaid
 {
+    /// <summary>
+    /// 装备精炼器
+    /// 功能：负责提升装备品质和添加特殊效果
+    /// 输入：Pawn及其装备信息
+    /// 输出：装备品质提升结果
+    /// </summary>
     public class GearRefiner
     {
         //private static StringBuilder sb = new StringBuilder();
+        /// <summary>
+        /// 批量精炼装备
+        /// 功能：对指定数量的Pawn进行装备精炼
+        /// 输入：pawns-需要精炼的Pawn列表，gainStatValue-增益值，enhancePawnNumber-需要强化的Pawn数量
+        /// 输出：成功精炼的Pawn数量
+        /// </summary>
         public static int RefineGear(List<Pawn> pawns, float gainStatValue, int enhancePawnNumber)
         {
             //sb.Clear();
@@ -35,6 +47,12 @@ namespace EliteRaid
             return count;
         }
 
+        /// <summary>
+        /// 精炼单个Pawn的装备
+        /// 功能：根据精英等级提升Pawn的装备品质
+        /// 输入：pawn-目标Pawn，eliteLevel-精英等级配置
+        /// 输出：是否成功精炼(0-失败，1-成功)
+        /// </summary>
         public static int RefineGear(Pawn pawn, EliteLevel eliteLevel)
         {
             if (pawn == null || eliteLevel == null || !EliteRaidMod.AllowCompress(pawn)||!eliteLevel.refineGear)
@@ -95,8 +113,13 @@ namespace EliteRaid
             return refinedCount > 0 ? 1 : 0;
         }
 
-        // 辅助方法：提升品质等级
-        private static bool RefineQuality(CompQuality qualityComp, int levelsToIncrease,Pawn pawn)
+        /// <summary>
+        /// 提升装备品质
+        /// 功能：将装备品质提升指定等级
+        /// 输入：qualityComp-品质组件，levelsToIncrease-提升等级数，pawn-目标Pawn
+        /// 输出：是否成功提升品质
+        /// </summary>
+        private static bool RefineQuality(CompQuality qualityComp, int levelsToIncrease, Pawn pawn)
         {
             if (qualityComp == null) return false;
 
@@ -208,6 +231,12 @@ namespace EliteRaid
             ////sb.AppendLine();
         }
 
+        /// <summary>
+        /// 获取可提升品质的武器列表
+        /// 功能：获取Pawn装备的所有具有品质属性的武器
+        /// 输入：pawn-目标Pawn
+        /// 输出：weapons-可提升品质的武器列表，返回是否成功获取
+        /// </summary>
         private static bool TryGetQualitableWeapons(Pawn pawn, out List<ThingWithComps> weapons)
         {
             IEnumerable<ThingWithComps> work = pawn.equipment?.AllEquipmentListForReading?.Where(x => x.GetComp<CompQuality>() != null);
@@ -220,6 +249,12 @@ namespace EliteRaid
             return true;
         }
 
+        /// <summary>
+        /// 获取可提升品质的护甲列表
+        /// 功能：获取Pawn装备的所有具有品质属性的护甲
+        /// 输入：pawn-目标Pawn
+        /// 输出：apparels-可提升品质的护甲列表，返回是否成功获取
+        /// </summary>
         private static bool TryGetQualitableApparels(Pawn pawn, out List<ThingWithComps> apparels)
         {
             IEnumerable<ThingWithComps> work = pawn.apparel?.WornApparel?.Where(x => x.GetComp<CompQuality>() != null);
@@ -249,7 +284,13 @@ namespace EliteRaid
             return true;
         }
 
-        private static bool TryGetIncreaseQuality( out byte increaseQuality)
+        /// <summary>
+        /// 获取品质提升等级
+        /// 功能：随机决定装备品质提升的等级数
+        /// 输入：无
+        /// 输出：increaseQuality-提升的等级数(1-4)，返回是否成功获取
+        /// </summary>
+        private static bool TryGetIncreaseQuality(out byte increaseQuality)
         {
             increaseQuality = 0;
             float randValue = Rand.Value;
@@ -266,13 +307,18 @@ namespace EliteRaid
             return true; // 总是返回true，因为必定会输出1-4之间的数值
         }
 
+        /// <summary>
+        /// 计算精炼后的品质
+        /// 功能：根据当前品质和提升等级计算新品质
+        /// 输入：currentQuality-当前品质，increaseQuality-提升等级
+        /// 输出：精炼后的新品质
+        /// </summary>
         private static QualityCategory GetRefinedQuality(QualityCategory currentQuality, byte increaseQuality)
         {
             byte currentQualityByte = (byte)currentQuality;
             byte refinedQualityByte = (byte)Math.Min(currentQualityByte + increaseQuality, (byte)QualityCategory.Legendary);
             QualityCategory refinedQuality = (QualityCategory)Enum.ToObject(typeof(QualityCategory), refinedQualityByte);
             return refinedQuality;
-
         }
     }
 }

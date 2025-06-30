@@ -8,17 +8,72 @@ using System.Security.Cryptography;
 
 namespace EliteRaid
 {
+    /// <summary>
+    /// 植入体数据管理类
+    /// 功能：管理游戏中所有可用的植入体数据，提供植入体的加载、筛选和添加功能
+    /// 主要职责：
+    /// 1. 加载和存储所有有效的植入体配方
+    /// 2. 为特定单位筛选可用的植入体
+    /// 3. 处理植入体的添加逻辑
+    /// </summary>
     public class BionicsDataStore
     {
+        private static DeathAcidifierHolder m_DeathAcidifierHolder = new DeathAcidifierHolder();
         public static List<BionicRecipeDefHolder> m_ListupBionicRecipe = new List<BionicRecipeDefHolder>();
-        private static DeathAcidifierHolder m_DeathAcidifierHolder = null;
 
+        /// <summary>
+        /// 死亡酸液器数据持有者
+        /// 功能：管理死亡酸液器植入体的数据和验证
+        /// </summary>
+        private class DeathAcidifierHolder
+        {
+            public HediffDef hediffDef;
+            public bool Verified => hediffDef != null;
+
+            public DeathAcidifierHolder()
+            {
+                hediffDef = DefDatabase<HediffDef>.GetNamed("DeathAcidifier");
+            }
+
+            /// <summary>
+            /// 检查是否可以添加死亡酸液器
+            /// 输入：pawn-目标单位
+            /// 输出：part-可植入的身体部位
+            /// 返回值：是否可以添加死亡酸液器
+            /// </summary>
+            public bool TryCanAddDeathAcidifierHediff(Pawn pawn, out BodyPartRecord part)
+            {
+                part = null;
+                if (pawn.health.hediffSet.HasHediff(hediffDef))
+                {
+                    return false;
+                }
+                part = pawn.RaceProps.body.corePart;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 植入体配方数据持有者
+        /// 功能：存储单个植入体配方的基本信息和权重
+        /// 属性说明：
+        /// - recipeDef: 植入体的配方定义
+        /// - hediffDef: 植入体对应的健康状态定义
+        /// - weight: 植入体被选中的权重
+        /// </summary>
         public class BionicRecipeDefHolder
         {
             public RecipeDef recipeDef;
             public HediffDef hediffDef;
             public float weight;
 
+            /// <summary>
+            /// 创建植入体配方数据持有者
+            /// 输入：
+            /// - recipeDef: 植入体配方定义
+            /// - hediffDef: 植入体健康状态定义
+            /// 功能：初始化植入体数据并计算其权重
+            /// </summary>
             public BionicRecipeDefHolder(RecipeDef recipeDef, HediffDef hediffDef)
             {
                 this.recipeDef = recipeDef;
@@ -33,58 +88,28 @@ namespace EliteRaid
             }
         }
 
-        public class DeathAcidifierHolder : BionicRecipeDefHolder
-        {
-            public bool Verified => this.recipeDef != null && this.hediffDef != null && this.PartDef != null && this.RecipeUsers != null;
-
-            public BodyPartDef PartDef { get; set; }
-
-            public List<ThingDef> RecipeUsers { get; set; }
-
-            public DeathAcidifierHolder(RecipeDef recipeDef, HediffDef hediffDef) : base(recipeDef, hediffDef)
-            {
-                PartDef = this.recipeDef.appliedOnFixedBodyParts.FirstOrDefault();
-                RecipeUsers = this.recipeDef.recipeUsers;
-            }
-
-            public bool TryCanAddDeathAcidifierHediff(Pawn pawn, out BodyPartRecord part)
-            {
-                part = null;
-                if (m_DeathAcidifierHolder?.hediffDef == null)
-                {
-                    return false;
-                }
-                if (pawn.health.hediffSet.HasHediff(m_DeathAcidifierHolder.hediffDef))
-                {
-                    return false;
-                }
-                if (!(this.RecipeUsers.Contains(pawn.def)))
-                {
-                    return false;
-                }
-                if (pawn.health.hediffSet.hediffs.Any(x => x.Part?.def == this.PartDef && x.def.countsAsAddedPartOrImplant))
-                {
-                    return false;
-                }
-                part = pawn.RaceProps.body.AllParts.Where(x => x.def == this.PartDef).FirstOrDefault();
-                if (part == null)
-                {
-                    return false;
-                }
-                if (TryIsUsedPart(pawn.health.hediffSet, part, out Hediff causeHediff, out BodyPartRecord causePart))
-                {
-                    return false;
-                }
-                return true;
-            }
-        }
-
+        /// <summary>
+        /// 植入体配方与身体部位关联数据
+        /// 功能：扩展基本植入体数据，添加身体部位相关信息
+        /// 属性说明：
+        /// - part: 目标身体部位
+        /// - allow: 是否允许在该部位安装
+        /// - index: 部位索引
+        /// </summary>
         public class BionicRecipeDefPartHolder : BionicRecipeDefHolder
         {
             public BodyPartRecord part;
             public bool allow;
             public int index;
 
+            /// <summary>
+            /// 创建植入体配方与身体部位的关联数据
+            /// 输入：
+            /// - recipeDef: 植入体配方定义
+            /// - hediffDef: 植入体健康状态定义
+            /// - part: 目标身体部位
+            /// - allow: 是否允许安装（默认为true）
+            /// </summary>
             public BionicRecipeDefPartHolder(RecipeDef recipeDef, HediffDef hediffDef, BodyPartRecord part, bool allow = true) : base(recipeDef, hediffDef)
             {
                 this.part = part;
@@ -93,6 +118,16 @@ namespace EliteRaid
             }
         }
 
+
+
+        /// <summary>
+        /// 重置并加载所有可用的植入体数据
+        /// 功能：从游戏数据库中加载所有符合条件的植入体配方
+        /// 筛选条件：
+        /// 1. 必须有固定的身体部位
+        /// 2. 植入体属性必须有效
+        /// 3. 符合模组内容限制
+        /// </summary>
         public static void DataRestore()
         {
             m_ListupBionicRecipe = new List<BionicRecipeDefHolder>();
@@ -118,21 +153,17 @@ namespace EliteRaid
                 return true;
             }))
             {
-                HediffDef hediffDef = def.addsHediff;
-                BionicRecipeDefHolder holder = new BionicRecipeDefHolder(def, hediffDef);
-                m_ListupBionicRecipe.Add(holder);
+                m_ListupBionicRecipe.Add(new BionicRecipeDefHolder(def, def.addsHediff));
             }
-
-            // add@@add@@add@@add@@add
-            RecipeDef recipe = DefDatabase<RecipeDef>.GetNamed("InstallDeathAcidifier", false);
-            if (recipe != null)
-            {
-                HediffDef hediff = recipe.addsHediff;
-                m_DeathAcidifierHolder = new DeathAcidifierHolder(recipe, hediff);
-            }
-            // add@@add@@add@@add@@add
         }
 
+        /// <summary>
+        /// 获取指定单位可用的植入体配方数据
+        /// 输入：
+        /// - pawn: 目标单位
+        /// 输出：可用的植入体配方与身体部位关联数据集合
+        /// 功能：根据单位情况筛选可用的植入体配方，并与可用的身体部位匹配
+        /// </summary>
         public static IEnumerable<BionicRecipeDefPartHolder> GetBionicRecipePartDatas(Pawn pawn)
         {
             List<BionicRecipeDefPartHolder> holders = new List<BionicRecipeDefPartHolder>();
@@ -179,6 +210,13 @@ namespace EliteRaid
             yield break;
         }
 
+        /// <summary>
+        /// 禁用指定部位及其所有子部位的植入体配方
+        /// 输入：
+        /// - holder: 要禁用的植入体配方持有者
+        /// - holders: 所有植入体配方持有者列表
+        /// 功能：将指定部位及其所有子部位标记为不可用
+        /// </summary>
         private static void DisallowAllChildren(BionicRecipeDefPartHolder holder, List<BionicRecipeDefPartHolder> holders)
         {
             holder.allow = false;
@@ -202,6 +240,16 @@ namespace EliteRaid
 
         }
 
+        /// <summary>
+        /// 检查身体部位是否已被使用或不可用
+        /// 输入：
+        /// - hediffSet: 健康状态集合
+        /// - current: 当前检查的身体部位
+        /// 输出：
+        /// - causeHediff: 导致部位不可用的健康状态
+        /// - causePart: 导致部位不可用的身体部位
+        /// 返回值：true表示部位已被使用或不可用，false表示部位可用
+        /// </summary>
         private static bool TryIsUsedPart(HediffSet hediffSet, BodyPartRecord current, out Hediff causeHediff, out BodyPartRecord causePart)
         {
             causeHediff = hediffSet.hediffs.Where(h => h.Part == current && !h.def.isBad && h.def.countsAsAddedPartOrImplant).FirstOrDefault();
@@ -232,82 +280,18 @@ namespace EliteRaid
             return parentMissing;
         }
 
-        private static bool AddBionics(Pawn pawn)
-        {
-            return false;
-            if (!AllowByTechLevel(pawn))
-            {
-                return false;
-            }
-
-            List<BionicRecipeDefPartHolder> bionicRecipePartDatas = GetBionicRecipePartDatas(pawn).OrderBy(x => x.index).ToList();
-
-            float addBionicsChanceFactorValue = 2.0f;
-            float addBionicsChanceNegativeCurveValue = 0.5f;
-            float addBionicsChanceMaxValue = 1.0f;
-            int addBionicsMaxNumberValue = 3;
-            int bionicsNum = 0;
-            int loopCount = 0;
-            int loopMax = 100;
-
-            while (loopMax > loopCount && addBionicsMaxNumberValue > bionicsNum && bionicRecipePartDatas.Any(x => x.allow))
-            {
-                float chance =  addBionicsChanceFactorValue;
-                if (bionicsNum > 0)
-                {
-                    for (int i = 0; i < bionicsNum; i++, chance *= addBionicsChanceNegativeCurveValue) ;
-                }
-                chance = Math.Min(chance, addBionicsChanceMaxValue);
-
-                if (!Rand.Chance(chance))
-                {
-                    break;
-                }
-
-
-                BionicRecipeDefPartHolder bionicRecipePartData = bionicRecipePartDatas.Where(x => x.allow).RandomElementByWeight(x => x.weight);
-
-                pawn.health.AddHediff(bionicRecipePartData.hediffDef, bionicRecipePartData.part);
-                bionicsNum++;
-                bionicRecipePartDatas = GetBionicRecipePartDatas(pawn).OrderBy(x => x.index).ToList();
-
-                loopCount++;
-            }
-
-            return bionicsNum > 0;
-        }
-
-        public static int AddBionics(List<Pawn> pawns, float gainStatValue, int enhancePawnNumber)
-        {
-            return 0;
-            if (pawns == null || pawns.EnumerableNullOrEmpty() || enhancePawnNumber == 0)
-            {
-                return 0;
-            }
-            //StringBuilder sb = new StringBuilder();
-            //DateTime startTime = DateTime.Now;
-            int count = 0;
-            for (int i = 0; i < pawns.Count(); i++)
-            {
-                Pawn pawn = pawns.ElementAt(i);
-                if (!EliteRaidMod.AllowCompress(pawn))
-                {
-                    continue;
-                }
-                if (AddBionics(pawn))
-                {
-                    count++;
-                }
-            }
-            //sb.AppendLine(String.Format("所用時間: {0}ms", (DateTime.Now - startTime).Ticks / TimeSpan.TicksPerMillisecond));
-            //using (System.IO.StreamWriter sw = new System.IO.StreamWriter("./DEBUG_HEDIFF.txt", false, Encoding.Default))
-            //{
-            //    sw.WriteLine(sb.ToString());
-            //}
-            return count;
-        }
-
-        //固定添加三个植入体
+        /// <summary>
+        /// 为特定等级的单位添加植入体
+        /// 输入：
+        /// - pawn: 目标单位
+        /// - eliteLevel: 精英等级
+        /// 输出：成功添加的植入体数量
+        /// 功能：根据精英等级为单位添加固定数量的植入体，最多添加4个
+        /// 处理逻辑：
+        /// 1. 检查现有植入体数量
+        /// 2. 计算需要添加的数量
+        /// 3. 按权重随机选择并添加植入体
+        /// </summary>
         public static int AddBionics(Pawn pawn, EliteLevel eliteLevel)
         {
             if (pawn == null || eliteLevel == null || !EliteRaidMod.AllowCompress(pawn)||!eliteLevel.addBioncis)
@@ -363,8 +347,12 @@ namespace EliteRaid
             return addedCount;
         }
 
-
-
+        /// <summary>
+        /// 尝试添加死亡酸液器
+        /// 功能：为指定单位添加死亡酸液器植入体
+        /// 输入：pawn-目标单位
+        /// 输出：是否成功添加死亡酸液器
+        /// </summary>
         public static bool TryAddDeathAcidifier(Pawn pawn)
         {
             if (m_DeathAcidifierHolder == null || !m_DeathAcidifierHolder.Verified)
@@ -378,13 +366,5 @@ namespace EliteRaid
             pawn.health.AddHediff(m_DeathAcidifierHolder.hediffDef, part);
             return true;
         }
-
-        public static bool AllowByTechLevel(Pawn pawn)
-        {
-            byte pawnTech = (byte)(pawn?.Faction?.def.techLevel ?? 0x00);
-            byte allowTech = (byte)(pawnTech+1);
-            return pawnTech >= allowTech;
-        }
-
     }
 }

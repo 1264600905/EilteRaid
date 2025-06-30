@@ -9,14 +9,26 @@ using System.Reflection;
 
 namespace EliteRaid
 {
+    /// <summary>
+    /// 药物效果数据管理类
+    /// 功能：管理游戏中所有可用的药物数据，提供药物的加载、筛选和添加功能
+    /// 主要职责：
+    /// 1. 加载和存储所有有效的药物配方
+    /// 2. 计算药物效果的权重
+    /// 3. 为特定单位添加药物效果
+    /// 4. 管理药物使用的限制条件
+    /// </summary>
     [StaticConstructorOnStartup]
     public class DrugHediffDataStore
     {
+        // 权重计算相关常量
         private const float CALCULATE_WEIGHT_MAX = 20000f;
         private const float CALCULATE_WEIGHT_MIN = 1000f;
         private const float PAIN_WEIGHT_SCALE = 5000f;
         private const float NATURAL_HEALING_WEIGHT_SCALE = 2500f;
         private const float PERMENENT_WEIGHT_FIX_OFFSET = -10000f;
+
+        // 类型和方法引用
         private static readonly Type HEDIFF_VOLATILITY_TYPE = typeof(HediffComp_SeverityPerDay);
         private static readonly Type HEDIFF_GIVER_TYPE = typeof(IngestionOutcomeDoer_GiveHediff);
         private static readonly Dictionary<PawnCapacityDef, float> PAWN_CAPACITIE_WEIGHT_SCALE = new Dictionary<PawnCapacityDef, float>();
@@ -28,17 +40,21 @@ namespace EliteRaid
         public static List<AllowDrugHediffsHolder> m_ListupAllowDrugHediffs;
         private static int m_DrugOverdoseFinalStageIndex;
 
+        /// <summary>
+        /// 静态构造函数
+        /// 功能：初始化药物相关的能力和属性权重
+        /// </summary>
         static DrugHediffDataStore()
         {
             m_ListupAllowDrugHediffs = new List<AllowDrugHediffsHolder>();
 
-            //combat-related capacities
+            // 战斗相关能力权重
             PAWN_CAPACITIE_WEIGHT_SCALE[PawnCapacityDefOf.Moving] = 4000f;
             PAWN_CAPACITIE_WEIGHT_SCALE[PawnCapacityDefOf.Consciousness] = 2500f;
             PAWN_CAPACITIE_WEIGHT_SCALE[PawnCapacityDefOf.Manipulation] = 2500f;
             PAWN_CAPACITIE_WEIGHT_SCALE[PawnCapacityDefOf.Sight] = 2500f;
 
-            //combat-related stats
+            // 战斗相关属性权重
             STAT_WEIGHT_SCALE[StatDefOf.ArmorRating_Blunt] = 5000f;
             STAT_WEIGHT_SCALE[StatDefOf.ArmorRating_Sharp] = 5000f;
             STAT_WEIGHT_SCALE[StatDefOf.ArmorRating_Heat] = 5000f;
@@ -49,6 +65,15 @@ namespace EliteRaid
             STAT_WEIGHT_SCALE[StatDefOf.PawnTrapSpringChance] = -5000f;
         }
 
+        /// <summary>
+        /// 允许使用的药物效果持有者
+        /// 功能：存储单个药物的基本信息和权重
+        /// 属性说明：
+        /// - weight: 药物效果权重
+        /// - drug: 药物定义
+        /// - hediffDefs: 药物产生的健康状态定义
+        /// - permenent: 是否为永久效果
+        /// </summary>
         public class AllowDrugHediffsHolder
         {
             public float weight;
@@ -56,6 +81,14 @@ namespace EliteRaid
             public HediffDef[] hediffDefs;
             public bool permenent;
 
+            /// <summary>
+            /// 创建药物效果持有者
+            /// 输入：
+            /// - weight: 效果权重
+            /// - drug: 药物定义
+            /// - hediffDefs: 健康状态定义数组
+            /// 功能：初始化药物数据并计算其永久性
+            /// </summary>
             public AllowDrugHediffsHolder(float weight, ThingDef drug, params HediffDef[] hediffDefs)
             {
                 this.drug = drug;
@@ -66,15 +99,6 @@ namespace EliteRaid
                 {
                     if (!hediffDef.isBad)
                     {
-#if DEBUG
-                        //test
-                        for (int i = 0; i < hediffDef.comps.Count; i++)
-                        {
-                            HediffCompProperties comp = hediffDef.comps[i];
-                            //   Log.Message(String.Format("CR_MESSAGE {0}, tendable={1}, comp[{2}].type={3}", hediffDef.LabelCap, hediffDef.tendable, i, comp.compClass));
-                        }
-                        //test
-#endif
                         this.permenent &= !hediffDef.tendable && !(hediffDef.comps?.Any(x => x.compClass == HEDIFF_VOLATILITY_TYPE) ?? false);
                         if (!this.permenent)
                         {
@@ -89,11 +113,17 @@ namespace EliteRaid
             }
         }
 
-
+        /// <summary>
+        /// 计算药物效果权重
+        /// 输入：
+        /// - drug: 药物定义
+        /// - hediffDef: 健康状态定义
+        /// - weight: 当前权重（引用传递）
+        /// 输出：是否成功计算权重
+        /// 功能：根据药物效果计算其战斗增强权重
+        /// </summary>
         private static bool TryCalculateWeight(ThingDef drug, HediffDef hediffDef, ref float weight)
         {
-            //StringBuilder sb = new StringBuilder();
-            //sb.AppendLine(String.Format("-----{0}------", drug.LabelCap));
             float weightBk = weight;
             bool combatEnhancement = false;
             HediffStage effect = hediffDef?.stages?.FirstOrDefault();
@@ -101,37 +131,29 @@ namespace EliteRaid
             {
                 return false;
             }
-            float work;
-            //painFactor
-            work = (1f - effect.painFactor) * PAIN_WEIGHT_SCALE;
+
+            // 计算疼痛相关权重
+            float work = (1f - effect.painFactor) * PAIN_WEIGHT_SCALE;
             if (work > 0f)
             {
                 combatEnhancement = true;
-                //sb.AppendLine(String.Format("+point:{0}={1}", "painFactor",  work));
             }
-            //if (sb != null && work < 0f)
-            //{
-            //    sb.AppendLine(String.Format("-point:{0}={1}", "painFactor", work));
-            //}
             weight -= work;
 
-            //painOffset
             work = effect.painOffset * -PAIN_WEIGHT_SCALE;
             if (work > 0f)
             {
                 combatEnhancement = true;
-                //sb.AppendLine(String.Format("+point:{0}={1}", "painOffset", work));
             }
-            //if (sb != null && work < 0f)
-            //{
-            //    sb.AppendLine(String.Format("-point:{0}={1}", "painOffset", work));
-            //}
             weight -= work;
-            //natural healing
+
+            // 计算自然恢复权重
             if (effect.naturalHealingFactor >= 0f)
             {
                 weight += (effect.naturalHealingFactor - 1f) * NATURAL_HEALING_WEIGHT_SCALE;
             }
+
+            // 计算能力修改器权重
             if (effect.capMods != null)
             {
                 foreach (PawnCapacityModifier cap in effect.capMods)
@@ -142,16 +164,13 @@ namespace EliteRaid
                         if (work > 0f)
                         {
                             combatEnhancement = true;
-                            //sb.AppendLine(String.Format("+point:{0}={1}", cap.capacity.LabelCap, work));
                         }
-                        //if (sb != null && work < 0f)
-                        //{
-                        //    sb.AppendLine(String.Format("-point:{0}={1}", cap.capacity.LabelCap, work));
-                        //}
                         weight -= work;
                     }
                 }
             }
+
+            // 计算属性修改器权重
             if (effect.statOffsets != null)
             {
                 foreach (StatModifier stat in effect.statOffsets)
@@ -162,16 +181,12 @@ namespace EliteRaid
                         if (work > 0f)
                         {
                             combatEnhancement = true;
-                            //sb.AppendLine(String.Format("+point:{0}={1}", stat.stat.LabelCap, work));
                         }
-                        //if (sb != null && work < 0f)
-                        //{
-                        //    sb.AppendLine(String.Format("-point:{0}={1}", stat.stat.LabelCap, work));
-                        //}
                         weight -= work;
                     }
                 }
             }
+
             if (effect.statFactors != null)
             {
                 foreach (StatModifier stat in effect.statFactors)
@@ -182,12 +197,7 @@ namespace EliteRaid
                         if (work > 0f)
                         {
                             combatEnhancement = true;
-                            //sb.AppendLine(String.Format("+point:{0}={1}", stat.stat.LabelCap, work));
                         }
-                        //if (sb != null && work < 0f)
-                        //{
-                        //    sb.AppendLine(String.Format("-point:{0}={1}", stat.stat.LabelCap, work));
-                        //}
                         weight -= work;
                     }
                 }
@@ -199,50 +209,28 @@ namespace EliteRaid
                 return false;
             }
 
-            //if (drug == ThingDefOf.Luciferium)
-            //{
-            //    weight = CALCULATE_WEIGHT_MIN;
-            //}
-
             if (weight < CALCULATE_WEIGHT_MIN)
             {
                 weight = CALCULATE_WEIGHT_MIN;
             }
 
-            //Log.Message(sb.ToString());
-
             return true;
         }
 
-        private static int OrderKey(ModContentPack mod)
-        {
-            if (mod.IsCoreMod)
-            {
-                return -1000;
-            } else if (mod.PackageId == ModContentPack.RoyaltyModPackageId)
-            {
-                return -900;
-            } else
-            {
-                return mod.loadOrder;
-            }
-        }
-
+        /// <summary>
+        /// 重置并加载所有可用的药物数据
+        /// 功能：从游戏数据库中加载所有符合条件的药物
+        /// 处理逻辑：
+        /// 1. 初始化过量用药状态索引
+        /// 2. 遍历所有药物定义
+        /// 3. 计算药物效果权重
+        /// 4. 存储符合条件的药物数据
+        /// </summary>
         public static void DataRestore()
         {
             m_DrugOverdoseFinalStageIndex = HediffDefOf.DrugOverdose.stages.Count() - 1;
-#if DEBUG
-            //    Log.Message(String.Format("CR_MESSAGE {0}の最終ステージのインデックス={1}", HediffDefOf.DrugOverdose.LabelCap, m_DrugOverdoseFinalStageIndex));
-#endif
-
-            StringBuilder sb = new StringBuilder();
-            if (sb.Length > 0)
-            {
-                sb.Insert(0, "CR_InfoExcludedDrugs".Translate());
-                //   Log.Message(sb.ToString());
-            }
-
             m_ListupAllowDrugHediffs = new List<AllowDrugHediffsHolder>();
+
             foreach (ThingDef drug in DefDatabase<ThingDef>.AllDefs.Where(x => x.ingestible != null && x.ingestible.drugCategory > DrugCategory.None && x.ingestible.outcomeDoers != null))
             {
                 List<HediffDef> drugHediffs = new List<HediffDef>();
@@ -258,9 +246,8 @@ namespace EliteRaid
                         continue;
                     }
                     bool isModContent = drug.modContentPack != null &&
-          !string.IsNullOrEmpty(drug.modContentPack.Name) &&
-          !drug.modContentPack.Name.StartsWith("ludeon.");
-                    //  Log.Message("药物信息:drug.modContentPack" + drug.modContentPack+ "名字"+drug.defName);
+                        !string.IsNullOrEmpty(drug.modContentPack.Name) &&
+                        !drug.modContentPack.Name.StartsWith("ludeon.");
                     if (isModContent && !EliteRaidMod.AllowModBionicsAndDrugs)
                     {
                         continue;
@@ -272,52 +259,30 @@ namespace EliteRaid
                     m_ListupAllowDrugHediffs.Add(new AllowDrugHediffsHolder(weight, drug, drugHediffs.ToArray()));
                 }
             }
-
-            sb.Clear();
-            if (Prefs.DevMode)
-            {
-                if (sb.Length > 0)
-                {
-                    sb.Insert(0, "CR_InfoMustNegativeEffectDrugs".Translate());
-                    //   Log.Message(sb.ToString());
-                }
-            }
-#if DEBUG
-            //test start
-            m_ListupAllowDrugHediffs.Sort((x, y) => (int)(x.weight - y.weight));
-            //   Log.Message("==Elite Raid.DrugDataStore_DataRestore DebugMessage START==");
-
-            //   Log.Message(String.Format("適用可能なドラッグリスト件数:{0}", m_ListupAllowDrugHediffs.Count));
-            foreach (AllowDrugHediffsHolder drug in m_ListupAllowDrugHediffs)
-            {
-                //   Log.Message(String.Format("drug={0}({1}), permenent={2}, category={3}, weight={4}, hediffs={5}", drug.drug.LabelCap, drug.drug.defName, drug.permenent, drug.drug.ingestible.drugCategory, drug.weight, string.Join(",", from x in drug.hediffDefs select x.LabelCap)));
-            }
-
-            //  Log.Message("==Elite Raid.DrugDataStore_DataRestore DebugMessage END  ==");
-            //test end
-#endif
         }
 
+        /// <summary>
+        /// 获取单位可用的药物列表
+        /// 输入：
+        /// - pawn: 目标单位
+        /// 输出：可用的药物效果持有者列表
+        /// 功能：根据单位情况筛选可用的药物
+        /// </summary>
         private static List<AllowDrugHediffsHolder> GetDrugHediffs(Pawn pawn)
         {
             List<AllowDrugHediffsHolder> drugs = new List<AllowDrugHediffsHolder>();
             foreach (AllowDrugHediffsHolder drug in m_ListupAllowDrugHediffs.Where(x => {
-                // 只允许医疗和硬性药物
                 DrugCategory? drugCategory = x.drug.ingestible?.drugCategory;
                 if (drugCategory != DrugCategory.Medical && drugCategory != DrugCategory.Hard)
                 {
                     return false;
                 }
 
-                // 科技等级检查：只允许比当前派系高一级或相同
                 TechLevel pawnTechLevel = pawn.Faction?.def.techLevel ?? TechLevel.Animal;
                 TechLevel drugTechLevel = x.drug.techLevel;
-
-                // 将科技等级转换为整数进行比较
                 int pawnTechLevelInt = (int)pawnTechLevel;
                 int drugTechLevelInt = (int)drugTechLevel;
 
-                // 药物科技等级不能超过派系科技等级+1
                 if (drugTechLevelInt > pawnTechLevelInt + 1)
                 {
                     return false;
@@ -343,152 +308,34 @@ namespace EliteRaid
             return drugs;
         }
 
+        /// <summary>
+        /// 检查是否禁止继续用药
+        /// 输入：
+        /// - pawn: 目标单位
+        /// 输出：true表示禁止用药，false表示允许用药
+        /// 功能：检查单位的状态是否允许继续使用药物
+        /// </summary>
         private static bool DisallowDoseMore(Pawn pawn)
         {
             if (pawn == null || pawn.health?.hediffSet == null || pawn.Downed || pawn.Dead)
             {
-#if DEBUG
-                //   Log.Message(String.Format("CR_MESSAGE {0}はもうダメになってます。これ以上薬物を付与できません。", pawn.LabelShortCap));
-#endif
                 return true;
             }
-            //HediffDefOf.DrugOverdose
             if (pawn.health.hediffSet.hediffs.Any(x => x.def == HediffDefOf.DrugOverdose && x.CurStageIndex == m_DrugOverdoseFinalStageIndex))
             {
-#if DEBUG
-                //   Log.Message(String.Format("CR_MESSAGE {0}はオーバードーズの最終段階です。これ以上薬物を付与できません。", pawn.LabelShortCap));
-#endif
                 return true;
             }
             return false;
         }
 
-        private static bool AddDrugHediffs(Pawn pawn)
-        {
-            return false;
-            List<AllowDrugHediffsHolder> drugs = GetDrugHediffs(pawn);
-            if (drugs.EnumerableNullOrEmpty())
-            {
-                return false;
-            }
-            float addDrugChanceFactorValue = 2f;
-            float addDrugChanceNegativeCurveValue = 0.5f;
-            float addDrugChanceMaxValue = 0.8f;
-            int addDrugMaxNumberValue = (int)2;
-            bool giveOnlyActiveIngredientsValue = true;
-            int addDrugNum = 0;
-            int loopCount = 0;
-            int loopMax = Math.Max(100, addDrugMaxNumberValue);
-            bool forceEnd = false;
-
-            while (loopMax > loopCount && addDrugMaxNumberValue > addDrugNum && drugs.Any() && !forceEnd)
-            {
-                float chance = addDrugChanceFactorValue;
-                if (addDrugNum > 0)
-                {
-                    for (int i = 0; i < addDrugNum; i++, chance *= addDrugChanceNegativeCurveValue) ;
-                }
-                chance = Math.Min(chance, addDrugChanceMaxValue);
-                if (!Rand.Chance(chance))
-                {
-                    break;
-                }
-                AllowDrugHediffsHolder drug = drugs.RandomElementByWeight(x => x.weight);
-                drugs.Remove(drug);
-                bool hasHediff = false;
-                foreach (HediffDef hediffDef in drug.hediffDefs)
-                {
-                    hasHediff = pawn.health.hediffSet.HasHediff(hediffDef);
-                    if (hasHediff)
-                    {
-                        break;
-                    }
-                }
-                if (!hasHediff)
-                {
-
-                    if (giveOnlyActiveIngredientsValue)
-                    {
-#if DEBUG
-                        //test
-                        if (drug.drug == ThingDefOf.Luciferium)
-                        {
-                            //       Log.Message(String.Format("CR_MESSAGE: {0}がここにきたらおかしい！バグ！", drug.drug.LabelCap));
-                        } else
-                        {
-                            //        Log.Message(String.Format("CR_MESSAGE: {0}は設定に従い有効成分のみ付与！", drug.drug.LabelCap));
-                        }
-                        //test
-#endif
-                        foreach (HediffDef hediffDef in drug.hediffDefs)
-                        {
-                            if (DisallowDoseMore(pawn))
-                            {
-                                forceEnd = true;
-                                break;
-                            }
-                            pawn.health.AddHediff(hediffDef);
-                        }
-                    } else
-                    {
-                        if (DisallowDoseMore(pawn))
-                        {
-                            forceEnd = true;
-                        }
-                        if (!forceEnd)
-                        {
-                            Thing drugThing = ThingMaker.MakeThing(drug.drug);
-                            METHOD_PRE_POST_INGESTED.Invoke(drugThing, new object[] { pawn });
-                            if (drugThing.def.ingestible.outcomeDoers != null)
-                            {
-                                for (int j = 0; j < drugThing.def.ingestible.outcomeDoers.Count; j++)
-                                {
-                                    if (DisallowDoseMore(pawn))
-                                    {
-                                        forceEnd = true;
-                                        break;
-                                    }
-                                    drugThing.def.ingestible.outcomeDoers[j].DoIngestionOutcome(pawn, drugThing, 0);
-                                }
-                            }
-                            drugThing.Destroy();
-                            METHOD_POST_INGESTED.Invoke(drugThing, new object[] { pawn });
-                        }
-                    }
-                    addDrugNum++;
-                }
-                loopCount++;
-            }
-            return addDrugNum > 0;
-        }
-
-        public static int AddDrugHediffs(List<Pawn> pawns, float gainStatValue, int enhancePawnNumber)
-        {
-            return 0;
-            if (pawns == null || pawns.EnumerableNullOrEmpty() || enhancePawnNumber == 0)
-            {
-                return 0;
-            }
-            int count = 0;
-            for (int i = 0; i < pawns.Count(); i++)
-            {
-                Pawn pawn = pawns.ElementAt(i);
-                if (!EliteRaidMod.AllowCompress(pawn))
-                {
-                    continue;
-                }
-                if (!pawn.RaceProps.IsFlesh)
-                {
-                    continue;
-                }
-                if (AddDrugHediffs(pawn))
-                {
-                    count++;
-                }
-            }
-            return count;
-        }
-
+        /// <summary>
+        /// 为特定等级的单位添加药物效果
+        /// 输入：
+        /// - pawn: 目标单位
+        /// - eliteLevel: 精英等级
+        /// 输出：成功添加的药物数量
+        /// 功能：根据精英等级为单位添加指定的药物效果
+        /// </summary>
         public static int AddDrugHediffs(Pawn pawn, EliteLevel eliteLevel)
         {
             if (pawn == null || eliteLevel == null || !EliteRaidMod.AllowCompress(pawn) || !eliteLevel.addDrug)
@@ -497,22 +344,20 @@ namespace EliteRaid
             }
 
             int addedCount = 0;
-            if (!eliteLevel.addDrug) return 0; // 确保开启药物强化
+            if (!eliteLevel.addDrug) return 0;
 
-            // 定义目标药物（使用原代码逻辑获取允许的药物）
             List<AllowDrugHediffsHolder> targetDrugs = new List<AllowDrugHediffsHolder>();
 
-            // 活力水（Psychite Tea）
+            // 添加活力水
             ThingDef psychiteTea = DefDatabase<ThingDef>.GetNamed("PsychiteTea", false);
             if (psychiteTea != null)
             {
-                // 复用原代码的药物筛选逻辑
                 AllowDrugHediffsHolder teaHolder = m_ListupAllowDrugHediffs
                     .FirstOrDefault(x => x.drug == psychiteTea);
                 if (teaHolder != null) targetDrugs.Add(teaHolder);
             }
 
-            // 清醒丸（Wake-Up Pill）
+            // 添加清醒丸
             ThingDef wakeUpPill = DefDatabase<ThingDef>.GetNamed("WakeUpPill", false);
             if (wakeUpPill != null)
             {
@@ -521,7 +366,6 @@ namespace EliteRaid
                 if (pillHolder != null) targetDrugs.Add(pillHolder);
             }
 
-            // 确保目标药物存在且未被应用
             foreach (var drugHolder in targetDrugs)
             {
                 bool hasHediff = drugHolder.hediffDefs.Any(hediff =>
@@ -537,12 +381,17 @@ namespace EliteRaid
             return addedCount;
         }
 
-        // 复用原代码的药物应用逻辑
+        /// <summary>
+        /// 应用药物效果
+        /// 输入：
+        /// - pawn: 目标单位
+        /// - drugHolder: 药物效果持有者
+        /// 功能：为单位添加指定的药物效果
+        /// </summary>
         private static void ApplyDrugHediff(Pawn pawn, AllowDrugHediffsHolder drugHolder)
         {
-            if (DisallowDoseMore(pawn)) return; // 复用原代码的剂量限制
+            if (DisallowDoseMore(pawn)) return;
 
-            // 优先使用原代码的「仅添加有效成分」逻辑
             if (drugHolder.permenent)
             {
                 foreach (var hediffDef in drugHolder.hediffDefs)
@@ -551,14 +400,19 @@ namespace EliteRaid
                 }
             } else
             {
-                // 否则使用原代码的完整摄入逻辑
                 Thing drugThing = ThingMaker.MakeThing(drugHolder.drug);
                 TryApplyIngestionOutcomes(pawn, drugThing);
                 drugThing.Destroy();
             }
         }
 
-        // 复用原代码的摄入效果触发逻辑
+        /// <summary>
+        /// 尝试应用摄入效果
+        /// 输入：
+        /// - pawn: 目标单位
+        /// - drugThing: 药物物品
+        /// 功能：触发药物的摄入效果
+        /// </summary>
         private static void TryApplyIngestionOutcomes(Pawn pawn, Thing drugThing)
         {
             if (drugThing.def.ingestible.outcomeDoers != null)
@@ -569,6 +423,5 @@ namespace EliteRaid
                 }
             }
         }
-
     }
 }
