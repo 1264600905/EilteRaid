@@ -895,66 +895,91 @@ namespace EliteRaid
             List<Pawn> list = new List<Pawn>();
             List<Pawn> nonCompressiblePawns = new List<Pawn>(); // 存储不可压缩的pawn
 
-            // 添加安全退出条件，防止无限循环
-            int maxAttempts = Math.Min(Math.Max(baseNum * 2, 100), 500); // 最多尝试2倍基础数量，最大不超过500次
-            int attempts = 0;
-
-            // 修改循环逻辑，确保生成足够的pawn
-            while (list.Count < parms.pawnCount && enhancePawnNumber < baseNum && attempts < maxAttempts)
+            // 优先使用PatchContinuityHelper保存的压缩分布
+            bool usedCompressedOptions = false;
+            if (PatchContinuityHelper.CompressedPawnGenOptions != null && PatchContinuityHelper.CompressedPawnGenOptions.Count > 0)
             {
-                attempts++;
-
-                PawnKindDef pawnKind = parms.pawnKind;
-                Faction faction = parms.faction;
-                float biocodeWeaponsChance = parms.biocodeWeaponsChance;
-                float biocodeApparelChance = parms.biocodeApparelChance;
-
-                Log.Message("捕获到当前生成的敌人阵营"+ parms.faction);
-                Messages.Message("捕获到当前生成的敌人阵营"+ parms.faction, MessageTypeDefOf.NeutralEvent);
-          
-                Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
-               {
-                   BiocodeApparelChance = 1f
-                });
-
-                if (pawn != null)
+                // 乱序后只取前parms.pawnCount个
+                var options = PatchContinuityHelper.CompressedPawnGenOptions.OrderBy(x => Rand.Value).Take(parms.pawnCount).ToList();
+                foreach (var option in options)
                 {
-                    enhancePawnNumber++;
-
-                    // 使用新的检查方法判断是否可压缩
-                    bool canCompress = allowedCompress && PawnStateChecker.CanCompressPawn(pawn);
-
-                    if (canCompress)
+                    Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(option.kind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
                     {
-                        // 可压缩的pawn处理逻辑
-                        if (MOD_MSER_Active)
-                        {
-                            pawn.health.AddHediff(CR_DummyForCompatibilityDefOf.CR_DummyForCompatibility);
-                        }
+                        BiocodeApparelChance = 1f
+                    });
+                    if (pawn != null)
+                    {
+                        list.Add(pawn);
+                    }
+                }
+                PatchContinuityHelper.CompressedPawnGenOptions = null; // 用完清空
+                usedCompressedOptions = true;
+            }
 
-                        if (EliteRaidMod.modEnabled)
-                        {
-                            PawnWeaponChager.CheckAndReplaceMainWeapon(pawn);
+            // 如果没有用到压缩分布，走原有逻辑
+            if (!usedCompressedOptions)
+            {
+                // 添加安全退出条件，防止无限循环
+                int maxAttempts = Math.Min(Math.Max(baseNum * 2, 100), 500); // 最多尝试2倍基础数量，最大不超过500次
+                int attempts = 0;
 
-                            if (EliteRaidMod.AllowCompress(pawn))
+                // 修改循环逻辑，确保生成足够的pawn
+                while (list.Count < parms.pawnCount && enhancePawnNumber < baseNum && attempts < maxAttempts)
+                {
+                    attempts++;
+
+                    PawnKindDef pawnKind = parms.pawnKind;
+                    Faction faction = parms.faction;
+                    float biocodeWeaponsChance = parms.biocodeWeaponsChance;
+                    float biocodeApparelChance = parms.biocodeApparelChance;
+
+                    Log.Message("捕获到当前生成的敌人阵营"+ parms.faction);
+                    Messages.Message("捕获到当前生成的敌人阵营"+ parms.faction, MessageTypeDefOf.NeutralEvent);
+              
+                    Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(parms.pawnKind, parms.faction, PawnGenerationContext.NonPlayer, -1, forceGenerateNewPawn: false, allowDead: false, allowDowned: false, canGeneratePawnRelations: true, mustBeCapableOfViolence: true, 1f, forceAddFreeWarmLayerIfNeeded: false, allowGay: true, allowPregnant: false, biocodeWeaponChance: parms.biocodeWeaponsChance, biocodeApparelChance: parms.biocodeApparelChance, allowFood: __instance.def.pawnsCanBringFood)
+                   {
+                       BiocodeApparelChance = 1f
+                    });
+
+                    if (pawn != null)
+                    {
+                        enhancePawnNumber++;
+
+                        // 使用新的检查方法判断是否可压缩
+                        bool canCompress = allowedCompress && PawnStateChecker.CanCompressPawn(pawn);
+
+                        if (canCompress)
+                        {
+                            // 可压缩的pawn处理逻辑
+                            if (MOD_MSER_Active)
                             {
-                                EliteLevel eliteLevel = EliteLevelManager.GetRandomEliteLevel();
-                                Hediff powerup = PowerupUtility.SetPowerupHediff(pawn, order);
-                                if (powerup != null)
+                                pawn.health.AddHediff(CR_DummyForCompatibilityDefOf.CR_DummyForCompatibility);
+                            }
+
+                            if (EliteRaidMod.modEnabled)
+                            {
+                                PawnWeaponChager.CheckAndReplaceMainWeapon(pawn);
+
+                                if (EliteRaidMod.AllowCompress(pawn))
                                 {
-                                    bool powerupEnable = PowerupUtility.TrySetStatModifierToHediff(powerup, eliteLevel);
-                                    if (powerupEnable)
+                                    EliteLevel eliteLevel = EliteLevelManager.GetRandomEliteLevel();
+                                    Hediff powerup = PowerupUtility.SetPowerupHediff(pawn, order);
+                                    if (powerup != null)
                                     {
-                                 }
+                                        bool powerupEnable = PowerupUtility.TrySetStatModifierToHediff(powerup, eliteLevel);
+                                        if (powerupEnable)
+                                        {
+                                     }
+                                    }
                                 }
                             }
-                        }
 
-                        list.Add(pawn);
-                    } else
-                    {
-                        // 不可压缩的pawn直接添加到列表
-                        list.Add(pawn);
+                            list.Add(pawn);
+                        } else
+                        {
+                            // 不可压缩的pawn直接添加到列表
+                            list.Add(pawn);
+                        }
                     }
                 }
             }
@@ -1015,20 +1040,6 @@ namespace EliteRaid
                 Log.Warning("[EliteRaid] 未能生成任何pawn，让原始方法处理");
                 // 未能生成任何pawn时让原始方法处理
                 return true;
-            }
-
-            // 新增：尝试次数超限时警告并用当前结果
-            if (attempts >= maxAttempts)
-            {
-                Log.Warning($"[EliteRaid] 生成敌人达到最大尝试次数({maxAttempts})，实际生成{list.Count}，期望{parms.pawnCount}。可能有pawnKind/faction配置问题。");
-                if (list.Count == 0)
-                {
-                    Messages.Message("EliteRaid: 敌人生成失败，未能生成任何单位！", MessageTypeDefOf.NegativeEvent, true);
-                }
-                else
-                {
-                    Messages.Message($"EliteRaid: 只生成了{list.Count}个敌人（期望{parms.pawnCount}），请检查mod兼容性或pawnKind配置。", MessageTypeDefOf.NegativeEvent, true);
-                }
             }
         }
 

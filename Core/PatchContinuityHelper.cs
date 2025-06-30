@@ -160,6 +160,9 @@ namespace EliteRaid
             }
         }
 
+        // 新增：保存压缩后的分布，供生成阶段使用
+        public static List<PawnGenOption> CompressedPawnGenOptions = null;
+
         internal static IEnumerable<PawnGenOptionWithXenotype> SetCompressWork_GeneratePawns(IEnumerable<PawnGenOptionWithXenotype> options, PawnGroupMakerParms groupParms)
         {
             if (options.EnumerableNullOrEmpty() || groupParms == null)
@@ -259,6 +262,7 @@ namespace EliteRaid
             if ((__result?.EnumerableNullOrEmpty() ?? true) || groupParms == null)
             {
                 m_CompressWork_GeneratePawns.allowedCompress = false;
+                CompressedPawnGenOptions = null; // 清空
                 return;
             }
 
@@ -337,6 +341,9 @@ namespace EliteRaid
                     baseNum,
                     maxPawnNum,
                     groupParms.faction.HostileTo(Faction.OfPlayer));
+
+                // 新增：保存压缩分布
+                CompressedPawnGenOptions = __result.ToList();
             } finally
             {
                 // 清理临时生成的 Pawn
