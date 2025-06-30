@@ -195,6 +195,13 @@ namespace RimwoldEliteRaidProject.Core
                             newWeapon.StyleDef = pawn.Ideo.GetStyleFor(minigunDef);
                         }
 
+                        // 添加生物编码属性（90%概率）
+                        CompBiocodable biocodeComp = newWeapon.GetComp<CompBiocodable>();
+                        if (biocodeComp != null && !biocodeComp.Biocoded && Rand.Chance(0.9f))
+                        {
+                            biocodeComp.CodeFor(pawn);
+                        }
+
                         // 添加速射机枪
                         pawn.equipment.AddEquipment(newWeapon);
                       //  Log.Message($"{logPrefix} 已强制装备速射机枪: {newWeapon.Label}");

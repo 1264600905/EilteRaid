@@ -141,7 +141,14 @@ namespace EliteRaid
             // 承伤系数（乘算）
             float baseDamageFactor = eliteLevel.DamageFactor;
             if (eliteLevel.giantEnhance) baseDamageFactor *= 0.7f;
-            baseDamageFactor = Math.Max(eliteLevel.DamageFactor, 0.08f);
+
+            // 等级大于3的吞噬兽承伤提高50%
+            if (hediff.pawn.kindDef != null && hediff.pawn.kindDef.defName == "Devourer" && eliteLevel.Level > 3)
+            {
+                baseDamageFactor *= 1.5f;
+            }
+
+            baseDamageFactor = Math.Max(baseDamageFactor, 0.08f);
             yield return new StatModifier
             {
                 stat = StatDefOf.IncomingDamageFactor,
