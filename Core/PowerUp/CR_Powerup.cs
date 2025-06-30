@@ -388,7 +388,13 @@ namespace EliteRaid
             {
                 return;
             }
-
+  var eliteData = GetEliteLevelData();
+    if (eliteData == null)
+    {
+        if (EliteRaidMod.displayMessageValue)
+            Log.Warning("[EliteRaid] 生成白银时未能获取精英等级数据，已跳过。");
+        return;
+    }
             // 创建白银物品（使用 ThingDefOf.Silver）
             Thing silver = ThingMaker.MakeThing(ThingDefOf.Silver);
             silver.stackCount = GetEliteLevelData().Level * EliteRaidMod.silverDropPerLevel; // 设置数量为50
