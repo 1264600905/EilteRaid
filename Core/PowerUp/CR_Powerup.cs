@@ -170,28 +170,6 @@ namespace EliteRaid
         {
             //强制更新属性
             pawn.Notify_Released();
-            CheckAndRemoveDuplicatePowerups();
-        }
-
-        private void CheckAndRemoveDuplicatePowerups()
-        {
-            if (pawn == null || !pawn.Spawned || pawn.health == null)
-                return;
-
-            // 获取所有CR_Powerup类型的Hediff
-            var powerupHediffs = pawn.health.hediffSet.hediffs
-                .Where(h => h is CR_Powerup && h != this) // 排除自身
-                .ToList();
-
-            if (powerupHediffs.Count > 0)
-            {
-                // 随机选择一个CR_Powerup类型的Hediff移除
-                var hediffToRemove = powerupHediffs.RandomElement();
-                if (EliteRaidMod.displayMessageValue)
-                    Log.Message($"[EliteRaid] 发现重复的CR_Powerup，移除: {hediffToRemove.LabelCap}");
-
-                pawn.health.RemoveHediff(hediffToRemove);
-            }
         }
 
         public void CreateSaveData(EliteLevel eliteLevel)
