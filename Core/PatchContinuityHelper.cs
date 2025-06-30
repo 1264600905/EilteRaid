@@ -78,7 +78,10 @@ namespace EliteRaid
                 var cutoffTime = DateTime.Now.AddMinutes(-5);
                 raidRecords.RemoveAll(r => r.RecordTime < cutoffTime);
                 
-                Log.Message($"[EliteRaid] 记录袭击信息: 时间={record.RecordTime:HH:mm:ss.fff}, 数量={baseNum}, 派系={faction?.Name ?? "无"}, 类型={pawnGroupWorker?.Name ?? "无"}, 空投={isDropPodRaid}");
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message($"[EliteRaid] 记录袭击信息: 时间={record.RecordTime:HH:mm:ss.fff}, 数量={baseNum}, 派系={faction?.Name ?? "无"}, 类型={pawnGroupWorker?.Name ?? "无"}, 空投={isDropPodRaid}");
+                }
             }
         }
 
@@ -91,7 +94,10 @@ namespace EliteRaid
             {
                 if (raidRecords.Count == 0)
                 {
-                    Log.Message("[EliteRaid] 没有找到任何袭击记录");
+                    if (EliteRaidMod.displayMessageValue)
+                    {
+                        Log.Message("[EliteRaid] 没有找到任何袭击记录");
+                    }
                     return false;
                 }
 
@@ -106,13 +112,19 @@ namespace EliteRaid
 
                 if (validRecords.Count == 0)
                 {
-                    Log.Message($"[EliteRaid] 没有找到派系 {faction?.Name ?? "无"} 在 {maxTimeDiffSeconds} 秒内的袭击记录");
+                    if (EliteRaidMod.displayMessageValue)
+                    {
+                        Log.Message($"[EliteRaid] 没有找到派系 {faction?.Name ?? "无"} 在 {maxTimeDiffSeconds} 秒内的袭击记录");
+                    }
                     return false;
                 }
 
                 // 返回时间最接近的记录
                 record = validRecords.First();
-                Log.Message($"[EliteRaid] 找到最接近的袭击记录: 时间={record.RecordTime:HH:mm:ss.fff}, 数量={record.BaseNum}, 派系={record.Faction?.Name ?? "无"}, 空投={record.IsDropPodRaid}");
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message($"[EliteRaid] 找到最接近的袭击记录: 时间={record.RecordTime:HH:mm:ss.fff}, 数量={record.BaseNum}, 派系={record.Faction?.Name ?? "无"}, 空投={record.IsDropPodRaid}");
+                }
                 return true;
             }
         }
@@ -123,7 +135,7 @@ namespace EliteRaid
             lock (raidRecordsLock)
             {
                 int removedCount = raidRecords.RemoveAll(r => r.Faction == faction);
-                if (removedCount > 0)
+                if (removedCount > 0 && EliteRaidMod.displayMessageValue)
                 {
                     Log.Message($"[EliteRaid] 清理了 {removedCount} 条派系 {faction?.Name ?? "无"} 的袭击记录");
                 }
@@ -258,8 +270,10 @@ namespace EliteRaid
             List<Pawn> tempPawns = new List<Pawn>();
             try
             {
-          
-                Log.Message("捕获到当前生成的敌人阵营22"+ groupParms.faction);
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message("捕获到当前生成的敌人阵营22"+ groupParms.faction);
+                }
                 Messages.Message("捕获到当前生成的敌人阵营22"+ groupParms.faction, MessageTypeDefOf.NeutralEvent);
                 foreach (var option in __result)
                 {
@@ -356,7 +370,10 @@ namespace EliteRaid
                 // 选择最强大的敌人作为基础
                 PawnGenOption baseOption = enemiesToMerge[0];
 
-                Log.Message("捕获到当前生成的敌人阵营11"+ faction);
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message("捕获到当前生成的敌人阵营11"+ faction);
+                }
                 Messages.Message("捕获到当前生成的敌人阵营11"+ faction, MessageTypeDefOf.NeutralEvent);
                 // 确保不压缩关键角色类型
                 if (!PawnStateChecker.CanCompressPawn(
@@ -528,7 +545,10 @@ namespace EliteRaid
         // 新增：测试袭击记录系统的方法
         internal static void TestRaidRecordSystem()
         {
-            Log.Message("=== 袭击记录系统测试开始 ===");
+            if (EliteRaidMod.displayMessageValue)
+            {
+                Log.Message("=== 袭击记录系统测试开始 ===");
+            }
             
             // 清理现有记录
             lock (raidRecordsLock)
@@ -547,12 +567,18 @@ namespace EliteRaid
             RecordRaidInfo(200, testFaction, typeof(PawnGroupKindWorker_Normal), false);
             
             // 输出所有记录
-            Log.Message(GetRaidRecordsDebugInfo());
+            if (EliteRaidMod.displayMessageValue)
+            {
+                Log.Message(GetRaidRecordsDebugInfo());
+            }
             
             // 测试查找功能
             if (TryFindClosestRaidRecord(testFaction, out var record, 30))
             {
-                Log.Message($"找到最接近的记录: 数量={record.BaseNum}, 时间={record.RecordTime:HH:mm:ss.fff}, 空投={record.IsDropPodRaid}");
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message($"找到最接近的记录: 数量={record.BaseNum}, 时间={record.RecordTime:HH:mm:ss.fff}, 空投={record.IsDropPodRaid}");
+                }
             } else
             {
                 Log.Warning("未找到任何记录");
@@ -560,10 +586,12 @@ namespace EliteRaid
             
             // 测试清理功能
             ClearRaidRecordsForFaction(testFaction);
-            Log.Message("清理后的记录状态:");
-            Log.Message(GetRaidRecordsDebugInfo());
-            
-            Log.Message("=== 袭击记录系统测试结束 ===");
+            if (EliteRaidMod.displayMessageValue)
+            {
+                Log.Message("清理后的记录状态:");
+                Log.Message(GetRaidRecordsDebugInfo());
+                Log.Message("=== 袭击记录系统测试结束 ===");
+            }
         }
     }
 }
