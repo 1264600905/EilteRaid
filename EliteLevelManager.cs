@@ -398,8 +398,12 @@ namespace EliteRaid
                     currentElites += maxPossible;
                 }
 
+                // 新增：阶段5 - 调整分布以确保空间利用率在合理范围内
+                var phase5Result = AdjustDistributionToTargetUtilization(validConfigs, currentLevelDistribution, currentSlotsFilled, originalCount);
+                currentSlotsFilled = phase5Result.currentSlotsFilled;
+                currentElites = phase5Result.currentElites;
 
-               // Log.Message($"[EliteRaid] Attempt {attempt} results: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots, utilization {utilization:P2}");
+                // Log.Message($"[EliteRaid] Attempt {attempt} results: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots, utilization {utilization:P2}");
 
                 // 记录最佳结果
                 if (utilization > bestUtilization)
@@ -933,6 +937,176 @@ namespace EliteRaid
 
             if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Final optimization results: {currentElites} elites, {currentSlotsFilled}/{originalCount} slots, utilization {utilization:P2}.");
             return (currentSlotsFilled, currentElites);
+        }
+        // 新增：阶段5 - 调整精英分布，确保空间利用率在合理范围内
+        private static (int currentSlotsFilled, int currentElites) AdjustDistributionToTargetUtilization(
+            List<EliteLevelConfig> validConfigs,
+            Dictionary<EliteLevelConfig, int> levelDistribution,
+            int currentSlotsFilled,
+            int originalCount)
+        {
+            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Starting phase 5: Adjusting distribution to target utilization. Current slots: {currentSlotsFilled}/{originalCount}.");
+
+            // 计算当前利用率
+            double utilization = (double)currentSlotsFilled / originalCount;
+
+            // 目标利用率范围
+            const double minUtilization = 0.90;  // 90%
+            const double maxUtilization = 1.10;  // 110%
+
+            // 如果已经在目标范围内，无需调整
+            if (utilization >= minUtilization && utilization <= maxUtilization)
+            {
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Phase 5: Utilization already within target range ({utilization:P2}).");
+                return (currentSlotsFilled, levelDistribution.Sum(e => e.Value));
+            }
+
+            // 如果利用率超过上限，需要降级一些精英以减少空间占用
+            if (utilization > maxUtilization)
+            {
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Phase 5: Utilization too high ({utilization:P2}). Adjusting down...");
+
+                // 计算需要减少的空间
+                int targetSlots = (int)(originalCount * maxUtilization);
+                int slotsToReduce = currentSlotsFilled - targetSlots;
+
+                if (slotsToReduce <= 0)
+                {
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Phase 5: Calculated slots to reduce is non-positive. Skipping adjustment.");
+                    return (currentSlotsFilled, levelDistribution.Sum(e => e.Value));
+                }
+
+                // 策略：优先降级高等级精英，从压缩比最高的开始
+                var downgradeCandidates = validConfigs
+                    .Where(c => levelDistribution.ContainsKey(c) && levelDistribution[c] > 0 && c.Level > 0)
+                    .OrderByDescending(c => c.CompressionRatio)
+                    .ToList();
+
+                foreach (var sourceConfig in downgradeCandidates)
+                {
+                    int currentCount = levelDistribution[sourceConfig];
+                    if (currentCount <= 0) continue;
+
+                    // 寻找合适的降级目标（压缩比低于当前的）
+                    var possibleTargets = validConfigs
+                        .Where(c => c.Level < sourceConfig.Level && c.CompressionRatio < sourceConfig.CompressionRatio)
+                        .ToList();
+
+                    foreach (var targetConfig in possibleTargets)
+                    {
+                        // 计算每个降级操作可以减少的空间
+                        int slotsReducedPerDowngrade = sourceConfig.CompressionRatio - targetConfig.CompressionRatio;
+                        if (slotsReducedPerDowngrade <= 0) continue;
+
+                        // 计算需要降级的数量
+                        int maxDowngrades = Math.Min(currentCount, slotsToReduce / slotsReducedPerDowngrade);
+                        if (maxDowngrades <= 0) continue;
+
+                        // 执行降级
+                        levelDistribution[sourceConfig] -= maxDowngrades;
+                        levelDistribution[targetConfig] = levelDistribution.GetValueOrDefault(targetConfig, 0) + maxDowngrades;
+
+                        // 更新统计
+                        currentSlotsFilled -= maxDowngrades * slotsReducedPerDowngrade;
+                        slotsToReduce -= maxDowngrades * slotsReducedPerDowngrade;
+
+                        if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Phase 5: Downgraded {maxDowngrades} x Level{sourceConfig.Level} to Level{targetConfig.Level} to reduce space.");
+
+                        // 如果已经达到目标，停止降级
+                        if (currentSlotsFilled <= targetSlots)
+                        {
+                            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Phase 5: Reached target utilization ({(double)currentSlotsFilled / originalCount:P2}).");
+                            return (currentSlotsFilled, levelDistribution.Sum(e => e.Value));
+                        }
+
+                        // 如果当前配置已降级完，跳出内层循环
+                        if (levelDistribution[sourceConfig] <= 0) break;
+                    }
+
+                    // 如果已经减少了足够的空间，停止调整
+                    if (slotsToReduce <= 0) break;
+                }
+
+                // 重新计算当前状态
+                currentSlotsFilled = levelDistribution.Sum(e => e.Key.CompressionRatio * e.Value);
+                utilization = (double)currentSlotsFilled / originalCount;
+
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Phase 5: After downgrades, utilization is now {utilization:P2}.");
+            }
+            // 如果利用率低于下限，需要升级一些精英以增加空间占用
+            else if (utilization < minUtilization)
+            {
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Phase 5: Utilization too low ({utilization:P2}). Adjusting up...");
+
+                // 计算需要增加的空间
+                int targetSlots = (int)(originalCount * minUtilization);
+                int slotsToAdd = targetSlots - currentSlotsFilled;
+
+                if (slotsToAdd <= 0)
+                {
+                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Phase 5: Calculated slots to add is non-positive. Skipping adjustment.");
+                    return (currentSlotsFilled, levelDistribution.Sum(e => e.Value));
+                }
+
+                // 策略：优先升级低等级精英，从压缩比最低的开始
+                var upgradeCandidates = validConfigs
+                    .Where(c => levelDistribution.ContainsKey(c) && levelDistribution[c] > 0 && c.Level < EliteRaidMod.maxAllowLevel)
+                    .OrderBy(c => c.CompressionRatio)
+                    .ToList();
+
+                foreach (var sourceConfig in upgradeCandidates)
+                {
+                    int currentCount = levelDistribution[sourceConfig];
+                    if (currentCount <= 0) continue;
+
+                    // 寻找合适的升级目标（压缩比高于当前的）
+                    var possibleTargets = validConfigs
+                        .Where(c => c.Level > sourceConfig.Level && c.CompressionRatio > sourceConfig.CompressionRatio)
+                        .ToList();
+
+                    foreach (var targetConfig in possibleTargets)
+                    {
+                        // 计算每个升级操作可以增加的空间
+                        int slotsAddedPerUpgrade = targetConfig.CompressionRatio - sourceConfig.CompressionRatio;
+                        if (slotsAddedPerUpgrade <= 0) continue;
+
+                        // 计算需要升级的数量
+                        int maxUpgrades = Math.Min(currentCount, slotsToAdd / slotsAddedPerUpgrade);
+                        if (maxUpgrades <= 0) continue;
+
+                        // 执行升级
+                        levelDistribution[sourceConfig] -= maxUpgrades;
+                        levelDistribution[targetConfig] = levelDistribution.GetValueOrDefault(targetConfig, 0) + maxUpgrades;
+
+                        // 更新统计
+                        currentSlotsFilled += maxUpgrades * slotsAddedPerUpgrade;
+                        slotsToAdd -= maxUpgrades * slotsAddedPerUpgrade;
+
+                        if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Phase 5: Upgraded {maxUpgrades} x Level{sourceConfig.Level} to Level{targetConfig.Level} to increase space.");
+
+                        // 如果已经达到目标，停止升级
+                        if (currentSlotsFilled >= targetSlots)
+                        {
+                            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Phase 5: Reached target utilization ({(double)currentSlotsFilled / originalCount:P2}).");
+                            return (currentSlotsFilled, levelDistribution.Sum(e => e.Value));
+                        }
+
+                        // 如果当前配置已升级完，跳出内层循环
+                        if (levelDistribution[sourceConfig] <= 0) break;
+                    }
+
+                    // 如果已经增加了足够的空间，停止调整
+                    if (slotsToAdd <= 0) break;
+                }
+
+                // 重新计算当前状态
+                currentSlotsFilled = levelDistribution.Sum(e => e.Key.CompressionRatio * e.Value);
+                utilization = (double)currentSlotsFilled / originalCount;
+
+                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Phase 5: After upgrades, utilization is now {utilization:P2}.");
+            }
+
+            return (currentSlotsFilled, levelDistribution.Sum(e => e.Value));
         }
         // 根据等级获取精英配置
         public static EliteLevelConfig GetEliteLevelConfigByLevel(int level)
