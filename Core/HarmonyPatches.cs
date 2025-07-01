@@ -357,12 +357,10 @@ namespace EliteRaid
                         { methodType = MethodType.Normal }
                     );
 
-                    General.SendLog_Debug(General.MessageTypes.Debug,
-                        $"[IncidentWorker_EntitySwarm.GenerateEntities] Prefix + Transpiler + Finalizer patched!!");
+                  
                 } catch (Exception ex)
                 {
-                    General.SendLog_Debug(General.MessageTypes.DebugError,
-                        $"[IncidentWorker_EntitySwarm.GenerateEntities] Patch Failed!! reason:{Environment.NewLine}{ex.ToString()}");
+                   
                 }
             }
 

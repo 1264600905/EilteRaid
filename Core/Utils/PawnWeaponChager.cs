@@ -73,7 +73,7 @@ namespace RimwoldEliteRaidProject.Core
                // Log.Message($"{logPrefix} 处理完成, 耗时={duration:F1}ms");
             } catch (Exception ex)
             {
-               // Log.Error($"{logPrefix} 发生异常: {ex.Message}, StackTrace={ex.StackTrace}");
+                Log.Error($"{logPrefix} 发生异常: {ex.Message}, StackTrace={ex.StackTrace}");
             }
         }
 

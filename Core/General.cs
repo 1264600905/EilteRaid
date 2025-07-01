@@ -26,64 +26,6 @@ namespace EliteRaid
             DebugWarning = 0x05,
             DebugError = 0x06,
         }
-
-        internal static void SendLog_Debug(MessageTypes type, string temp, params object[] args)
-        {
-            return;
-#if DEBUG
-            if (!Prefs.DevMode && (byte)type >= 0x04)
-            {
-                return;
-            }
-            if (args?.Any() ?? false)
-            {
-                if (type == MessageTypes.Error || type == MessageTypes.DebugError)
-                {
-                    Log.Error(String.Format("[Compressed Raid] {0}: {1}", type, String.Format(temp, args)));
-                } else
-                {
-                    Log.Message(String.Format("[Compressed Raid] {0}: {1}", type, String.Format(temp, args)));
-                }
-            } else
-            {
-                if (type == MessageTypes.Error || type == MessageTypes.DebugError)
-                {
-                    Log.Error(String.Format("[Compressed Raid] {0}: {1}", type, temp));
-                } else
-                {
-                    Log.Message(String.Format("[Compressed Raid] {0}: {1}", type, temp));
-                }
-            }
-#endif
-        }
-        internal static void SendLog(MessageTypes type, string temp, params object[] args)
-        {
-            return;
-            if (!Prefs.DevMode && (byte)type >= 0x04)
-            {
-                return;
-            }
-            if (args?.Any() ?? false)
-            {
-                if (type == MessageTypes.Error || type == MessageTypes.DebugError)
-                {
-                    Log.Error(String.Format("[Compressed Raid] {0}: {1}", type, String.Format(temp, args)));
-                } else
-                {
-                    Log.Message(String.Format("[Compressed Raid] {0}: {1}", type, String.Format(temp, args)));
-                }
-            } else
-            {
-                if (type == MessageTypes.Error || type == MessageTypes.DebugError)
-                {
-                    Log.Error(String.Format("[Compressed Raid] {0}: {1}", type, temp));
-                } else
-                {
-                    Log.Message(String.Format("[Compressed Raid] {0}: {1}", type, temp));
-                }
-            }
-        }
-        private static int hediffDefCounter = 0;
         public static bool m_CanTranspilerGeneratePawns = true;
         public static bool m_CanTranspilerGenerateAnimals = true;
         public static bool m_CanTranspilerEntitySwarm = true;        //是否启用实体增强
@@ -343,9 +285,6 @@ namespace EliteRaid
             {
                 return;
             }
-            if(EliteRaidMod.displayMessageValue)
-            SendLog_Debug(MessageTypes.Debug, "进入增强逻辑，实体数量：{0}，baseNum：{1}，maxPawnNum：{2}",
-                 pawns.Count, baseNum, maxPawnNum); // 添加此行
             GenerateAnything_Impl(pawns, baseNum, maxPawnNum, raidFriendly: false);
         }
 
