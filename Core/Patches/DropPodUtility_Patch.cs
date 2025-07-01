@@ -74,17 +74,38 @@ namespace EliteRaid
            var allPawns = new List<Pawn>();
            foreach (var group in thingsGroups)
            {
-               var groupPawns = group.OfType<Pawn>().ToList();
+               if (group == null) continue;
+               
+               // 分离 Pawn 和非 Pawn 物品
+               var groupPawns = group.Where(t => t != null).OfType<Pawn>().ToList();
+               var nonPawnThings = group.Where(t => t != null && !(t is Pawn)).ToList();
+               
+               // 处理 Pawn
                if (groupPawns.Any())
                {
-                   if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 从组中提取 {groupPawns.Count} 个 Pawn: {string.Join(", ", groupPawns.Select(p => p.Name.ToStringShort))}");
+                   if (EliteRaidMod.displayMessageValue)
+                   {
+                       var pawnNames = groupPawns.Select(p => p?.Name?.ToStringShort ?? "Unknown").ToList();
+                       Log.Message($"[EliteRaid] 从组中提取 {groupPawns.Count} 个 Pawn: {string.Join(", ", pawnNames)}");
+                   }
                    allPawns.AddRange(groupPawns);
+               }
+               
+               // 记录非 Pawn 物品（调试用）
+               if (EliteRaidMod.displayMessageValue && nonPawnThings.Any())
+               {
+                   var thingNames = nonPawnThings.Select(t => t.def?.label ?? "Unknown").ToList();
+                   Log.Message($"[EliteRaid] 空投仓包含 {nonPawnThings.Count} 个非Pawn物品: {string.Join(", ", thingNames)}");
                }
            }
 
           if (allPawns.Any())
 {
-    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 总共抽取到 {allPawns.Count} 个Pawn: {string.Join(", ", allPawns.Select(p => p.Name.ToStringShort))}");
+    if (EliteRaidMod.displayMessageValue) 
+    {
+        var pawnNames = allPawns.Select(p => p?.Name?.ToStringShort ?? "Unknown").ToList();
+        Log.Message($"[EliteRaid] 总共抽取到 {allPawns.Count} 个Pawn: {string.Join(", ", pawnNames)}");
+    }
     // 判断是否为新的Raid
     bool isNewRaid = currentRaidTag == null;
 
@@ -228,30 +249,22 @@ namespace EliteRaid
        {
            if (pawns.Count == 0) return false;
 
-           // 优先使用传入的派系
-           if (faction != null)
+           // 如果是机械族，直接视为敌对
+           if (faction?.def == FactionDefOf.Mechanoid)
            {
-               bool isHostile = faction.HostileTo(Faction.OfPlayer);
-               //  Log.Message($"[EliteRaid] 基于传入派系判断：{faction.Name} 是否敌对？ {isHostile}");
-               return isHostile;
-           }
-           // 新增：排除机械族（FactionDefOf.Mechanoids）
-           if (faction != null && faction.def == FactionDefOf.Mechanoid)
-           {
-               //       Log.Message("[EliteRaid] 检测到机械族派系，跳过强化");
-               return false;
-           }
-           // 否则检查 Pawn 自身派系（取第一个 Pawn 的派系作为代表）
-           var firstPawnFaction = pawns[0].Faction;
-           if (firstPawnFaction != null)
-           {
-               bool isHostile = firstPawnFaction.HostileTo(Faction.OfPlayer);
-               //  Log.Message($"[EliteRaid] 基于首个 Pawn 派系判断：{firstPawnFaction.Name} 是否敌对？ {isHostile}");
-               return isHostile;
+               if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] 检测到机械族组，视为敌对");
+               return true;
            }
 
-           if (EliteRaidMod.displayMessageValue) Log.Warning($"[EliteRaid] 无法判断 Pawn 派系，默认非敌对");
-           return false;
+           // 检查派系是否敌对
+           bool isHostileFaction = faction != null && faction.HostileTo(Faction.OfPlayer);
+           
+           if (EliteRaidMod.displayMessageValue && isHostileFaction)
+           {
+               Log.Message($"[EliteRaid] 检测到敌对派系: {faction.Name}");
+           }
+
+           return isHostileFaction;
        }
 
        // 修改ApplyHostileBuff方法，不再生成等级分布，仅存储pawn组
@@ -352,7 +365,19 @@ namespace EliteRaid
                    var startTime = Time.realtimeSinceStartup;
                    const float maxProcessTime = 0.1f; // 100ms
 
-                   foreach (Thing thing in allContents)
+                   // 分离 Pawn 和非 Pawn 物品
+                   var pawns = allContents.OfType<Pawn>().ToList();
+                   var nonPawnThings = allContents.Where(t => !(t is Pawn)).ToList();
+
+                   // 记录非 Pawn 物品（调试用）
+                   if (EliteRaidMod.displayMessageValue && nonPawnThings.Any())
+                   {
+                       var thingNames = nonPawnThings.Select(t => t.def?.label ?? "Unknown").ToList();
+                       Log.Message($"[EliteRaid] 空投舱包含 {nonPawnThings.Count} 个非Pawn物品: {string.Join(", ", thingNames)}");
+                   }
+
+                   // 只处理 Pawn
+                   foreach (Pawn pawn in pawns)
                    {
                        if (Time.realtimeSinceStartup - startTime > maxProcessTime)
                        {
@@ -360,30 +385,39 @@ namespace EliteRaid
                            break;
                        }
 
-                       if (thing is Pawn pawn)
+                       if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 发现Pawn: {pawn?.Name?.ToStringShort ?? "Unknown"}");
+                       // 只跳过玩家派系
+                       if (pawn.Faction == Faction.OfPlayer)
                        {
-                           if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 发现Pawn: {pawn.Name}");
-                           // 新增：跳过玩家派系和机械族
-                           if (pawn.Faction == Faction.OfPlayer || pawn.Faction?.def == FactionDefOf.Mechanoid)
+                           if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 跳过玩家派系Pawn: {pawn?.Name?.ToStringShort ?? "Unknown"}");
+                           continue;
+                       }
+
+                       // 记录是否是机械族（用于日志）
+                       bool isMechanoid = pawn.Faction?.def == FactionDefOf.Mechanoid;
+                       
+                       // 新增：检查Pawn是否已经被处理过
+                       if (!processedPawnIds.Contains(pawn.thingIDNumber))
+                       {
+                           if (EliteRaidMod.displayMessageValue) 
                            {
-                               if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 跳过玩家派系或机械族Pawn: {pawn.Name}");
-                               continue;
+                               string pawnType = isMechanoid ? "机械族" : "普通";
+                               Log.Message($"[EliteRaid] 开始处理{pawnType}Pawn: {pawn?.Name?.ToStringShort ?? "Unknown"}");
                            }
-                           // 新增：检查Pawn是否已经被处理过
-                           if (!processedPawnIds.Contains(pawn.thingIDNumber))
-                           {
-                               if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 开始处理Pawn: {pawn.Name}");
-                               ProcessSinglePawn(pawn);
-                               processedPawnIds.Add(pawn.thingIDNumber);
-                           } else
-                           {
-                               if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Pawn已处理过，跳过: {pawn.Name}");
-                           }
+                           ProcessSinglePawn(pawn);
+                           processedPawnIds.Add(pawn.thingIDNumber);
                        } else
                        {
-                           if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 发现非Pawn物品: {thing.def.defName}");
+                           if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Pawn已处理过，跳过: {pawn?.Name?.ToStringShort ?? "Unknown"}");
                        }
                    }
+
+                   // 非 Pawn 物品不需要特殊处理，让它们正常生成
+                   if (EliteRaidMod.displayMessageValue && nonPawnThings.Any())
+                   {
+                       Log.Message("[EliteRaid] 非Pawn物品将正常生成");
+                   }
+
                } catch (Exception ex)
                {
                    if (EliteRaidMod.displayMessageValue) Log.Warning($"[EliteRaid] ProcessContents 异常: {ex.Message}");
