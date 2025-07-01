@@ -205,7 +205,7 @@ namespace EliteRaid
         private static void SetPainReduction(EliteLevel eliteLevel,Hediff hediff)
         {
             // 假设gainStatValue为精英等级（5~7）
-            if (eliteLevel.Level >= 5)
+            if (eliteLevel.Level >= 0)
             {
                 float painRatio = 1f;
                 if (eliteLevel.Level >= 1) painRatio = 1f;
@@ -290,6 +290,7 @@ namespace EliteRaid
 
         public static bool TrySetStatModifierToHediff(Hediff hediff, EliteLevel eliteLevel)
         {
+            //TODO 区分人类增益和非人类的增益
             if (eliteLevel == null || eliteLevel.Level < 1)
             {
                 Log.Warning("[EliteRaid] 拒绝设置等级为0的精英属性");
