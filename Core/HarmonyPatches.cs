@@ -744,7 +744,7 @@ namespace EliteRaid
             {
                 return true; // 继续执行原始方法
             }
-
+            Log.Message("实体生成捕获到了"+__instance.GetType().Name);
             // 计算基础数量（根据points估算）
             int estimatedBaseNum = Mathf.RoundToInt(points / 100f); // 假设每个pawn约100点
             int maxPawnNum = General.GetenhancePawnNumber(estimatedBaseNum);
@@ -830,7 +830,6 @@ namespace EliteRaid
             {
                 return true; // 如果mod未启用，让原始方法处理
             }
-
             if (parms?.pawnKind == null || parms?.faction == null || parms?.raidArrivalMode?.Worker == null)
             {
                 Log.Error("[EliteRaid] 事件参数不完整，跳过补丁处理");
@@ -846,7 +845,6 @@ namespace EliteRaid
             {
                 allowedCompress = false;
             }
-
             int maxPawnNum = EliteRaidMod.maxRaidEnemy;
             int baseNum = parms.pawnCount;
 

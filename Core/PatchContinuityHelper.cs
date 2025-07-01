@@ -181,6 +181,12 @@ namespace EliteRaid
             {
                 return StateFalse(options);
             }
+            if(EliteRaidMod.displayMessageValue)
+            Log.Message("袭击生成时SetCompressWork_GeneratePawns命中了"+groupParms.ToString());
+
+            if(groupParms.points==500){//针对血肉兽袭击的特殊处理
+                return StateFalse(options);
+            }
             int maxPawnNum = EliteRaidMod.maxRaidEnemy, pawnCount = 0;
             int baseNum = options.Count();
 
@@ -549,56 +555,5 @@ namespace EliteRaid
             return (float)baseNum / maxPawnNum;
         }
 
-        // 新增：测试袭击记录系统的方法
-        internal static void TestRaidRecordSystem()
-        {
-            if (EliteRaidMod.displayMessageValue)
-            {
-                Log.Message("=== 袭击记录系统测试开始 ===");
-            }
-            
-            // 清理现有记录
-            lock (raidRecordsLock)
-            {
-                raidRecords.Clear();
-            }
-            
-            // 创建测试派系
-            var testFaction = Faction.OfMechanoids; // 使用机械族作为测试派系
-            
-            // 记录一些测试袭击
-            RecordRaidInfo(100, testFaction, typeof(PawnGroupKindWorker_Normal), false);
-            System.Threading.Thread.Sleep(100); // 等待100ms
-            RecordRaidInfo(150, testFaction, typeof(PawnGroupKindWorker_Normal), true); // 空投袭击
-            System.Threading.Thread.Sleep(100); // 等待100ms
-            RecordRaidInfo(200, testFaction, typeof(PawnGroupKindWorker_Normal), false);
-            
-            // 输出所有记录
-            if (EliteRaidMod.displayMessageValue)
-            {
-                Log.Message(GetRaidRecordsDebugInfo());
-            }
-            
-            // 测试查找功能
-            if (TryFindClosestRaidRecord(testFaction, out var record, 30))
-            {
-                if (EliteRaidMod.displayMessageValue)
-                {
-                    Log.Message($"找到最接近的记录: 数量={record.BaseNum}, 时间={record.RecordTime:HH:mm:ss.fff}, 空投={record.IsDropPodRaid}");
-                }
-            } else
-            {
-                Log.Warning("未找到任何记录");
-            }
-            
-            // 测试清理功能
-            ClearRaidRecordsForFaction(testFaction);
-            if (EliteRaidMod.displayMessageValue)
-            {
-                Log.Message("清理后的记录状态:");
-                Log.Message(GetRaidRecordsDebugInfo());
-                Log.Message("=== 袭击记录系统测试结束 ===");
-            }
-        }
     }
 }

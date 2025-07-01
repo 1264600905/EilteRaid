@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Verse;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace EliteRaid
 {
@@ -16,7 +17,8 @@ namespace EliteRaid
     [HarmonyPatch(typeof(IncidentWorker_WastepackInfestation))]
     public static class WastepackInfestationLoggerPatch
     {
-        private static int lastEventTick = -1;
+            private static int timeVal = 10; // 用于计时，避免过于频繁的事件触发
+            private static int lastEventTick = -1;
         private static bool isProcessing = false;
 
         [HarmonyPrefix]
@@ -24,16 +26,19 @@ namespace EliteRaid
         [HarmonyPatch(new Type[] { typeof(IncidentParms) })]
         public static bool TryExecuteWorker_Prefix(IncidentWorker_WastepackInfestation __instance, IncidentParms parms, ref bool __result)
         {
-            // 检查是否在同一tick内重复执行
-            int currentTick = Find.TickManager.TicksGame;
-            if (currentTick == lastEventTick || isProcessing)
-            {
-                __result = false;
-                return false;
-            }
+                // 检查是否在同一tick内重复执行
+                int currentTick = Find.TickManager.TicksGame;
+                if (Mathf.Abs(currentTick - lastEventTick) <= timeVal || isProcessing)
+                {
+                    __result = false;
+                    return false;
+                } else
+                {
+                    lastEventTick = currentTick;
+                }
 
-            // 检查是否启用虫族压缩
-            if (!EliteRaidMod.allowInsectoidsValue || !EliteRaidMod.modEnabled)
+                // 检查是否启用虫族压缩
+                if (!EliteRaidMod.allowInsectoidsValue || !EliteRaidMod.modEnabled)
             {
                 return true;
             }
