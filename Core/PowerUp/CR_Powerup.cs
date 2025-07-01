@@ -74,7 +74,7 @@ namespace EliteRaid
             }
         }
        
-        public override void Tick()
+           public override void Tick()
         {
             base.Tick();
             Pawn pawn = this.pawn;
@@ -108,6 +108,7 @@ namespace EliteRaid
             //尝试在小人生成后180Tick后执行方法刷新面板
             if (spawnTimes<=2||_currentTickCount > _delayTicks)
             {
+              
                 UpdatePawnInfo(this.pawn);
                 _currentTickCount = 0;
                 spawnTimes++;
@@ -116,27 +117,13 @@ namespace EliteRaid
                 _currentTickCount++;
             }
 
+
             // 独立检查每个条件分支
             bool condition1 = pawn.health.Dead;
             bool condition2 = pawn.Downed;   //生效了
-            // 修改：只在延迟后检查Map为null的情况，并且增加日志
-            bool condition3 = false;
-            if (m_FirstMapSetting && pawn.Map == null)
-            {
-                if (_currentTickCount <= _delayTicks)
-                {
-                    if (EliteRaidMod.displayMessageValue)
-                        Log.Message($"[EliteRaid] {pawn.LabelCap} - 等待Map加载中 ({_currentTickCount}/{_delayTicks})");
-                }
-                else
-                {
-                    condition3 = true;
-                    if (EliteRaidMod.displayMessageValue)
-                        Log.Message($"[EliteRaid] {pawn.LabelCap} - Map加载超时，移除精英状态");
-                }
-            }
+            bool condition3 = m_FirstMapSetting && pawn.Map == null;
             bool condition4 = pawn.Faction != null && pawn.Faction.IsPlayer;  //生效
-            // bool condition5 = IsPanicFree();    //生效了
+                                                                              // bool condition5 = IsPanicFree();    //生效了
             bool condition6 = IsKidnap();
             bool condition7 = IsSteal();
             bool condition8 = !m_RaidFriendly &&
@@ -156,9 +143,11 @@ namespace EliteRaid
                 //    $"IsSteal={condition7}, " +
                 //    $"非敌对非友方={condition8}");
 
+
                 RemoveThis();
                 return;
             }
+
 
             //// 调整条件判断结构（根据需求决定是否保留原版逻辑）
             //if (pawn.Dead || pawn.Downed || (m_FirstMapSetting && pawn.Map == null) || (pawn.Faction != null && pawn.Faction.IsPlayer) || IsPanicFree() || IsKidnap() || IsSteal() || (!m_RaidFriendly && pawn.Faction != null && !FactionUtility.HostileTo(Faction.OfPlayer, pawn.Faction)))
