@@ -124,14 +124,14 @@ namespace EliteRaid
             bool condition3 = m_FirstMapSetting && pawn.Map == null;
             bool condition4 = pawn.Faction != null && pawn.Faction.IsPlayer;  //生效
                                                                               // bool condition5 = IsPanicFree();    //生效了
-            bool condition6 = IsKidnap();
-            bool condition7 = IsSteal();
+            // bool condition6 = IsKidnap();
+            // bool condition7 = IsSteal();
             bool condition8 = !m_RaidFriendly &&
                             pawn.Faction != null &&
                             !FactionUtility.HostileTo(Faction.OfPlayer, pawn.Faction);
 
             // 仅在触发移除时输出详细日志
-            if (condition1 || condition2 || condition3 || condition4 || condition6 || condition7 || condition8)
+            if (condition1 || condition2 || condition3 || condition4  || condition8)
             {
                 //Log.Message($"[EliteRaid] {pawn.LabelCap} 触发移除! 条件: " +
                 //    $"Dead={condition1}, " +
