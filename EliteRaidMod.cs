@@ -193,7 +193,7 @@ namespace EliteRaid
 
         public override string SettingsCategory()
         {
-            return "EliteRaidSettingsCategory".Translate()+"(v1.4.0)";
+            return "EliteRaidSettingsCategory".Translate()+"(v1.4.1)";
         }
         public int timer = 0;
         public void Tick()

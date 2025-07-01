@@ -72,45 +72,6 @@ namespace EliteRaid
 
             try
             {
-                Type targetClass = typeof(TunnelHiveSpawner);
-                MethodInfo targetMethod = AccessTools.Method(
-                    targetClass,
-                    "Spawn",
-                    new Type[] { typeof(Map), typeof(IntVec3) }
-                );
-
-                if (targetMethod == null)
-                {
-                    Log.Error($"[EliteRaid] 找不到 TunnelHiveSpawner.Spawn 方法！");
-                    return;
-                }
-
-                MethodInfo prefixMethod = AccessTools.Method(
-                    typeof(TunnelHiveSpawner_Spawn_Patch),
-                    nameof(TunnelHiveSpawner_Spawn_Patch.Spawn_Prefix)
-                );
-
-                if (prefixMethod == null)
-                {
-                    Log.Error($"[EliteRaid] 找不到 TunnelHiveSpawner_Spawn_Patch.Spawn_Prefix 方法！");
-                    return;
-                }
-
-                var prefix = new HarmonyMethod(prefixMethod);
-
-                harmony.Patch(
-                    original: targetMethod,
-                    prefix: prefix
-                );
-
-            } catch (Exception ex)
-            {
-                Log.Error($"[EliteRaid] 注册 TunnelHiveSpawner.Spawn 补丁失败: {ex.Message}");
-                Log.Error(ex.StackTrace);
-            }
-
-            try
-            {
                 Type targetClass = typeof(StorytellerUtility);
                 MethodInfo targetMethod = AccessTools.Method(
                     targetClass,
@@ -1123,185 +1084,26 @@ namespace EliteRaid
 
     #region TunnelHiveSpawner Patches
     [StaticConstructorOnStartup]
-    [HarmonyPatch(typeof(TunnelHiveSpawner))]
-    class TunnelHiveSpawner_Spawn_Patch
+    [HarmonyPatch(typeof(RimWorld.InfestationUtility), "SpawnTunnels")]
+public static class InfestationUtility_SpawnTunnels_Patch
+{
+    [HarmonyPrefix]
+    public static void Prefix(ref int hiveCount, Map map, bool spawnAnywhereIfNoGoodCell, bool ignoreRoofedRequirement, string questTag, IntVec3? overrideLoc, ref float? insectsPoints)
     {
-        [HarmonyPrefix]
-        [HarmonyPatch("Spawn")]
-        [HarmonyPatch(new Type[] { typeof(Map), typeof(IntVec3) })]
-        public static bool Spawn_Prefix(TunnelHiveSpawner __instance, Map map, IntVec3 loc)
-        {
-            if (!EliteRaidMod.allowInsectoidsValue || EliteRaidMod.modEnabled)
+         // 输出原始参数，便于调试
+            Log.Message($"[EliteRaid] InfestationUtility.SpawnTunnels Prefix: 原始 hiveCount={hiveCount}, map={map}, insectsPoints={insectsPoints}");
+            // 假设每个虫巢平均生成2只虫子
+            int baseNum = hiveCount * 2;
+            int maxPawnNum = General.GetenhancePawnNumber(baseNum);
+            int newHiveCount = Math.Max(1, maxPawnNum / 2);
+            if (hiveCount > newHiveCount)
             {
-                return true;
+                  Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum, newHiveCount,
+                     General.GetcompressionRatio(baseNum * 2, newHiveCount * 2).ToString("F2"), 0), MessageTypeDefOf.NeutralEvent, true);
+                hiveCount = newHiveCount;
             }
-
-            if (__instance.spawnHive)
-            {
-                Hive hive = (Hive)GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.Hive, null), loc, map, WipeMode.Vanish);
-                hive.SetFaction(Faction.OfInsects, null);
-                hive.questTags = __instance.questTags;
-                foreach (CompSpawner compSpawner in hive.GetComps<CompSpawner>())
-                {
-                    if (compSpawner.PropsSpawner.thingToSpawn == ThingDefOf.InsectJelly)
-                    {
-                        compSpawner.TryDoSpawn();
-                        break;
-                    }
-                }
-            }
-
-            if (__instance.insectsPoints > 0f)
-            {
-                __instance.insectsPoints = Mathf.Max(__instance.insectsPoints, Hive.spawnablePawnKinds.Min((PawnKindDef x) => x.combatPower));
-                float pointsLeft = __instance.insectsPoints;
-                int num = 0;
-
-                Func<PawnKindDef, bool> func = null;
-                while (pointsLeft > 0f)
-                {
-                    num++;
-                    if (num > 1000)
-                    {
-                        break;
-                    }
-                    IEnumerable<PawnKindDef> spawnablePawnKinds = Hive.spawnablePawnKinds;
-                    Func<PawnKindDef, bool> predicate;
-                    if ((predicate = func) == null)
-                    {
-                        predicate = (func = ((PawnKindDef x) => x.combatPower <= pointsLeft));
-                    }
-                    PawnKindDef pawnKindDef;
-                    if (!spawnablePawnKinds.Where(predicate).TryRandomElement(out pawnKindDef))
-                    {
-                        num--;
-                        break;
-                    }
-                    pointsLeft -= pawnKindDef.combatPower;
-                }
-
-                int baseNum = num;
-                int maxPawnNum = General.GetenhancePawnNumber(baseNum);
-
-                if (maxPawnNum >= baseNum)
-                {
-                    return true;
-                }
-
-                List<Pawn> list = new List<Pawn>();
-                EliteLevelManager.GenerateLevelDistribution(baseNum);
-                int order = PowerupUtility.GetNewOrder();
-
-                for (int i = 0; i < maxPawnNum; i++)
-                {
-                    PawnKindDef pawnKindDef;
-                    if (Hive.spawnablePawnKinds.Where(p => p.combatPower <= pointsLeft).TryRandomElement(out pawnKindDef))
-                    {
-                        PawnGenerationRequest request = new PawnGenerationRequest(
-                            kind: pawnKindDef,
-                            faction: Faction.OfInsects,
-                            context: PawnGenerationContext.NonPlayer,
-                            tile: map.Tile,
-                            forceGenerateNewPawn: false,
-                            allowDead: false,
-                            allowDowned: false,
-                            canGeneratePawnRelations: false,
-                            mustBeCapableOfViolence: true,
-                            colonistRelationChanceFactor: 0f,
-                            forceAddFreeWarmLayerIfNeeded: false,
-                            allowGay: false,
-                            allowPregnant: false,
-                            allowFood: true,
-                            allowAddictions: false,
-                            inhabitant: false,
-                            certainlyBeenInCryptosleep: false,
-                            forceRedressWorldPawnIfFormerColonist: false,
-                            worldPawnFactionDoesntMatter: false,
-                            biocodeWeaponChance: 0f,
-                            biocodeApparelChance: 0f,
-                            validatorPreGear: null,
-                            validatorPostGear: null,
-                            forcedTraits: null,
-                            prohibitedTraits: null,
-                            forceNoIdeo: true,
-                            forceNoBackstory: true,
-                            forbidAnyTitle: true,
-                            forceDead: false,
-                            forcedXenotype: null,
-                            forceBaselinerChance: 0f,
-                            forceRecruitable: false,
-                            dontGiveWeapon: false,
-                            onlyUseForcedBackstories: false,
-                            maximumAgeTraits: -1,
-                            minimumAgeTraits: 0,
-                            forceNoGear: false
-                        );
-
-                        if (EliteRaidMod.displayMessageValue)
-                        {
-                            Log.Message($"[EliteRaid] 调用PawnGenerator.GeneratePawn, pawnKind={request.KindDef?.defName}, faction={request.Faction?.Name ?? request.Faction?.ToString() ?? "null"}");
-                        }
-                        
-                        Pawn pawn = PawnGenerator.GeneratePawn(request);
-                        
-                        if (EliteRaidMod.displayMessageValue)
-                        {
-                            Log.Message($"[EliteRaid] PawnGenerator.GeneratePawn结果: {(pawn == null ? "null" : pawn.LabelCap)}");
-                        }
-                        
-                        if (pawn != null)
-                        {
-                            list.Add(pawn);
-                            pointsLeft -= pawnKindDef.combatPower;
-
-                            if (EliteRaidMod.AllowCompress(pawn))
-                            {
-                                EliteLevel eliteLevel = EliteLevelManager.GetRandomEliteLevel();
-                                Hediff powerup = PowerupUtility.SetPowerupHediff(pawn, order);
-                                if (powerup != null)
-                                {
-                                    bool powerupEnable = PowerupUtility.TrySetStatModifierToHediff(powerup, eliteLevel);
-                                    if (powerupEnable && EliteRaidMod.displayMessageValue)
-                                    {
-                                        Log.Message($"[EliteRaid] 虫族已增强: {pawn.LabelCap} → Level {eliteLevel.Level}");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (list.Any())
-                {
-                    if (EliteRaidMod.displayMessageValue)
-                    {
-                        Log.Message($"[EliteRaid] 虫族生成完成: {list.Count} 只 (原始: {baseNum}只)");
-                    }
-
-                    foreach (Pawn pawn in list)
-                    {
-                        GenSpawn.Spawn(pawn, CellFinder.RandomClosewalkCellNear(loc, map, 2, null), map, WipeMode.Vanish);
-                        pawn.mindState.spawnedByInfestationThingComp = __instance.spawnedByInfestationThingComp;
-                    }
-
-                    LordMaker.MakeNewLord(Faction.OfInsects, new LordJob_AssaultColony(Faction.OfInsects, true, false, false, false, true, false, false), map, list);
-
-                    if (EliteRaidMod.displayMessageValue)
-                    {
-                        Messages.Message($"[EliteRaid] 污染虫灾已压缩: {baseNum} → {list.Count}", MessageTypeDefOf.NeutralEvent);
-                    }
-
-                    return false;
-                }
-                else
-                {
-                    Log.Warning($"[EliteRaid] 虫族生成失败: 生成了0只昆虫");
-                }
-            }
-
-            return false;
-        }
     }
+}
     #endregion
     [HarmonyPatch(typeof(StorytellerUtility), "DefaultThreatPointsNow")]
     public static class StorytellerUtility_DefaultThreatPointsNow_Patch

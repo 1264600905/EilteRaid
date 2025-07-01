@@ -78,6 +78,7 @@
     <Compile Include="Core\Patches\BodySizePatch.cs" />
     <Compile Include="Core\Patches\HiveSpawnLoggerPatch.cs" />
     <Compile Include="Core\PowerUp\CR_PowerupDefof.cs" />
+    <Compile Include="Core\Utils\DebugActions.cs" />
     <Compile Include="Core\Utils\PawnStateChecker.cs" />
     <Compile Include="Core\Utils\PawnWeaponChager.cs" />
     <Compile Include="DifficultyConfig.cs" />

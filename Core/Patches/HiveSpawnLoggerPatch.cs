@@ -165,7 +165,8 @@ namespace EliteRaid
                 {
                     Messages.Message($"[EliteRaid] 污染虫灾已压缩: {baseNum} → {compressedCocoons.Count}", MessageTypeDefOf.NeutralEvent);
                 }
-
+ Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum*2, compressedCocoons.Count*2,
+                     General.GetcompressionRatio(baseNum * 2, compressedCocoons.Count * 2).ToString("F2"), 0), MessageTypeDefOf.NeutralEvent, true);
                 // 调用原始方法中的信封提示逻辑
                 SendWastepackInfestationLetter(__instance, parms, map, spawnCenter, compressedCocoons.Count);
 
