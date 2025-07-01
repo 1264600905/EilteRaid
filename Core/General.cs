@@ -92,22 +92,45 @@ namespace EliteRaid
                 if (EliteRaidMod.modEnabled && i < enhancePawnNumber && EliteRaidMod.AllowCompress(pawn))
                 {
                     // **关键检查：确保 levelIndex 不超过列表长度**
+                    EliteLevel currentLevel;
                     if (levelIndex >= totalLevels)
                     {
-                        Log.Warning($"[EliteRaid] 精英等级不足，无法分配等级给 pawn {pawn.LabelCap}（索引：{i}）");
-                        break; // 等级不足时提前退出循环
+                        // 如果等级不足，重新生成一次
+                        var eliteLevel = EliteLevelManager.GetRandomEliteLevel();
+                        if (eliteLevel != null && eliteLevel.Level > 0)
+                        {
+                            currentLevel = eliteLevel;
+                            if (EliteRaidMod.displayMessageValue)
+                            {
+                                Log.Message($"[EliteRaid] 重新生成等级成功: {pawn.LabelCap} -> Level {eliteLevel.Level}");
+                            }
+                        }
+                        else
+                        {
+                            if (EliteRaidMod.displayMessageValue)
+                            {
+                                Log.Warning($"[EliteRaid] 精英等级不足，无法分配等级给 pawn {pawn.LabelCap}（索引：{i}）");
+                            }
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        currentLevel = orderedLevelsList[levelIndex++];
                     }
 
-                    var currentLevel = orderedLevelsList[levelIndex++];
                     if (!IsEliteLevelValid(currentLevel)) continue;
 
-                    // 计算Hediff索引（1-70，每级10个）
-                    int configIndex = (currentLevel.Level - 1) * 10 + Rand.Range(1, 11);
+                    // 计算Hediff索引（每级9个，1级:1-9, 2级:10-19, 3级:20-29, 4级:30-39, 5级:40-49, 6级:50-59, 7级:60-69）
+                    int minIndex = (currentLevel.Level - 1) * 10 + 1;
+                    int maxIndex = minIndex + 8; // 每级9个，最后一个不用
+                    int configIndex = Rand.Range(minIndex, maxIndex + 1);
                     string defName = $"CR_Powerup{configIndex}";
                     HediffDef powerupDef = DefDatabase<HediffDef>.GetNamedSilentFail(defName);
-                    if (powerupDef == null)
+
+                    if (powerupDef == null && EliteRaidMod.displayMessageValue)
                     {
-                        // Log.Message($"[EliteRaid] 找不到HediffDef: {defName}");
+                        Log.Message($"[EliteRaid] 尝试分配等级 {currentLevel.Level}，使用范围 [{minIndex}-{maxIndex}]，但找不到 {defName}");
                         continue;
                     }
 
