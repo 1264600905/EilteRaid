@@ -1094,9 +1094,9 @@ public static class InfestationUtility_SpawnTunnels_Patch
             int newHiveCount = Math.Max(1, maxPawnNum / 2);
             if (hiveCount > newHiveCount)
             {
-                  Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum, newHiveCount,
+                  Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum, newHiveCount*2,
                      General.GetcompressionRatio(baseNum * 2, newHiveCount * 2).ToString("F2"), 0), MessageTypeDefOf.NeutralEvent, true);
-                hiveCount = newHiveCount;
+                hiveCount = newHiveCount*2;
             }
     }
 }
