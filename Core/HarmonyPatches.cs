@@ -569,17 +569,29 @@ namespace EliteRaid
         {
             if (__exception == null)
             {
-                // 日志：输出压缩前的分布
-    if (EliteRaidMod.displayMessageValue && options != null)
-    {
-       
-        Log.Message($"[EliteRaid] ChoosePawnGenOptionsByPoints_Finalizer存储了袭击种类分布信息");
-    }
+                // Store raid type distribution info
+                if (EliteRaidMod.displayMessageValue && options != null)
+                {
+                    var distribution = options.GroupBy(x => x.kind?.defName ?? "unknown")
+                        .Select(g => new { Type = g.Key, Count = g.Count() });
+                    
+                    Log.Message($"[EliteRaid] Raid type distribution before compression:");
+                    foreach (var entry in distribution)
+                    {
+                        Log.Message($"  {entry.Type}: {entry.Count}");
+                    }
+                }
+
+                // Store the compressed distribution for later use
+                if (options != null)
+                {
+                    PatchContinuityHelper.CompressedPawnGenOptions = options.ToList();
+                }
+
                 PatchContinuityHelper.SetCompressWork_GeneratePawns(groupParms, ref __result);
             }
             return __exception;
         }
-
     }
 
     #endregion

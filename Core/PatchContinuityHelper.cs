@@ -161,7 +161,7 @@ namespace EliteRaid
         }
 
         // 新增：保存压缩后的分布，供生成阶段使用
-        public static List<PawnGenOption> CompressedPawnGenOptions = null;
+        public static List<PawnGenOption> CompressedPawnGenOptions { get; set; }
 
         internal static IEnumerable<PawnGenOptionWithXenotype> SetCompressWork_GeneratePawns(IEnumerable<PawnGenOptionWithXenotype> options, PawnGroupMakerParms groupParms)
         {
@@ -181,31 +181,12 @@ namespace EliteRaid
             {
                 return StateFalse(options);
             }
-            if(EliteRaidMod.displayMessageValue)
-            Log.Message("袭击生成时SetCompressWork_GeneratePawns命中了"+groupParms.ToString());
-
-            if(groupParms.points==500){//针对血肉兽袭击的特殊处理
-                return StateFalse(options);
-            }
             int maxPawnNum = EliteRaidMod.maxRaidEnemy, pawnCount = 0;
             int baseNum = options.Count();
-
-            // 新增：记录袭击信息（包括空投袭击）
-            bool isDropPodRaid = IsDropPodRaid(groupParms);
-            RecordRaidInfo(baseNum, groupParms.faction, groupParms.groupKind.workerClass, isDropPodRaid);
-
-            // 新增压缩率计算（确保 baseNum >= compressionRatio 时才压缩）
-            if (EliteRaidMod.useCompressionRatio && baseNum >= EliteRaidMod.compressionRatio)
+            if (maxPawnNum >= baseNum)
             {
-                int temp = (int)(baseNum / EliteRaidMod.compressionRatio);
-                maxPawnNum = Math.Min(temp, EliteRaidMod.maxRaidEnemy);
-              
-            } else
-            {
-                maxPawnNum = EliteRaidMod.maxRaidEnemy; // 保持原有逻辑或调整为 baseNum
+                return StateFalse(options);
             }
-            // 确保至少为1，且不超过原始数量
-            maxPawnNum = Math.Max(1, Math.Min(maxPawnNum, baseNum));
 
             bool allowedCompress = true;
             if (!EliteRaidMod.allowMechanoidsValue && !options.Any(x => !(x.Option.kind?.RaceProps?.IsMechanoid ?? false)))
@@ -215,6 +196,18 @@ namespace EliteRaid
             if (!EliteRaidMod.allowInsectoidsValue && !options.Any(x => !(x.Option.kind?.RaceProps?.FleshType == FleshTypeDefOf.Insectoid)))
             {
                 allowedCompress = false;
+            }
+
+            // Store original distribution for logging
+            if (EliteRaidMod.displayMessageValue)
+            {
+                var originalDistribution = options.GroupBy(x => x.Option.kind?.defName ?? "unknown")
+                    .Select(g => new { Type = g.Key, Count = g.Count() });
+                Log.Message($"[EliteRaid] Original raid type distribution:");
+                foreach (var entry in originalDistribution)
+                {
+                    Log.Message($"  {entry.Type}: {entry.Count}");
+                }
             }
 
             List<PawnGenOptionWithXenotype> list = new List<PawnGenOptionWithXenotype>();
@@ -230,13 +223,24 @@ namespace EliteRaid
 
             if (allowedCompress)
             {
-                m_CompressWork_GeneratePawns = new CompressWork(groupParms.GetHashCode(), groupParms.groupKind.workerClass, baseNum, maxPawnNum, raidFriendly);
-#if DEBUG
-                if (groupParms.traderKind != null)
+                // Store compressed distribution for logging
+                if (EliteRaidMod.displayMessageValue)
                 {
-                   // Log.Message(String.Format("@@@ Compressed Raid: WORKER_CLASS={0}, BASE_NUM={1}, COMPRESSED_NUM={2}, TRADER_KIND={3}", groupParms.groupKind.workerClass, baseNum, maxPawnNum, groupParms.traderKind));
+                    var compressedDistribution = list.GroupBy(x => x.Option.kind?.defName ?? "unknown")
+                        .Select(g => new { Type = g.Key, Count = g.Count() })
+                        .OrderByDescending(g => g.Count);
+                    
+                    Log.Message($"[EliteRaid] Compressed raid type distribution:");
+                    foreach (var entry in compressedDistribution)
+                    {
+                        Log.Message($"  {entry.Type}: {entry.Count}");
+                    }
                 }
-#endif
+
+                // Store the compressed options for later use
+                CompressedPawnGenOptions = list.Select(x => x.Option).ToList();
+
+                m_CompressWork_GeneratePawns = new CompressWork(groupParms.GetHashCode(), groupParms.groupKind.workerClass, baseNum, maxPawnNum, raidFriendly);
                 return list;
             }
             return StateFalse(options);
