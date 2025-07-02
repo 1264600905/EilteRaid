@@ -313,6 +313,13 @@ namespace EliteRaid
                 Log.Warning("[EliteRaid] 拒绝设置等级为0的精英属性");
                 return false;
             }
+
+            // 检查当前Pawn是否已存在其他增益，如果存在则移除
+            if (HasOtherPowerups(hediff.pawn, hediff))
+            {
+                RemoveOtherPowerups(hediff.pawn, hediff);
+            }
+
             // 装备强化
             if (eliteLevel.refineGear)
                 GearRefiner.RefineGear(hediff.pawn, eliteLevel);
@@ -324,6 +331,7 @@ namespace EliteRaid
             // 药物强化
             if (eliteLevel.addDrug)
                 DrugHediffDataStore.AddDrugHediffs(hediff.pawn, eliteLevel);
+
             // 初始化加算和乘算列表
             hediff.CurStage.statOffsets = new List<StatModifier>(); // 加算
             hediff.CurStage.statFactors = new List<StatModifier>(); // 乘算
@@ -502,6 +510,37 @@ namespace EliteRaid
             public BionicHediffDefHolder(HediffDef def)
             {
                 this.def = def;
+            }
+        }
+
+        // 新增：检查指定Pawn是否存在其他增益（排除当前增益）
+        private static bool HasOtherPowerups(Pawn pawn, Hediff currentHediff)
+        {
+            if (pawn?.health?.hediffSet == null) return false;
+
+            // 检查是否存在其他增益（排除当前正在添加的增益）
+            return pawn.health.hediffSet.hediffs
+                .Any(h => h != currentHediff && h.def.defName.StartsWith(GetPowerupDefNameStartWith()));
+        }
+
+        // 修改：只移除指定Pawn的其他增益（排除当前增益）
+        private static void RemoveOtherPowerups(Pawn pawn, Hediff currentHediff)
+        {
+            if (pawn?.health?.hediffSet == null) return;
+
+            // 获取当前Pawn的所有其他增益
+            var existingPowerups = pawn.health.hediffSet.hediffs
+                .Where(h => h != currentHediff && h.def.defName.StartsWith(GetPowerupDefNameStartWith()))
+                .ToList();
+
+            // 移除其他增益
+            foreach (var powerup in existingPowerups)
+            {
+                if (EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message($"[EliteRaid] 移除 {pawn.LabelCap} 的已存在增益: {powerup.def.defName}");
+                }
+                pawn.health.RemoveHediff(powerup);
             }
         }
 
