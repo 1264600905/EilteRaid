@@ -111,10 +111,10 @@ namespace EliteRaid
 
             try
             {
-               Type targetClass = typeof(ActiveTransporter);
+               Type targetClass = typeof(ActiveDropPod);
                if (EliteRaidMod.displayMessageValue)
                {
-                   Log.Message($"[EliteRaid] 开始注册ActiveTransporter.PodOpen补丁，目标类: {targetClass.FullName}");
+                   Log.Message($"[EliteRaid] 开始注册ActiveDropPod.PodOpen补丁，目标类: {targetClass.FullName}");
                }
                
                MethodInfo targetMethod = AccessTools.Method(
@@ -280,7 +280,7 @@ namespace EliteRaid
 
             orgType = typeof(AggressiveAnimalIncidentUtility);
             orgName = nameof(AggressiveAnimalIncidentUtility.GenerateAnimals);
-            method = AccessTools.Method(orgType, orgName, new Type[] { typeof(PawnKindDef), typeof(PlanetTile), typeof(float), typeof(int) });
+            method = AccessTools.Method(orgType, orgName, new Type[] { typeof(PawnKindDef), typeof(int), typeof(float), typeof(int) });
             if (General.m_CanTranspilerGenerateAnimals)
             {
                 try
@@ -308,12 +308,12 @@ namespace EliteRaid
                         new HarmonyMethod(
                             typeof(ManhunterPackIncidentUtility_Patch),
                             nameof(ManhunterPackIncidentUtility_Patch.GenerateAnimals_Prefix),
-                            new Type[] {
-                                typeof(List<Pawn>).MakeByRefType(),
+                            new Type[] { 
                                 typeof(PawnKindDef),
-                                typeof(PlanetTile),
+                                typeof(int),
                                 typeof(float),
-                                typeof(int)
+                                typeof(int),
+                                typeof(List<Pawn>).MakeByRefType()
                             }
                         )
                         { methodType = MethodType.Normal }
@@ -481,7 +481,7 @@ namespace EliteRaid
             MethodInfo methodGenerateAnimals_TestTramspiler = AccessTools.Method(typeof(ManhunterPackIncidentUtility_Patch), nameof(ManhunterPackIncidentUtility_Patch.GenerateAnimals_Test_Transpiler), new Type[] { typeof(IEnumerable<CodeInstruction>) });
             try
             {
-                orgMethod = AccessTools.Method(typeof(AggressiveAnimalIncidentUtility), nameof(AggressiveAnimalIncidentUtility.GenerateAnimals), new Type[] { typeof(PawnKindDef), typeof(PlanetTile), typeof(float), typeof(int) });
+                orgMethod = AccessTools.Method(typeof(AggressiveAnimalIncidentUtility), nameof(AggressiveAnimalIncidentUtility.GenerateAnimals), new Type[] { typeof(PawnKindDef), typeof(int[]), typeof(float), typeof(int) });
                 harmony.Patch(orgMethod,
                     null,
                     null,
@@ -652,7 +652,7 @@ namespace EliteRaid
             return __exception;
         }
 
-        internal static bool GenerateAnimals_Prefix(ref List<Pawn> __result, PawnKindDef animalKind, PlanetTile tile, float points, int animalCount = 0)
+        internal static bool GenerateAnimals_Prefix(PawnKindDef animalKind, int tile, float points, int animalCount, ref List<Pawn> __result)
         {
             if (EliteRaidMod.modEnabled || !EliteRaidMod.allowAnimalsValue)
             {

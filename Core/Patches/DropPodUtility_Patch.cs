@@ -222,7 +222,7 @@ namespace EliteRaid
        {
            // 简单实现：如果当前有其他待处理的空投舱，返回false
            // 实际实现可能需要检查游戏状态或其他指标
-           var activeDropPods = map.listerThings.ThingsInGroup(ThingRequestGroup.ActiveTransporter);
+           var activeDropPods = map.listerThings.ThingsInGroup(ThingRequestGroup.ActiveDropPod);
            return activeDropPods.Count <= 1; // 减去当前处理的这个
        }
 
@@ -327,7 +327,7 @@ namespace EliteRaid
            }
 
            // 处理空投舱内容的方法
-           public static void ProcessContents(ActiveTransporter __instance)
+           public static void ProcessContents(ActiveDropPod __instance)
            {
                if (EliteRaidMod.displayMessageValue) Log.Warning($"[EliteRaid] ===== ProcessContents 被调用！=====");
                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 处理空投舱内容，ID={__instance?.thingIDNumber ?? -1}");
