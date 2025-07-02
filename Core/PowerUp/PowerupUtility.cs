@@ -143,9 +143,26 @@ namespace EliteRaid
             if (eliteLevel.giantEnhance) baseDamageFactor *= 0.7f;
 
             // 等级大于3的吞噬兽承伤提高50%
-            if (hediff.pawn.kindDef != null && hediff.pawn.kindDef.defName == "Devourer" && eliteLevel.Level > 3)
+            if (hediff.pawn.kindDef != null && hediff.pawn.kindDef.defName == "Devourer" && eliteLevel.Level >= 3)
             {
                 baseDamageFactor *= 1.5f;
+                 if(EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message($"[EliteRaid] 吞噬兽承伤提高50%");
+                }
+            }
+             if(EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message($"[EliteRaid] 当前被强化物种阵营是"+hediff.pawn.Faction.def.defName+"能否过判断？"+(hediff.pawn.Faction.def.defName == "TribeRoughNeanderthal")+"等级？"+eliteLevel.Level);
+                }
+            // 尼人族承伤提高30%
+            if (hediff.pawn.Faction != null && hediff.pawn.Faction.def.defName == "TribeRoughNeanderthal" && eliteLevel.Level >= 3)
+            {
+                baseDamageFactor *= 1.3f;
+                if(EliteRaidMod.displayMessageValue)
+                {
+                    Log.Message($"[EliteRaid] 尼人族承伤提高30%");
+                }
             }
 
             baseDamageFactor = Math.Max(baseDamageFactor, 0.08f);
@@ -275,7 +292,7 @@ namespace EliteRaid
                 remoteSpeedBonus = (1f / remoteCooldown) - 1f; // 反推远程加成
             }
 
-            float meleeSpeedBonus = remoteSpeedBonus * 0.7f; // 近战加成=远程70%
+            float meleeSpeedBonus = remoteSpeedBonus * 0.4f; // 近战加成=远程40%
             float cooldownFactor = 1f / Math.Max(1f + meleeSpeedBonus, 1f);
             return Math.Max(cooldownFactor, 0.35f);
         }
