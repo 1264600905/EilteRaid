@@ -254,8 +254,23 @@ namespace EliteRaid
                 return;
             }
             //特殊情况4：最大精英等级是0
-            if (EliteRaidMod.maxAllowLevel==0)
+            if (EliteRaidMod.maxAllowLevel == 0)
             {
+                currentLevelDistribution.Clear();
+                // 获取当前难度的配置
+                if (difficultyConfigs.TryGetValue(EliteRaidMod.eliteRaidDifficulty, out var configs))
+                {
+                    // 获取0级配置
+                    var zeroLevelConfig = configs.FirstOrDefault(c => c.Level == 0);
+                    if (zeroLevelConfig != null)
+                    {
+                        // 计算可以生成的0级精英数量
+                        int maxPossibleElites = General.GetenhancePawnNumber(originalCount);
+                        currentLevelDistribution[zeroLevelConfig] = maxPossibleElites;
+                        lastResortConfig = zeroLevelConfig;
+                        if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 最大等级为0，生成 {maxPossibleElites} 个0级精英");
+                    }
+                }
                 return;
             }
 

@@ -25,211 +25,211 @@ namespace EliteRaid
             new Dictionary<TotalDifficultyLevel, DifficultyConfig>
             {
         { TotalDifficultyLevel.Novice, new DifficultyConfig
-            {
+            {  //难度：修士，难度系数{0.3} 对应原版孤星探险难度，敌人数量1~20，最大等级不超过三级,假如你是一个新手，这是一个相当平衡的难度
                 Name = "Novice",
-                DifficultyFactor = 0.4f,
+                DifficultyFactor = 0.3f,
                 RaidScale = 60f,
                 MaxRaidPoint = 10000,
                 MaxEliteLevel = 3,
                 EliteDifficulty = EliteRaidDifficulty.Normal,
-                CompressionRatio = 3,
+                CompressionRatio = 2,
                 MaxRaidEnemy = 20,  // 修士
-                Description = "Beginner-friendly difficulty with fewer and weaker enemies"
+                Description = "Difficulty level: Novice, with difficulty factor {0.3}. Corresponds to vanilla Lost Colony difficulty, enemy count 1-20, maximum level not exceeding 3. If you're a newcomer, this is a well-balanced difficulty"
             }},
 
         { TotalDifficultyLevel.Retainer, new DifficultyConfig
-            {
+            { //难度：扈从，难度系数{0.6}默认难度 比原版荒野求生难度稍微难一点，敌人数量1~25，最大等级不超过四级，适合喜欢刺激的老玩家。
                 Name = "Retainer",
-                DifficultyFactor = 0.7f,
+                DifficultyFactor = 0.6f,
                 RaidScale = 110f,
                 MaxRaidPoint = 10000,
                 MaxEliteLevel = 4,
                 EliteDifficulty = EliteRaidDifficulty.Normal,
                 CompressionRatio = 3,
-                MaxRaidEnemy = 20,  // 扈从
-                Description = "Basic difficulty with moderate enemy numbers"
+                MaxRaidEnemy = 25,  // 扈从
+                Description = "Difficulty level: Retainer, with difficulty factor {0.6}. Default difficulty slightly harder than vanilla Strive to Survive, enemy count 1-25, maximum level not exceeding 4. Suitable for experienced players who enjoy a challenge"
             }},
 
         { TotalDifficultyLevel.Knight, new DifficultyConfig
-            {
+            {//难度：骑士，难度系数{1}  ,原版的冷酷难度，敌人数量1~30，最大等级不超过五级,大部分敌人精英等级在3级，适合挑战极限的老玩家。
                 Name = "Knight",
                 DifficultyFactor = 1.0f,
                 RaidScale = 220f,
+                MaxRaidPoint = 10000,
+                MaxEliteLevel = 5,
+                EliteDifficulty = EliteRaidDifficulty.Hard,
+                CompressionRatio = 3,
+                MaxRaidEnemy = 30,  // 骑士
+                Description = "Difficulty level: Knight, with difficulty factor {1.0}. Equivalent to vanilla Blood and Dust difficulty, enemy count 1-30, maximum level not exceeding 5. Most enemies are at elite level 3. Suitable for veteran players seeking a challenge"
+            }},
+
+        { TotalDifficultyLevel.Justiciar, new DifficultyConfig
+            {//难度：法务官，难度系数{1.3} ，冷酷难度+，敌人数量1~30，最大等级不超过六级，大部分敌人精英等级在3级,适合挑战极限的老玩家。
+                Name = "Justiciar",
+                DifficultyFactor = 1.3f,
+                RaidScale = 290f,
                 MaxRaidPoint = 15000,
                 MaxEliteLevel = 6,
                 EliteDifficulty = EliteRaidDifficulty.Hard,
                 CompressionRatio = 3,
-                MaxRaidEnemy = 30,  // 骑士
-                Description = "Standard difficulty balancing challenge and gameplay experience"
-            }},
-
-        { TotalDifficultyLevel.Justiciar, new DifficultyConfig
-            {
-                Name = "Justiciar",
-                DifficultyFactor = 1.3f,
-                RaidScale = 220f,
-                MaxRaidPoint = 20000,
-                MaxEliteLevel = 7,
-                EliteDifficulty = EliteRaidDifficulty.Hard,
-                CompressionRatio = 3,
                 MaxRaidEnemy = 30,  // 法务官
-                Description = "Slightly higher difficulty with increased enemy numbers and strength"
+                Description = "Difficulty level: Justiciar, with difficulty factor {1.3}. Blood and Dust+, enemy count 1-30, maximum level not exceeding 6. Most enemies are at elite level 3. Suitable for veteran players seeking an extreme challenge"
             }},
 
         { TotalDifficultyLevel.Lord, new DifficultyConfig
-            {
+            {//难度：领主，难度系数{1.6} ，冷酷难度++，敌人数量1~35，最大等级不超过七级，可能出现心灵免疫的boss敌人，大部分敌人精英等级在3,4级,适合挑战极限的老玩家。
                 Name = "Lord",
                 DifficultyFactor = 1.6f,
-                RaidScale = 250f,
-                MaxRaidPoint = 25000,
+                RaidScale = 350f,
+                MaxRaidPoint = 20000,
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Hard,
                 CompressionRatio = 4,
-                MaxRaidEnemy = 40,  // 领主
-                Description = "High difficulty with frequent elite enemies"
+                MaxRaidEnemy = 35,  // 领主
+                Description = "Difficulty level: Lord, with difficulty factor {1.6}. Blood and Dust++, enemy count 1-35, maximum level not exceeding 7. May encounter psychic immune boss enemies. Most enemies are at elite level 3-4. Suitable for veteran players seeking an extreme challenge"
             }},
 
         { TotalDifficultyLevel.Viceroy, new DifficultyConfig
-            {
+            {//难度：总督，难度系数{2} ，冷酷500%难度 ，敌人数量1~40，拥有全部的精英等级，可能出现心灵免疫的boss敌人，大部分敌人精英等级在3,4级,适合挑战极限的老玩家。
                 Name = "Viceroy",
                 DifficultyFactor = 2.0f,
-                RaidScale = 280f,
-                MaxRaidPoint = 30000,
+                RaidScale = 450f,
+                MaxRaidPoint = 20000,
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 4,
                 MaxRaidEnemy = 40,  // 总督
-                Description = "Extremely difficult with significantly increased enemy numbers and elite presence"
+                Description = "Difficulty level: Viceroy, with difficulty factor {2.0}. 500% Blood and Dust difficulty, enemy count 1-40, with all elite levels available. May encounter psychic immune boss enemies. Most enemies are at elite level 3-4. Suitable for veteran players seeking an extreme challenge"
             }},
 
         { TotalDifficultyLevel.Governor, new DifficultyConfig
-            {
+            {//难度：执政总督，难度系数{3} ，冷酷难度500%难度+ ，敌人数量1~45，拥有全部的精英等级，可能出现心灵免疫的boss敌人，大部分敌人精英等级在4,5级,适合挑战极限的老玩家。
                 Name = "Governor",
-                DifficultyFactor = 2.4f,
-                RaidScale = 320f,
-                MaxRaidPoint = 35000,
+                DifficultyFactor = 3f,
+                RaidScale = 660f,
+                MaxRaidPoint = 30000,
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 5,
-                MaxRaidEnemy = 50,  // 都督
-                Description = "Brutal difficulty with frequent boss-level enemies"
+                MaxRaidEnemy = 45,  // 都督
+                Description = "Difficulty level: Governor, with difficulty factor {3.0}. 500%+ Blood and Dust difficulty, enemy count 1-45, with all elite levels available. May encounter psychic immune boss enemies. Most enemies are at elite level 4-5. Suitable for veteran players seeking an extreme challenge"
             }},
 
         { TotalDifficultyLevel.Duke, new DifficultyConfig
-            {
+            {//难度：都督，难度系数{3.9} ，冷酷难度1000%难度 ，敌人数量1~50，拥有全部的精英等级，可能出现心灵免疫的boss敌人，大部分敌人精英等级在4,5级,适合挑战极限的老玩家。
                 Name = "Duke",
                 DifficultyFactor = 3.9f,
-                RaidScale = 360f,
+                RaidScale = 900f,
                 MaxRaidPoint = 40000,
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 5,
                 MaxRaidEnemy = 50,  // 专制公
-                Description = "Beyond极限，敌人几乎不可阻挡"
+                Description = "Difficulty level: Duke, with difficulty factor {3.9}. 1000% Blood and Dust difficulty, enemy count 1-50, with all elite levels available. May encounter psychic immune boss enemies. Most enemies are at elite level 4-5. Suitable for veteran players seeking an extreme challenge"
             }},
 
         { TotalDifficultyLevel.Despot, new DifficultyConfig
-            {
+            {//难度：专制公，难度系数{6.4} ，袭击倍率1400% ，敌人数量1~60，拥有全部的精英等级，可能出现心灵免疫的boss敌人，大部分敌人精英等级在5,6级,适合挑战极限的老玩家。
                 Name = "Despot",
                 DifficultyFactor = 6.4f,
-                RaidScale = 400f,
-                MaxRaidPoint = 45000,
+                RaidScale = 1400f,
+                MaxRaidPoint = 60000,
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 6,
                 MaxRaidEnemy = 60,  // 大公
-                Description = "Theoretically 'impossible' difficulty"
+                Description = "Difficulty level: Despot, with difficulty factor {6.4}. 1400% raid scale, enemy count 1-60, with all elite levels available. May encounter psychic immune boss enemies. Most enemies are at elite level 5-6. Suitable for veteran players seeking an extreme challenge"
             }},
 
         { TotalDifficultyLevel.GrandDuke, new DifficultyConfig
-            {
+            {//难度：大公，难度系数{10} ，袭击倍率2000% ，敌人数量1~70，拥有全部的精英等级，可能出现心灵免疫的boss敌人，大部分敌人精英等级在5,6级,适合挑战极限的老玩家。
                 Name = "Grand Duke",
                 DifficultyFactor = 10.0f,
-                RaidScale = 500f,
-                MaxRaidPoint = 50000,
-                MaxEliteLevel = 7,
-                EliteDifficulty = EliteRaidDifficulty.Extreme,
-                CompressionRatio = 6,
-                MaxRaidEnemy = 60,  // 执政官
-                Description = "Developer-level challenge requiring perfect strategy and configuration"
-            }},
-
-        { TotalDifficultyLevel.Consul, new DifficultyConfig
-            {
-                Name = "Consul",
-                DifficultyFactor = 16.0f,
-                RaidScale = 600f,
-                MaxRaidPoint = 55000,
-                MaxEliteLevel = 7,
-                EliteDifficulty = EliteRaidDifficulty.Extreme,
-                CompressionRatio = 7,
-                MaxRaidEnemy = 60,  // 将军
-                Description = "Data-crushing difficulty testing game mechanics limits"
-            }},
-
-        { TotalDifficultyLevel.General, new DifficultyConfig
-            {
-                Name = "General",
-                DifficultyFactor = 32.0f,
-                RaidScale = 1000f,
-                MaxRaidPoint = 60000,
-                MaxEliteLevel = 7,
-                EliteDifficulty = EliteRaidDifficulty.Extreme,
-                CompressionRatio = 7,
-                MaxRaidEnemy = 70,  // 近卫总长
-                Description = "Code-level stress test, may cause crashes"
-            }},
-
-        { TotalDifficultyLevel.GuardCommander, new DifficultyConfig
-            {
-                Name = "Guard Commander",
-                DifficultyFactor = 54.0f,
-                RaidScale = 1400f,
-                MaxRaidPoint = 80000,
-                MaxEliteLevel = 7,
-                EliteDifficulty = EliteRaidDifficulty.Extreme,
-                CompressionRatio = 8,
-                MaxRaidEnemy = 70,  // 星系主宰
-                Description = "Self-inflicted difficulty beyond game design intentions"
-            }},
-
-        { TotalDifficultyLevel.GalaxyLord, new DifficultyConfig
-            {
-                Name = "Galaxy Lord",
-                DifficultyFactor = 72.0f,
-                RaidScale = 1600f,
+                RaidScale = 2000f,
                 MaxRaidPoint = 100000,
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
-                CompressionRatio = 8,
-                MaxRaidEnemy = 80,  // 至高星主
-                Description = "For mod developers debugging only"
+                CompressionRatio = 6,
+                MaxRaidEnemy = 70,  // 执政官
+                Description = "Difficulty level: Grand Duke, with difficulty factor {10.0}. 2000% raid scale, enemy count 1-70, with all elite levels available. May encounter psychic immune boss enemies. Most enemies are at elite level 5-6. Suitable for veteran players seeking an extreme challenge"
+            }},
+
+        { TotalDifficultyLevel.Consul, new DifficultyConfig
+            {//难度：执政官，难度系数{16} ，袭击倍率3500% ，敌人数量1~80，拥有全部的精英等级，可能出现心灵免疫的boss敌人，大部分敌人精英等级在6,7级,适合挑战极限的老玩家。
+                Name = "Consul",
+                DifficultyFactor = 16.0f,
+                RaidScale = 3500f,
+                MaxRaidPoint = 160000,
+                MaxEliteLevel = 7,
+                EliteDifficulty = EliteRaidDifficulty.Extreme,
+                CompressionRatio = 7,
+                MaxRaidEnemy = 80,  // 将军
+                Description = "Difficulty level: Consul, with difficulty factor {16.0}. 3500% raid scale, enemy count 1-80, with all elite levels available. May encounter psychic immune boss enemies. Most enemies are at elite level 6-7. Suitable for veteran players seeking an extreme challenge"
+            }},
+
+        { TotalDifficultyLevel.General, new DifficultyConfig
+            {//特别难度：压缩率3,难度系数1，敌人数量1~200，利用压缩率来限制来袭的敌人数量，只使用压缩率会让来袭敌人数量变成原来的1/3，不限制敌人数量，会让游戏更加平衡.
+                Name = "General",
+                DifficultyFactor = 1.0f,
+                RaidScale = 220f,
+                MaxRaidPoint = 10000,
+                MaxEliteLevel = 5,
+                EliteDifficulty = EliteRaidDifficulty.Normal,
+                CompressionRatio = 3,
+                MaxRaidEnemy = 200,  // 近卫总长
+                Description = "Special difficulty: Compression ratio 3, difficulty factor 1.0. Enemy count 1-200. Uses compression ratio to limit raid enemy count, making it 1/3 of the original. Not limiting enemy count allows for more balanced gameplay"
+            }},
+
+        { TotalDifficultyLevel.GuardCommander, new DifficultyConfig
+            {//特别难度：压缩率4,难度系数2，敌人数量1~200，利用压缩率来限制来袭的敌人数量，只使用压缩率会让来袭敌人数量变成原来的1/4，不限制敌人数量，会让游戏更加平衡.
+                Name = "Guard Commander",
+                DifficultyFactor = 2.0f,
+                RaidScale = 450f,
+                MaxRaidPoint = 20000,
+                MaxEliteLevel = 6,
+                EliteDifficulty = EliteRaidDifficulty.Hard,
+                CompressionRatio = 4,
+                MaxRaidEnemy = 200,  // 星系主宰
+                Description = "Special difficulty: Compression ratio 4, difficulty factor 2.0. Enemy count 1-200. Uses compression ratio to limit raid enemy count, making it 1/4 of the original. Not limiting enemy count allows for more balanced gameplay"
+            }},
+
+        { TotalDifficultyLevel.GalaxyLord, new DifficultyConfig
+            {//特别难度：压缩率5,难度系数3，敌人数量1~200，利用压缩率来限制来袭的敌人数量，只使用压缩率会让来袭敌人数量变成原来的1/5，不限制敌人数量，会让游戏更加平衡.
+                Name = "Galaxy Lord",
+                DifficultyFactor = 3.0f,
+                RaidScale = 660f,
+                MaxRaidPoint = 30000,
+                MaxEliteLevel = 7,
+                EliteDifficulty = EliteRaidDifficulty.Extreme,
+                CompressionRatio = 5,
+                MaxRaidEnemy = 200,  // 至高星主
+                Description = "Special difficulty: Compression ratio 5, difficulty factor 3.0. Enemy count 1-200. Uses compression ratio to limit raid enemy count, making it 1/5 of the original. Not limiting enemy count allows for more balanced gameplay"
             }},
 
         { TotalDifficultyLevel.StarOverlord, new DifficultyConfig
-            {
+            {//设置示例：限制敌人数量,难度系数0.3,这是一个难度示例，表明你可以通过设置，单纯限制敌人的数量，来优化游戏战斗帧率.这个示例把敌人数量限制到了50人,并且没有精英强化.
                 Name = "Star Overlord",
-                DifficultyFactor = 100.0f,
-                RaidScale = 2200f,
-                MaxRaidPoint = 130000,
-                MaxEliteLevel = 7,
-                EliteDifficulty = EliteRaidDifficulty.Extreme,
-                CompressionRatio = 9,
-                MaxRaidEnemy = 80,  // 星海皇帝
-                Description = "Mathematically 'infinite' difficulty (conceptual)"
+                DifficultyFactor = 0.3f,
+                RaidScale = 220f,
+                MaxRaidPoint = 10000,
+                MaxEliteLevel = 0,
+                EliteDifficulty = EliteRaidDifficulty.Normal,
+                CompressionRatio = 4,
+                MaxRaidEnemy = 50,  // 星海皇帝
+                Description = "Setting example: Enemy count limit with difficulty factor 0.3. This is an example showing how you can optimize game combat framerate by simply limiting enemy count. This example limits enemies to 50 and has no elite enhancements"
             }},
 
         { TotalDifficultyLevel.GalaxyEmperor, new DifficultyConfig
-            {
+            {//设置示例: 只使用袭击规模，难度系数2,这是一个示例，你可以通过设置，单纯调整游戏的袭击规模和袭击点数上限，没有精英等级和压缩。
                 Name = "Galaxy Emperor",
-                DifficultyFactor = 200.0f,
-                RaidScale = 3000f,
+                DifficultyFactor = 2.0f,
+                RaidScale = 500f,
                 MaxRaidPoint = 150000,
-                MaxEliteLevel = 7,
-                EliteDifficulty = EliteRaidDifficulty.Extreme,
-                CompressionRatio = 10,
-                MaxRaidEnemy = 100,  // 星海皇帝
-                Description = "Challenge the limits of the game's underlying code"
+                MaxEliteLevel = 0,
+                EliteDifficulty = EliteRaidDifficulty.Normal,
+                CompressionRatio = 1,
+                MaxRaidEnemy = 200,  // 星海皇帝
+                Description = "Setting example: Using only raid scale with difficulty factor 2.0. This example shows how you can adjust the game by only modifying raid scale and raid point limit, without elite levels or compression"
             }}
             };
     }

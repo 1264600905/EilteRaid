@@ -111,7 +111,7 @@ public static class StaticVariables
     public const bool DEFAULT_ALLOW_INSECTOIDS = true;
     public const bool DEFAULT_ALLOW_ENTITY_SWARM = true;
     public const bool DEFAULT_ALLOW_ANIMALS = true;
-    public const int DEFAULT_MAX_LEVEL = 7;
+    public const int DEFAULT_MAX_LEVEL = 0;
     public const int DEFAULT_MAX_ENEMY = 20;
     public const bool DEFAULT_MAP_ENHANCED = false;
         public const int DEFAULT_MAX_RAID_POINT = 10000; // 新增默认值
