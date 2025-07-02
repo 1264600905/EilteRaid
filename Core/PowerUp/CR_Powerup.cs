@@ -121,26 +121,13 @@ namespace EliteRaid
             bool condition1 = pawn.health.Dead;
             bool condition2 = pawn.Downed;   //生效了
             
-            // 修改：为机械族添加特殊处理
-            bool condition3 = false;
-            if (pawn.Faction?.def == FactionDefOf.Mechanoid)
-            {
-                // 机械族给予更长的初始化时间
-                condition3 = m_FirstMapSetting && pawn.Map == null && _currentTickCount > _delayTicks * 2;
-            }
-            else
-            {
-                // 非机械族保持原有逻辑
-                condition3 = m_FirstMapSetting && pawn.Map == null;
-            }
-            
             bool condition4 = pawn.Faction != null && pawn.Faction.IsPlayer;  //生效
             bool condition8 = !m_RaidFriendly &&
                             pawn.Faction != null &&
                             !FactionUtility.HostileTo(Faction.OfPlayer, pawn.Faction);
 
             // 仅在触发移除时输出详细日志
-            if (condition1 || condition2 || condition3 || condition4  || condition8)
+            if (condition1 || condition2 || condition4 || condition8)
             {
                 if (EliteRaidMod.displayMessageValue)
                 {
@@ -148,7 +135,6 @@ namespace EliteRaid
                     Log.Message($"[EliteRaid] {pawnType} {pawn.LabelCap} 触发移除! 条件: " +
                         $"Dead={condition1}, " +
                         $"Downed={condition2}, " +
-                        $"FirstMap&&MapNull={condition3}, " +
                         $"IsPlayerFaction={condition4}, " +
                         $"非敌对非友方={condition8}");
                 }
