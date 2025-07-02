@@ -433,9 +433,9 @@ namespace EliteRaid
             switch (level)
             {
                 case TotalDifficultyLevel.Novice:
-                    return "Difficulty_Novice_Desc".Translate("0.4"); // 示例："难度系数0.4，适合新手，敌人强度较低"
+                    return "Difficulty_Novice_Desc".Translate("0.3"); // 示例："难度系数0.4，适合新手，敌人强度较低"
                 case TotalDifficultyLevel.Retainer:
-                    return "Difficulty_Retainer_Desc".Translate("0.7");
+                    return "Difficulty_Retainer_Desc".Translate("0.6");
                 case TotalDifficultyLevel.Knight:
                     return "Difficulty_Knight_Desc".Translate("1.0"); // 默认难度，平衡体验
                 case TotalDifficultyLevel.Justiciar:
@@ -445,7 +445,7 @@ namespace EliteRaid
                 case TotalDifficultyLevel.Viceroy:
                     return "Difficulty_Viceroy_Desc".Translate("2.0");
                 case TotalDifficultyLevel.Governor:
-                    return "Difficulty_Governor_Desc".Translate("2.4");
+                    return "Difficulty_Governor_Desc".Translate("3");
                 case TotalDifficultyLevel.Duke:
                     return "Difficulty_Duke_Desc".Translate("3.9");
                 case TotalDifficultyLevel.Despot:
@@ -455,15 +455,15 @@ namespace EliteRaid
                 case TotalDifficultyLevel.Consul:
                     return "Difficulty_Consul_Desc".Translate("16.0");
                 case TotalDifficultyLevel.General:
-                    return "Difficulty_General_Desc".Translate("32.0");
+                    return "Difficulty_General_Desc".Translate("1.0");
                 case TotalDifficultyLevel.GuardCommander:
-                    return "Difficulty_GuardCommander_Desc".Translate("54.0");
+                    return "Difficulty_GuardCommander_Desc".Translate("2.0");
                 case TotalDifficultyLevel.GalaxyLord:
-                    return "Difficulty_GalaxyLord_Desc".Translate("72.0");
+                    return "Difficulty_GalaxyLord_Desc".Translate("3.0");
                 case TotalDifficultyLevel.StarOverlord:
-                    return "Difficulty_StarOverlord_Desc".Translate("100.0");
+                    return "Difficulty_StarOverlord_Desc".Translate("0.3");
                 case TotalDifficultyLevel.GalaxyEmperor:
-                    return "Difficulty_GalaxyEmperor_Desc".Translate("200.0");
+                    return "Difficulty_GalaxyEmperor_Desc".Translate("2.0");
                 default:
                     return "Difficulty_Unknown_Desc".Translate(); // 未知难度
             }
