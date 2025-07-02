@@ -295,11 +295,11 @@ namespace EliteRaid
             while (attempt <= maxAttempts)
             {
                 if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Attempt {attempt}/{maxAttempts}...");
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 1: Clearing current distribution");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 1: Clearing current distribution");
                 currentLevelDistribution.Clear();
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 2: Clearing lastResortConfig");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 2: Clearing lastResortConfig");
                 lastResortConfig = null;
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 3: Checking originalCount value: {originalCount}");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 3: Checking originalCount value: {originalCount}");
 
                 if (originalCount <= 0)
                 {
@@ -307,32 +307,32 @@ namespace EliteRaid
                     return;
                 }
 
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 4: Getting configs for difficulty: {EliteRaidMod.eliteRaidDifficulty}");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 4: Getting configs for difficulty: {EliteRaidMod.eliteRaidDifficulty}");
                 if (!difficultyConfigs.TryGetValue(EliteRaidMod.eliteRaidDifficulty, out List<EliteLevelConfig> availableConfigsForDifficulty))
                 {
                     if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] No EliteLevelConfig found for difficulty: {EliteRaidMod.eliteRaidDifficulty}. Cannot generate distribution.");
                     return;
                 }
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 5: Found {availableConfigsForDifficulty.Count} configs for current difficulty");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 5: Found {availableConfigsForDifficulty.Count} configs for current difficulty");
 
                 // 包含Level=0的敌人（CR=1）
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 6: Starting to filter valid configs");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 6: Starting to filter valid configs");
                 List<EliteLevelConfig> validConfigs = availableConfigsForDifficulty
                     .Where(c => c.Level <= EliteRaidMod.maxAllowLevel && c.CompressionRatio > 0 && baseProbabilities.ContainsKey(c.Level))
                     .ToList();
 
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 7: Found {validConfigs.Count} valid configs after filtering");
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 8: Max allowed level is {EliteRaidMod.maxAllowLevel}");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 7: Found {validConfigs.Count} valid configs after filtering");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 8: Max allowed level is {EliteRaidMod.maxAllowLevel}");
 
                 // 计算目标精英数量范围
                 int targetMaxElites = Math.Min(maxRaidEnemy, originalCount);
                 int targetMinElites = Math.Max(1, (int)(targetMaxElites * 0.4)); // 保证至少有40%的精英
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 9: Target elites range: {targetMinElites}-{targetMaxElites}");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 9: Target elites range: {targetMinElites}-{targetMaxElites}");
 
                 // 调整概率
                 Dictionary<EliteLevelConfig, double> adjustedProbabilities = new Dictionary<EliteLevelConfig, double>();
                 double totalAdjustedProb = 0;
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 10: Starting probability adjustments");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 10: Starting probability adjustments");
 
                 foreach (var config in validConfigs)
                 {
@@ -347,10 +347,10 @@ namespace EliteRaid
                     adjustedProbabilities[config] = adjustedProb;
                     totalAdjustedProb += adjustedProb;
                 }
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 11: Completed probability adjustments, total prob: {totalAdjustedProb}");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 11: Completed probability adjustments, total prob: {totalAdjustedProb}");
 
                 // 阶段1：生成初始精英
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 12: Starting initial elite generation");
+                //if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] Step 12: Starting initial elite generation");
                 var phase1Result = GenerateInitialElites(validConfigs, adjustedProbabilities, totalAdjustedProb, targetMaxElites, originalCount);
                 int currentSlotsFilled = phase1Result.currentSlotsFilled;
                 int elitesActuallyGenerated = phase1Result.elitesActuallyGenerated;
@@ -474,7 +474,7 @@ namespace EliteRaid
             int targetMaxElites,
             int originalCount)
         {
-            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Starting with targetMax={targetMaxElites}, originalCount={originalCount}");
+            // if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Starting with targetMax={targetMaxElites}, originalCount={originalCount}");
             
             int currentSlotsFilled = 0;
             int elitesActuallyGenerated = 0;
@@ -485,7 +485,7 @@ namespace EliteRaid
             double baseRetentionRatio = originalCount < 10 ? 0.6 : 0.4;
             int minGuaranteedElites = Math.Max(1, (int)(targetMaxElites * baseRetentionRatio));
             
-            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Set minGuaranteedElites={minGuaranteedElites}");
+            // if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Set minGuaranteedElites={minGuaranteedElites}");
 
             // 记录已生成的各等级精英数量
             Dictionary<int, int> generatedByLevel = new Dictionary<int, int>();
@@ -493,16 +493,16 @@ namespace EliteRaid
             while (elitesActuallyGenerated < targetMaxElites && currentSlotsFilled < originalCount)
             {
                 iterations++;
-                if (EliteRaidMod.displayMessageValue && iterations % 100 == 0) Log.Message($"[EliteRaid] GenerateInitialElites: Iteration {iterations}, current elites={elitesActuallyGenerated}");
+                // if (EliteRaidMod.displayMessageValue && iterations % 100 == 0) Log.Message($"[EliteRaid] GenerateInitialElites: Iteration {iterations}, current elites={elitesActuallyGenerated}");
 
                 if (totalAdjustedProb <= 0) 
                 {
-                    if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GenerateInitialElites: Total probability is 0, breaking loop");
+                    // if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GenerateInitialElites: Total probability is 0, breaking loop");
                     break;
                 }
 
                 // 关键改进：动态调整概率权重，防止高压缩比精英过多
-                if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GenerateInitialElites: Calculating dynamic probabilities");
+                // if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GenerateInitialElites: Calculating dynamic probabilities");
                 Dictionary<EliteLevelConfig, double> dynamicProbabilities = new Dictionary<EliteLevelConfig, double>();
                 double dynamicTotalProb = 0;
 
@@ -515,7 +515,7 @@ namespace EliteRaid
                     if (originalCount - currentSlotsFilled < config.CompressionRatio * 2)
                     {
                         crFactor = 0.2; // 大幅降低高压缩比精英的概率
-                        if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Applying high CR penalty to level {config.Level}");
+                        // if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Applying high CR penalty to level {config.Level}");
                     }
 
                     // 防止单一等级精英过多
@@ -533,10 +533,10 @@ namespace EliteRaid
                     dynamicTotalProb += dynamicProb;
                 }
 
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Dynamic total probability = {dynamicTotalProb}");
+                // if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Dynamic total probability = {dynamicTotalProb}");
 
                 // 选择精英配置
-                if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GenerateInitialElites: Starting elite selection");
+                // if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GenerateInitialElites: Starting elite selection");
                 double p = ThreadSafeRandom.NextDouble() * dynamicTotalProb;
                 double cumulativeProb = 0;
                 EliteLevelConfig chosenConfig = null;
@@ -549,7 +549,7 @@ namespace EliteRaid
                         if (p <= cumulativeProb)
                         {
                             chosenConfig = config;
-                            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Selected config level {config.Level}");
+                            // if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Selected config level {config.Level}");
                             break;
                         }
                     }
@@ -557,18 +557,18 @@ namespace EliteRaid
 
                 if (chosenConfig == null)
                 {
-                    if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GenerateInitialElites: No config chosen, defaulting to lowest level");
+                    // if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GenerateInitialElites: No config chosen, defaulting to lowest level");
                     chosenConfig = validConfigs.OrderBy(c => c.Level).FirstOrDefault();
                 }
 
                 if (chosenConfig == null)
                 {
-                    if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GenerateInitialElites: Failed to find any valid config, breaking loop");
+                    // if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] GenerateInitialElites: Failed to find any valid config, breaking loop");
                     break;
                 }
 
                 // 检查是否可以添加此精英
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Checking if can add elite (slots needed: {chosenConfig.CompressionRatio}, available: {originalCount - currentSlotsFilled})");
+                // if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Checking if can add elite (slots needed: {chosenConfig.CompressionRatio}, available: {originalCount - currentSlotsFilled})");
                 if (currentSlotsFilled + chosenConfig.CompressionRatio <= originalCount)
                 {
                     if (currentLevelDistribution.ContainsKey(chosenConfig))
@@ -582,12 +582,12 @@ namespace EliteRaid
 
                     // 更新等级统计
                     generatedByLevel[chosenConfig.Level] = generatedByLevel.GetValueOrDefault(chosenConfig.Level, 0) + 1;
-                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Added elite level {chosenConfig.Level}, total elites now {elitesActuallyGenerated}");
+                    // if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Added elite level {chosenConfig.Level}, total elites now {elitesActuallyGenerated}");
                 }
                 else
                 {
                     // 从调整概率中移除无法添加的精英
-                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Cannot add elite level {chosenConfig.Level}, removing from probability pool");
+                    // if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Cannot add elite level {chosenConfig.Level}, removing from probability pool");
                     if (dynamicProbabilities.ContainsKey(chosenConfig))
                     {
                         totalAdjustedProb -= dynamicProbabilities[chosenConfig];
@@ -597,7 +597,7 @@ namespace EliteRaid
 
                 if (iterations >= maxIterations)
                 {
-                    if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Reached max iterations ({maxIterations}), breaking loop");
+                    // if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GenerateInitialElites: Reached max iterations ({maxIterations}), breaking loop");
                     break;
                 }
             }
@@ -1270,7 +1270,7 @@ namespace EliteRaid
             } else
             {
                 // This should not happen if selectedConfig came from currentLevelDistribution
-                if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GetRandomEliteLevel: selectedConfig (L{selectedConfig.Level}) not found in currentLevelDistribution after selection. This is a bug.");
+              //  if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] GetRandomEliteLevel: selectedConfig (L{selectedConfig.Level}) not found in currentLevelDistribution after selection. This is a bug.");
             }
 
             lastResortConfig = selectedConfig; // Update lastResortConfig to the one just picked
