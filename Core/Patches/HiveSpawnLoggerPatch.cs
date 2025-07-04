@@ -92,10 +92,14 @@ namespace EliteRaid
                     {
                         Log.Message($"[EliteRaid] 污染虫灾已压缩: {baseNum} → {compressedCocoons.Count}");
                     }
-                    Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), 
-                        baseNum, compressedCocoons.Count/2,
-                        General.GetcompressionRatio(baseNum, compressedCocoons.Count/2).ToString("F2"), 0), 
-                        MessageTypeDefOf.NeutralEvent, true);
+
+                    if (EliteRaidMod.showRaidMessages)
+                    {
+                        Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), 
+                            baseNum, compressedCocoons.Count/2,
+                            General.GetcompressionRatio(baseNum, compressedCocoons.Count/2).ToString("F2"), 0), 
+                            MessageTypeDefOf.NeutralEvent, true);
+                    }
 
                     // 使用原版方法发送信件
                     MethodInfo sendLetterMethod = AccessTools.Method(typeof(IncidentWorker), "SendStandardLetter", 

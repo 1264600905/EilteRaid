@@ -5,6 +5,8 @@
   <modEnabledDesc>Activer ou désactiver la fonctionnalité de ce Mod</modEnabledDesc>
   <displayMessageValue>Afficher les Journaux de Débogage</displayMessageValue>
   <displayMessageValueDesc>Afficher des informations détaillées de débogage dans les journaux</displayMessageValueDesc>
+  <showRaidMessages>Afficher les Messages de Raid</showRaidMessages>
+  <showRaidMessagesDesc>Afficher les messages d'information de compression pour les raids élites</showRaidMessagesDesc>
   <eliteRaidDifficulty>Niveau d'Amélioration Élite</eliteRaidDifficulty>
   <eliteRaidDifficultyDesc>1 = Normal, 2 = Amélioré, 3 = Extrême</eliteRaidDifficultyDesc>
   

@@ -10,6 +10,7 @@ public class EliteRaidSettings : ModSettings
     // 与Mod类中的字段完全对应
     public bool modEnabled = StaticVariables.DEFAULT_MOD_ENABLED;
     public bool displayMessageValue = StaticVariables.DEFAULT_DISPLAY_MESSAGES;
+    public bool showRaidMessages = StaticVariables.DEFAULT_SHOW_RAID_MESSAGES; // 修改：显示袭击提示
     public bool allowRaidFriendlyValue = StaticVariables.DEFAULT_ALLOW_FRIENDLY_RAID;
     public EliteRaidDifficulty eliteRaidDifficulty = StaticVariables.DEFAULT_DIFFICULTY;
     public bool allowMechanoidsValue = StaticVariables.DEFAULT_ALLOW_MECHANODS;
@@ -42,6 +43,7 @@ public class EliteRaidSettings : ModSettings
             Scribe_Values.Look(ref compressionRatio, "compressionRatio", StaticVariables.DEFAULT_COMPRESSION_RATIO);
             Scribe_Values.Look(ref modEnabled, "modEnabled", StaticVariables.DEFAULT_MOD_ENABLED);
         Scribe_Values.Look(ref displayMessageValue, "displayMessageValue", StaticVariables.DEFAULT_DISPLAY_MESSAGES);
+        Scribe_Values.Look(ref showRaidMessages, "showRaidMessages", StaticVariables.DEFAULT_SHOW_RAID_MESSAGES); // 修改：保存显示袭击提示设置
         Scribe_Values.Look(ref allowRaidFriendlyValue, "allowRaidFriendlyValue", StaticVariables.DEFAULT_ALLOW_FRIENDLY_RAID);
         Scribe_Values.Look(ref eliteRaidDifficulty, "eliteRaidDifficulty", StaticVariables.DEFAULT_DIFFICULTY);
         Scribe_Values.Look(ref allowMechanoidsValue, "allowMechanoidsValue", StaticVariables.DEFAULT_ALLOW_MECHANODS);
@@ -67,6 +69,7 @@ public class EliteRaidSettings : ModSettings
     {
         modEnabled = StaticVariables.DEFAULT_MOD_ENABLED;
         displayMessageValue = StaticVariables.DEFAULT_DISPLAY_MESSAGES;
+        showRaidMessages = StaticVariables.DEFAULT_SHOW_RAID_MESSAGES; // 修改：重置显示袭击提示设置
         allowRaidFriendlyValue = StaticVariables.DEFAULT_ALLOW_FRIENDLY_RAID;
         eliteRaidDifficulty = StaticVariables.DEFAULT_DIFFICULTY;
         allowMechanoidsValue = StaticVariables.DEFAULT_ALLOW_MECHANODS;
@@ -119,5 +122,6 @@ public static class StaticVariables
         public const bool DEFAULT_SHOW_DETAIL_CONFIG = false; // 新增默认值
         public const bool DEFAULT_ALLOW_DROP_POD_RAID = false; // 新增默认值
         public const float DEFAULT_RAID_SCALE=1f; // 新增：袭击缩放倍率
+        public const bool DEFAULT_SHOW_RAID_MESSAGES = false; // 新增：显示袭击提示
     }
 }

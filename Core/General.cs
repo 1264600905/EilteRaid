@@ -172,8 +172,11 @@ namespace EliteRaid
             {
                 int finalNum = GetenhancePawnNumber(baseNum);
                 float actualCompressionRatio = GetcompressionRatio(baseNum, finalNum);
-                Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum, finalNum,
-                    actualCompressionRatio.ToString("F2"), finalNum), MessageTypeDefOf.NeutralEvent, true);
+                if (EliteRaidMod.showRaidMessages)
+                {
+                    Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(), baseNum, finalNum,
+                        actualCompressionRatio.ToString("F2"), finalNum), MessageTypeDefOf.NeutralEvent, true);
+                }
             }
         }
         public static float GetcompressionRatio(int baseNum, int maxPawnNum)

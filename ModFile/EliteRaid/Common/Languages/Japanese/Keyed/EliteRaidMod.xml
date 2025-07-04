@@ -5,6 +5,8 @@
   <modEnabledDesc>このModの機能をオンまたはオフにします</modEnabledDesc>
   <displayMessageValue>デバッグログを表示</displayMessageValue>
   <displayMessageValueDesc>ログに詳細なデバッグ情報を表示します</displayMessageValueDesc>
+  <showRaidMessages>襲撃メッセージを表示</showRaidMessages>
+  <showRaidMessagesDesc>エリート襲撃の圧縮情報メッセージを表示します</showRaidMessagesDesc>
   <eliteRaidDifficulty>エリートレベル強化度</eliteRaidDifficulty>
   <eliteRaidDifficultyDesc>1 = ノーマル, 2 = 強化, 3 = 超強化</eliteRaidDifficultyDesc>
   

@@ -5,6 +5,8 @@
   <modEnabledDesc>开启或关闭本Mod功能</modEnabledDesc>
   <displayMessageValue>显示调试日志</displayMessageValue>
   <displayMessageValueDesc>在日志中显示详细调试信息</displayMessageValueDesc>
+  <showRaidMessages>显示袭击提示</showRaidMessages>
+  <showRaidMessagesDesc>显示精英化袭击的压缩信息提示</showRaidMessagesDesc>
   <eliteRaidDifficulty>精英等级强化程度</eliteRaidDifficulty>
   <eliteRaidDifficultyDesc>1 = 正常, 2 = 加强, 3 = 极强</eliteRaidDifficultyDesc>
   

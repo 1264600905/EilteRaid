@@ -143,10 +143,13 @@ namespace EliteRaid
                         Log.Message($"[EliteRaid] {compressionInfo}");
                     }
 
-                    Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(),
-                        originalBurrowCount, compressedBurrows.Count,
-                        General.GetcompressionRatio(originalBurrowCount, compressedBurrows.Count).ToString("F2"), 0),
-                        MessageTypeDefOf.NeutralEvent, true);
+                    if (EliteRaidMod.showRaidMessages)
+                    {
+                        Messages.Message(String.Format("CR_RaidCompressedMassageEnhanced".Translate(),
+                            originalBurrowCount, compressedBurrows.Count,
+                            General.GetcompressionRatio(originalBurrowCount, compressedBurrows.Count).ToString("F2"), 0),
+                            MessageTypeDefOf.NeutralEvent, true);
+                    }
 
                     // 使用反射调用SendStandardLetter方法
                     try
