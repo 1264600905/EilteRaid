@@ -108,7 +108,6 @@ namespace EliteRaid
             //尝试在小人生成后180Tick后执行方法刷新面板
             if (spawnTimes<=2||_currentTickCount > _delayTicks)
             {
-              
                 UpdatePawnInfo(this.pawn);
                 _currentTickCount = 0;
                 spawnTimes++;
@@ -120,7 +119,22 @@ namespace EliteRaid
             // 独立检查每个条件分支
             bool condition1 = pawn.health.Dead;
             bool condition2 = pawn.Downed;   //生效了
-            
+            // 修改：只在延迟后检查Map为null的情况，并且增加日志
+            bool condition3 = false;
+            if (m_FirstMapSetting && pawn.Map == null)
+            {
+                if (_currentTickCount <= _delayTicks)
+                {
+                    if (EliteRaidMod.displayMessageValue)
+                        Log.Message($"[EliteRaid] {pawn.LabelCap} - 等待Map加载中 ({_currentTickCount}/{_delayTicks})");
+                }
+                else
+                {
+                    condition3 = true;
+                    if (EliteRaidMod.displayMessageValue)
+                        Log.Message($"[EliteRaid] {pawn.LabelCap} - Map加载超时，移除精英状态");
+                }
+            }
             bool condition4 = pawn.Faction != null && pawn.Faction.IsPlayer;  //生效
             bool condition8 = !m_RaidFriendly &&
                             pawn.Faction != null &&
