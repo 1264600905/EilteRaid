@@ -186,36 +186,15 @@ namespace EliteRaid
         {
             if (baseNum <= 0) return 0;
             
-            if (EliteRaidMod.useCompressionRatio)
-            {
-                // 先使用压缩率计算
-                int compressedByRatio = (int)(baseNum / EliteRaidMod.compressionRatio);
-                
-                // 取压缩率结果和最大袭击数量的较小值
-                int result = Math.Min(compressedByRatio, EliteRaidMod.maxRaidEnemy);
-                
-                // 确保至少为1，且不超过原始数量
-                int finalResult = Math.Max(1, Math.Min(result, baseNum));
-                
-                if (EliteRaidMod.displayMessageValue)
-                {
-                    Log.Message($"[EliteRaid] 压缩计算: baseNum={baseNum}, compressionRatio={EliteRaidMod.compressionRatio}, compressedByRatio={compressedByRatio}, maxRaidEnemy={EliteRaidMod.maxRaidEnemy}, result={finalResult}");
-                }
-                
-                return finalResult;
-            }
-            else
-            {
-                // 不使用压缩率，直接使用最大袭击数量，但不超过原始数量
-                int result = Math.Max(1, Math.Min(EliteRaidMod.maxRaidEnemy, baseNum));
-                
-                if (EliteRaidMod.displayMessageValue)
-                {
-                    Log.Message($"[EliteRaid] 非压缩计算: baseNum={baseNum}, maxRaidEnemy={EliteRaidMod.maxRaidEnemy}, result={result}");
-                }
-                
-                return result;
-            }
+          // 先使用压缩率计算
+    int compressedByRatio = (int)(baseNum / EliteRaidMod.compressionRatio);
+    
+    // 取压缩率结果和最大袭击数量的较小值
+    int result = Math.Min(compressedByRatio, EliteRaidMod.maxRaidEnemy);
+    
+    // 确保至少为1，且不超过原始数量
+    int finalResult = Math.Max(1, Math.Min(result, baseNum));
+    return finalResult;
         }
 
         internal static void GeneratePawns_Impl(PawnGroupMakerParms parms, List<Pawn> pawns)
