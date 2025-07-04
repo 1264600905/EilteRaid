@@ -43,6 +43,9 @@
       <HintPath>H:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\netstandard.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="NewRatkin">
+      <HintPath>H:\SteamLibrary\steamapps\workshop\content\294100\1578693166\1.5\Assemblies\NewRatkin.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -74,6 +77,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Patches\RatkinTunnelPatch.cs" />
     <Compile Include="Core\Patches\DropPodUtility_Patch.cs" />
     <Compile Include="Core\Patches\BodySizePatch.cs" />
     <Compile Include="Core\Patches\FleshbeastAttackCompressionPatch.cs" />
