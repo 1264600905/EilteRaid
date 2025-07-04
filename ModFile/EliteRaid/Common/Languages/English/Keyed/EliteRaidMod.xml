@@ -5,6 +5,8 @@
   <modEnabledDesc>Turn this mod's functionality on or off</modEnabledDesc>
   <displayMessageValue>Display Debug Logs</displayMessageValue>
   <displayMessageValueDesc>Show detailed debug information in logs</displayMessageValueDesc>
+  <showRaidMessages>Show Raid Messages</showRaidMessages>
+  <showRaidMessagesDesc>Show compression information messages for elite raids</showRaidMessagesDesc>
   <eliteRaidDifficulty>Elite Level Enhancement</eliteRaidDifficulty>
   <eliteRaidDifficultyDesc>1 = Normal, 2 = Enhanced, 3 = Extreme</eliteRaidDifficultyDesc>
   

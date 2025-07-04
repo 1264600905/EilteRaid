@@ -20,6 +20,7 @@ namespace EliteRaid
     {
         //显示部分日志
         public static bool displayMessageValue = false;
+        public static bool showRaidMessages = true; // 修改：显示袭击提示选项，默认为true
 
         public static bool modEnabled = true; // 是否启用Mod
         public static bool allowRaidFriendlyValue = true; // 是否允许友好突袭精英化
@@ -193,7 +194,7 @@ namespace EliteRaid
 
         public override string SettingsCategory()
         {
-            return "EliteRaidSettingsCategory".Translate()+"(v1.4.5)";
+            return "EliteRaidSettingsCategory".Translate()+"(v1.4.6)";
         }
         public int timer = 0;
         public void Tick()
@@ -273,6 +274,10 @@ namespace EliteRaid
             // 显示日志开关
             DrawCheckbox(ref y, viewRect.width, "displayMessageValue", "displayMessageValue".Translate(),
                 ref settings.displayMessageValue, "displayMessageValueDesc".Translate());
+
+            // 隐藏袭击提示开关
+            DrawCheckbox(ref y, viewRect.width, "showRaidMessages", "showRaidMessages".Translate(),
+                ref settings.showRaidMessages, "showRaidMessagesDesc".Translate());
 
             y += GAP_LARGE;
 
@@ -661,6 +666,7 @@ namespace EliteRaid
             // 先同步用户设置到静态字段
             EliteRaidMod.modEnabled = settings.modEnabled;
             EliteRaidMod.displayMessageValue = settings.displayMessageValue;
+            EliteRaidMod.showRaidMessages = settings.showRaidMessages; // 新增：同步隐藏袭击提示设置
             EliteRaidMod.allowRaidFriendlyValue = settings.allowRaidFriendlyValue;
             EliteRaidMod.eliteRaidDifficulty = settings.eliteRaidDifficulty;
             EliteRaidMod.allowMechanoidsValue = settings.allowMechanoidsValue;
