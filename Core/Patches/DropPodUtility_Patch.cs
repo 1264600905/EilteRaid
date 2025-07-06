@@ -64,12 +64,6 @@ namespace EliteRaid
            string debugInfo = PatchContinuityHelper.GetRaidRecordsDebugInfo();
            if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] 当前袭击记录状态:\n{debugInfo}");
 
-           if (!EliteRaidMod.allowDropPodRaidValue)
-           {
-               if (EliteRaidMod.displayMessageValue) Log.Message("[EliteRaid] allowDropPodRaidValue为false，跳过处理");
-               return;
-           }
-
            // 检查是否有Pawn
            var allPawns = new List<Pawn>();
            foreach (var group in thingsGroups)
