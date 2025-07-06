@@ -124,7 +124,12 @@ namespace EliteRaid
                     value = baseMoveSpeedFactor // 乘算
                 };
             }
-
+float currentDamageFactor = hediff.pawn.GetStatValue(StatDefOf.IncomingDamageFactor);
+if (EliteRaidMod.displayMessageValue)
+{
+     currentDamageFactor = hediff.pawn.GetStatValue(StatDefOf.IncomingDamageFactor);
+    Log.Message($"[EliteRaid] {hediff.pawn.LabelCap} 当前承伤系数: {currentDamageFactor:F2}");
+}
             // 承伤系数（乘算）
             float baseDamageFactor = eliteLevel.DamageFactor;
             if (eliteLevel.giantEnhance) baseDamageFactor *= 0.7f;
@@ -152,7 +157,28 @@ namespace EliteRaid
                 }
             }
 
-            baseDamageFactor = Math.Max(baseDamageFactor, 0.10f);
+          // 新逻辑：最终承伤不低于10%（currentDamageFactor<=0时不做修正）
+if (currentDamageFactor > 0f)
+{
+    float finalDamageFactor = currentDamageFactor * baseDamageFactor;
+    if (finalDamageFactor < 0.10f)
+    {
+        baseDamageFactor = 0.10f / currentDamageFactor;
+        finalDamageFactor = 0.10f;
+        if (EliteRaidMod.displayMessageValue)
+        {
+            Log.Message($"[EliteRaid] 承伤保护：最终承伤低于10%，自动修正本mod承伤系数为{baseDamageFactor:F3}");
+        }
+    }
+}
+else
+{
+    // 理论上不会出现，出现说明有其他mod或数据异常
+    if (EliteRaidMod.displayMessageValue)
+    {
+        Log.Warning($"[EliteRaid] 当前承伤系数异常（{currentDamageFactor}），未做保护修正！");
+    }
+}
             yield return new StatModifier
             {
                 stat = StatDefOf.IncomingDamageFactor,
