@@ -105,7 +105,7 @@ public static class StaticVariables
         public const bool DEFAULT_USE_COMPRESSION_RATIO = true; // 新增默认值
         public const float DEFAULT_COMPRESSION_RATIO = 3.0f;
         public const bool DEFAULT_ENABLE_SILVER_DROP = true;
-        public const int DEFAULT_SILVER_DROP_PER_LEVEL = 50;
+        public const int DEFAULT_SILVER_DROP_PER_LEVEL = 30;
         public const bool DEFAULT_MOD_ENABLED = true;
     public const bool DEFAULT_DISPLAY_MESSAGES = false;
     public const bool DEFAULT_ALLOW_FRIENDLY_RAID = true;

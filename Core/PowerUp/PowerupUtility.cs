@@ -48,16 +48,16 @@ namespace EliteRaid
             // 温度抗性（加算）
             if (eliteLevel.temperatureResist)
             {
-                float tempValue = 20 + eliteLevel.Level * 10;
+                float tempValue = 30 + eliteLevel.Level * 10;
                 yield return new StatModifier
                 {
                     stat = StatDefOf.ComfyTemperatureMax,
-                    value = tempValue * 2.5f // 加算，直接增加温度上限
+                    value = tempValue * 1.5f // 加算，直接增加温度上限
                 };
                 yield return new StatModifier
                 {
                     stat = StatDefOf.ComfyTemperatureMin,
-                    value = -tempValue * 2.5f // 加算，直接降低温度下限
+                    value = -tempValue * 1.5f // 加算，直接降低温度下限
                 };
             }
 
@@ -88,19 +88,6 @@ namespace EliteRaid
 
                 };
             }
-
-            ////在拥有VEFcore下更改体型
-            //TODO
-            //bool hasVEFCore = ModLister.GetActiveModWithIdentifier("oskarpotocki.vanillafactionsexpanded.core") != null;
-            //if (eliteLevel.Level >= 5 && hasVEFCore)
-            //{
-            //    float sizeFactor = eliteLevel.ScaleFactor;
-            //    yield return new StatModifier
-            //    {
-            //        stat = DefDatabase<StatDef>.GetNamedSilentFail("VEF_CosmeticBodySize_Multiplier"), // VEF 体型参数
-            //        value = sizeFactor,
-            //    };
-            //}
 
             // 通用体型修改（使用BodySizePatch）
             if (eliteLevel.ScaleFactor > 1.0f)
@@ -158,14 +145,14 @@ namespace EliteRaid
             // 尼人族承伤提高30%
             if (hediff.pawn.Faction != null && hediff.pawn.Faction.def.defName == "TribeRoughNeanderthal" && eliteLevel.Level >= 3)
             {
-                baseDamageFactor *= 1.3f;
+                baseDamageFactor *= 1.2f;
                 if(EliteRaidMod.displayMessageValue)
                 {
-                    Log.Message($"[EliteRaid] 尼人族承伤提高30%");
+                    Log.Message($"[EliteRaid] 尼人族承伤提高20%");
                 }
             }
 
-            baseDamageFactor = Math.Max(baseDamageFactor, 0.08f);
+            baseDamageFactor = Math.Max(baseDamageFactor, 0.10f);
             yield return new StatModifier
             {
                 stat = StatDefOf.IncomingDamageFactor,
@@ -174,8 +161,7 @@ namespace EliteRaid
 
             // 移速降低抵抗（乘算）
            
-            if (eliteLevel.moveSpeedResist)
-            {
+           
                 float staggerFactor = CalculateStaggerFactor(eliteLevel);
                 // 减速持续时间抵抗（原逻辑）
                 yield return new StatModifier
@@ -183,7 +169,7 @@ namespace EliteRaid
                     stat = StatDefOf.StaggerDurationFactor,
                     value = staggerFactor // 例如：0.5 表示减速持续时间变为50%
                 };
-            }
+           
            
             // 新增：压制抗性（通过降低Suppressability实现）
             bool ceActive = ModLister.GetActiveModWithIdentifier("ceteam.combatextended") != null;
@@ -191,7 +177,7 @@ namespace EliteRaid
             {
                 // CE的压制属性为Suppressability（可压制性），数值越低越难被压制
                 StatDef suppressionStat = DefDatabase<StatDef>.GetNamed("Suppressability");
-                float suppressability =eliteLevel.moveSpeedResist? -0.9f : -eliteLevel.Level*0.1f;
+                float suppressability =eliteLevel.moveSpeedResist?(1-eliteLevel.Level*0.05f-0.5f) : (1-eliteLevel.Level*0.05f);
                 if (suppressionStat != null)
                 {
                     yield return new StatModifier
@@ -230,8 +216,8 @@ namespace EliteRaid
                 if (eliteLevel.Level >= 3) painRatio = 1f;
                 if (eliteLevel.Level >= 4) painRatio = 0.9f;
                 if (eliteLevel.Level >= 5) painRatio = 0.8f; // 5级
-                if (eliteLevel.Level >= 6) painRatio = 0.6f; // 6级
-                if (eliteLevel.Level >= 7) painRatio = 0.4f; // 7级及以上
+                if (eliteLevel.Level >= 6) painRatio = 0.7f; // 6级
+                if (eliteLevel.Level >= 7) painRatio = 0.6f; // 7级及以上
                 hediff.CurStage.painFactor = painRatio;
             }
         }
@@ -300,7 +286,11 @@ namespace EliteRaid
         // 计算移速抵抗系数
         private static float CalculateStaggerFactor(EliteLevel eliteLevel)
         {
-            float reduction = 0.3f + (eliteLevel.Level * 0.1f);
+            float reduction =  eliteLevel.Level * 0.1f;
+            if(eliteLevel.moveSpeedResist)
+            {
+                reduction += 0.3f;
+            }
             return Math.Max(1f - reduction, 0.01f); // 最低0.01倍减速持续时间
         }
 

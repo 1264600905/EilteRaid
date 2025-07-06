@@ -36,7 +36,7 @@ namespace EliteRaid
         public static bool useCompressionRatio=true;
         public static float compressionRatio=3f;
         public static bool enableSilverDrop=true;
-        public static int silverDropPerLevel=30;
+        public static int silverDropPerLevel=20;
         public static int maxRaidPoint = 10000; // 新增：最大袭击点数上限（默认10000）
         public static bool showDetailConfig = false;
         public static float raidScale = 1.0f;  //游戏内袭击倍率
@@ -194,7 +194,7 @@ namespace EliteRaid
 
         public override string SettingsCategory()
         {
-            return "EliteRaidSettingsCategory".Translate()+"(v1.4.6)";
+            return "EliteRaidSettingsCategory".Translate()+"(v1.4.8)";
         }
         public int timer = 0;
         public void Tick()

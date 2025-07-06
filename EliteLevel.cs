@@ -76,7 +76,7 @@ namespace EliteRaid
             // 直接列出全局配置映射（避免字符串匹配）
             var globalTraitMap = new Dictionary<string, Func<bool>>
     {
-        { nameof(addBioncis), () => EliteRaidMod.AllowAddBioncis },
+        { nameof(addBioncis), () => EliteRaidMod.AllowAddBioncis },    
         { nameof(addDrug), () => EliteRaidMod.AllowAddDrug },
         { nameof(refineGear), () => true },
         { nameof(armorEnhance), () => EliteRaidMod.AllowArmorEnhance },

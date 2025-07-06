@@ -230,7 +230,7 @@ namespace EliteRaid
             int humanCount = pawns.Where(p => !p.RaceProps.Animal).ToList().Count;
             int OthersCount = pawns.Count - humanCount;
             // 如果全部是动物，则只添加一个保底单位（人类），保底单位用Pirate
-            if (humanCount <= 0 && pawns.Count > 0)
+            if (humanCount <= 0 && pawns.Count > 0&&parms.faction!=Faction.OfInsects)
             {
                 List<Pawn> animalPawns = pawns.Where(p => p.RaceProps.Animal).ToList();
                 PawnKindDef humanKind = PawnKindDefOf.Pirate;
