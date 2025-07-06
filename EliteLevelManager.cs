@@ -87,37 +87,37 @@ namespace EliteRaid
             difficultyConfigs[EliteRaidDifficulty.Normal] = new List<EliteLevelConfig>
 {
     new EliteLevelConfig { Level=0, DamageFactor=1f, MoveSpeedFactor=1.0f, ScaleFactor=1.0f, MaxTraits=0, IsBoss=false, CompressionRatio=1 },
-    new EliteLevelConfig { Level=1, DamageFactor=0.88f, MoveSpeedFactor=1.0f, ScaleFactor=1.0f, MaxTraits=1, IsBoss=false, CompressionRatio=2 },
-    new EliteLevelConfig { Level=2, DamageFactor=0.67f, MoveSpeedFactor=1f, ScaleFactor=1.0f, MaxTraits=1, IsBoss=false, CompressionRatio=3 },
-    new EliteLevelConfig { Level=3, DamageFactor=0.48f, MoveSpeedFactor=0.7f, ScaleFactor=1.2f, MaxTraits=2, IsBoss=false, CompressionRatio=4 },
-    new EliteLevelConfig { Level=4, DamageFactor=0.39f, MoveSpeedFactor=0.7f, ScaleFactor=1.35f, MaxTraits=2, IsBoss=false, CompressionRatio=5 },
-    new EliteLevelConfig { Level=5, DamageFactor=0.32f, MoveSpeedFactor=0.5f, ScaleFactor=1.55f, MaxTraits=3, IsBoss=false, CompressionRatio=6 },
-    new EliteLevelConfig { Level=6, DamageFactor=0.25f, MoveSpeedFactor=0.5f, ScaleFactor=1.65f, MaxTraits=3, IsBoss=false, CompressionRatio=8 },
-    new EliteLevelConfig { Level=7, DamageFactor=0.18f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=4, IsBoss=true, CompressionRatio=10 },
+    new EliteLevelConfig { Level=1, DamageFactor=0.78f, MoveSpeedFactor=1.0f, ScaleFactor=1.0f, MaxTraits=1, IsBoss=false, CompressionRatio=2 },
+    new EliteLevelConfig { Level=2, DamageFactor=0.67f, MoveSpeedFactor=1f, ScaleFactor=1.0f, MaxTraits=2, IsBoss=false, CompressionRatio=3 },
+    new EliteLevelConfig { Level=3, DamageFactor=0.53f, MoveSpeedFactor=0.7f, ScaleFactor=1.2f, MaxTraits=2, IsBoss=false, CompressionRatio=4 },
+    new EliteLevelConfig { Level=4, DamageFactor=0.44f, MoveSpeedFactor=0.7f, ScaleFactor=1.35f, MaxTraits=3, IsBoss=false, CompressionRatio=5 },
+    new EliteLevelConfig { Level=5, DamageFactor=0.35f, MoveSpeedFactor=0.5f, ScaleFactor=1.55f, MaxTraits=4, IsBoss=false, CompressionRatio=6 },
+    new EliteLevelConfig { Level=6, DamageFactor=0.28f, MoveSpeedFactor=0.5f, ScaleFactor=1.65f, MaxTraits=4, IsBoss=false, CompressionRatio=8 },
+    new EliteLevelConfig { Level=7, DamageFactor=0.20f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=5, IsBoss=true, CompressionRatio=10 },
 };
 
             difficultyConfigs[EliteRaidDifficulty.Hard] = new List<EliteLevelConfig>
 {
     new EliteLevelConfig { Level=0, DamageFactor=1f, MoveSpeedFactor=1.0f, ScaleFactor=1.1f, MaxTraits=1, IsBoss=false, CompressionRatio=2 },
-    new EliteLevelConfig { Level=1, DamageFactor=0.78f, MoveSpeedFactor=1.0f, ScaleFactor=1.1f, MaxTraits=2, IsBoss=false, CompressionRatio=3 },
-    new EliteLevelConfig { Level=2, DamageFactor=0.58f, MoveSpeedFactor=1.0f, ScaleFactor=1.15f, MaxTraits=2, IsBoss=false, CompressionRatio=4 },
-    new EliteLevelConfig { Level=3, DamageFactor=0.44f, MoveSpeedFactor=0.7f, ScaleFactor=1.35f, MaxTraits=2, IsBoss=false, CompressionRatio=5 },
-    new EliteLevelConfig { Level=4, DamageFactor=0.36f, MoveSpeedFactor=0.7f, ScaleFactor=1.5f, MaxTraits=3, IsBoss=false, CompressionRatio=6 },
-    new EliteLevelConfig { Level=5, DamageFactor=0.29f, MoveSpeedFactor=0.5f, ScaleFactor=1.7f, MaxTraits=3, IsBoss=false, CompressionRatio=7 },
-    new EliteLevelConfig { Level=6, DamageFactor=0.22f, MoveSpeedFactor=0.5f, ScaleFactor=1.8f, MaxTraits=4, IsBoss=false, CompressionRatio=9 },
-    new EliteLevelConfig { Level=7, DamageFactor=0.16f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=5, IsBoss=true, CompressionRatio=10 },
+    new EliteLevelConfig { Level=1, DamageFactor=0.74f, MoveSpeedFactor=1.0f, ScaleFactor=1.1f, MaxTraits=1, IsBoss=false, CompressionRatio=3 },
+    new EliteLevelConfig { Level=2, DamageFactor=0.60f, MoveSpeedFactor=1.0f, ScaleFactor=1.15f, MaxTraits=2, IsBoss=false, CompressionRatio=4 },
+    new EliteLevelConfig { Level=3, DamageFactor=0.50f, MoveSpeedFactor=0.7f, ScaleFactor=1.35f, MaxTraits=3, IsBoss=false, CompressionRatio=5 },
+    new EliteLevelConfig { Level=4, DamageFactor=0.40f, MoveSpeedFactor=0.7f, ScaleFactor=1.5f, MaxTraits=4, IsBoss=false, CompressionRatio=6 },
+    new EliteLevelConfig { Level=5, DamageFactor=0.30f, MoveSpeedFactor=0.5f, ScaleFactor=1.7f, MaxTraits=4, IsBoss=false, CompressionRatio=7 },
+    new EliteLevelConfig { Level=6, DamageFactor=0.25f, MoveSpeedFactor=0.5f, ScaleFactor=1.8f, MaxTraits=5, IsBoss=false, CompressionRatio=9 },
+    new EliteLevelConfig { Level=7, DamageFactor=0.18f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=6, IsBoss=true, CompressionRatio=10 },
 };
 
             difficultyConfigs[EliteRaidDifficulty.Extreme] = new List<EliteLevelConfig>
 {
     new EliteLevelConfig { Level=0, DamageFactor=1f, MoveSpeedFactor=1.0f, ScaleFactor=1.0f, MaxTraits=0, IsBoss=false, CompressionRatio=1 },
-    new EliteLevelConfig { Level=1, DamageFactor=0.67f, MoveSpeedFactor=1.0f, ScaleFactor=1.2f, MaxTraits=1, IsBoss=false, CompressionRatio=2 },
-    new EliteLevelConfig { Level=2, DamageFactor=0.48f, MoveSpeedFactor=1.0f, ScaleFactor=1.2f, MaxTraits=2, IsBoss=false, CompressionRatio=3 },
-    new EliteLevelConfig { Level=3, DamageFactor=0.39f, MoveSpeedFactor=0.7f, ScaleFactor=1.4f, MaxTraits=3, IsBoss=false, CompressionRatio=4 },
-    new EliteLevelConfig { Level=4, DamageFactor=0.32f, MoveSpeedFactor=0.7f, ScaleFactor=1.55f, MaxTraits=4, IsBoss=false, CompressionRatio=5 },
-    new EliteLevelConfig { Level=5, DamageFactor=0.25f, MoveSpeedFactor=0.5f, ScaleFactor=1.75f, MaxTraits=4, IsBoss=false, CompressionRatio=6 },
-    new EliteLevelConfig { Level=6, DamageFactor=0.18f, MoveSpeedFactor=0.5f, ScaleFactor=1.85f, MaxTraits=5, IsBoss=false, CompressionRatio=8 },
-    new EliteLevelConfig { Level=7, DamageFactor=0.14f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=6, IsBoss=true, CompressionRatio=10 },
+    new EliteLevelConfig { Level=1, DamageFactor=0.70f, MoveSpeedFactor=1.0f, ScaleFactor=1.2f, MaxTraits=1, IsBoss=false, CompressionRatio=2 },
+    new EliteLevelConfig { Level=2, DamageFactor=0.56f, MoveSpeedFactor=1.0f, ScaleFactor=1.2f, MaxTraits=2, IsBoss=false, CompressionRatio=3 },
+    new EliteLevelConfig { Level=3, DamageFactor=0.45f, MoveSpeedFactor=0.7f, ScaleFactor=1.4f, MaxTraits=3, IsBoss=false, CompressionRatio=4 },
+    new EliteLevelConfig { Level=4, DamageFactor=0.37f, MoveSpeedFactor=0.7f, ScaleFactor=1.55f, MaxTraits=4, IsBoss=false, CompressionRatio=5 },
+    new EliteLevelConfig { Level=5, DamageFactor=0.27f, MoveSpeedFactor=0.5f, ScaleFactor=1.75f, MaxTraits=5, IsBoss=false, CompressionRatio=6 },
+    new EliteLevelConfig { Level=6, DamageFactor=0.22f, MoveSpeedFactor=0.5f, ScaleFactor=1.85f, MaxTraits=6, IsBoss=false, CompressionRatio=8 },
+    new EliteLevelConfig { Level=7, DamageFactor=0.16f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=7, IsBoss=true, CompressionRatio=10 },
 };
             if (EliteRaidMod.displayMessageValue) Log.Message($"[EliteRaid] EliteLevelManager Initialized with {difficultyConfigs.Count} difficulty settings.");
         }

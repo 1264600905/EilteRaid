@@ -33,7 +33,7 @@ namespace EliteRaid
                 MaxEliteLevel = 3,
                 EliteDifficulty = EliteRaidDifficulty.Normal,
                 CompressionRatio = 2,
-                MaxRaidEnemy = 20,  // 修士
+                MaxRaidEnemy = 30,  // 修士
                 Description = "Difficulty level: Novice, with difficulty factor {0.3}. Corresponds to vanilla Lost Colony difficulty, enemy count 1-20, maximum level not exceeding 3. If you're a newcomer, this is a well-balanced difficulty"
             }},
 
@@ -46,7 +46,7 @@ namespace EliteRaid
                 MaxEliteLevel = 4,
                 EliteDifficulty = EliteRaidDifficulty.Normal,
                 CompressionRatio = 3,
-                MaxRaidEnemy = 25,  // 扈从
+                MaxRaidEnemy = 30,  // 扈从
                 Description = "Difficulty level: Retainer, with difficulty factor {0.6}. Default difficulty slightly harder than vanilla Strive to Survive, enemy count 1-25, maximum level not exceeding 4. Suitable for experienced players who enjoy a challenge"
             }},
 
