@@ -109,6 +109,9 @@ namespace EliteRaid
                 Log.Error(ex.StackTrace);
             }
 
+            //注册鼠族隧道补丁
+            RatkinTunnelPatch.RegisterRatkinTunnelPatches(harmony);
+
             try
             {
                Type targetClass = typeof(ActiveTransporter);
