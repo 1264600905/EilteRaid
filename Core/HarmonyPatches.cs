@@ -895,7 +895,7 @@ namespace EliteRaid
                     Log.Message($"[EliteRaid] 压缩分布乱序前: {beforeKinds}");
                 }
                 // 乱序后只取前parms.pawnCount个
-                var options = PatchContinuityHelper.CompressedPawnGenOptions.OrderBy(x => Rand.Value).Take(parms.pawnCount).ToList();
+                var options = PatchContinuityHelper.CompressedPawnGenOptions.OrderBy(x => Rand.Value).Take(enhancePawnNumber).ToList();
                 // 日志：输出乱序后的种类分布
                 if (EliteRaidMod.displayMessageValue)
                 {
