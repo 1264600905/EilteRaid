@@ -183,6 +183,7 @@ namespace EliteRaid
             }
             int maxPawnNum = EliteRaidMod.maxRaidEnemy, pawnCount = 0;
             int baseNum = options.Count();
+            maxPawnNum=General.GetenhancePawnNumber(baseNum);
             if (maxPawnNum >= baseNum)
             {
                 return StateFalse(options);
@@ -210,15 +211,43 @@ namespace EliteRaid
                 }
             }
 
-            List<PawnGenOptionWithXenotype> list = new List<PawnGenOptionWithXenotype>();
-            foreach (PawnGenOptionWithXenotype option in options.OrderByDescending(x => x.Cost))
+            // 按比例采样压缩
+            // 1. 统计原始分布
+            var grouped = options.GroupBy(x => x.Option.kind?.defName ?? "unknown")
+                .ToDictionary(g => g.Key, g => g.ToList());
+            // 2. 计算每种类型应分配的人数
+            var total = options.Count();
+            var typeToCount = new Dictionary<string, int>();
+            double acc = 0;
+            int assigned = 0;
+            foreach (var kv in grouped)
             {
-                if (allowedCompress && pawnCount >= maxPawnNum)
+                double ratio = (double)kv.Value.Count / total;
+                double exact = ratio * maxPawnNum;
+                int count = (int)Math.Floor(exact);
+                typeToCount[kv.Key] = count;
+                acc += exact - count;
+                assigned += count;
+            }
+            // 3. 补齐剩余名额（最大余数法）
+            var remainder = maxPawnNum - assigned;
+            if (remainder > 0)
+            {
+                var sorted = grouped
+                    .Select(kv => new { Key = kv.Key, Fraction = ((double)kv.Value.Count / total * maxPawnNum) % 1 })
+                    .OrderByDescending(x => x.Fraction)
+                    .ToList();
+                for (int i = 0; i < remainder; i++)
                 {
-                    break;
+                    typeToCount[sorted[i].Key]++;
                 }
-                pawnCount++;
-                list.Add(option);
+            }
+            // 4. 组装新list
+            var list = new List<PawnGenOptionWithXenotype>();
+            foreach (var kv in grouped)
+            {
+                // 按cost从高到低取
+                list.AddRange(kv.Value.OrderByDescending(x => x.Cost).Take(typeToCount[kv.Key]));
             }
 
             if (allowedCompress)
@@ -229,17 +258,14 @@ namespace EliteRaid
                     var compressedDistribution = list.GroupBy(x => x.Option.kind?.defName ?? "unknown")
                         .Select(g => new { Type = g.Key, Count = g.Count() })
                         .OrderByDescending(g => g.Count);
-                    
                     Log.Message($"[EliteRaid] Compressed raid type distribution:");
                     foreach (var entry in compressedDistribution)
                     {
                         Log.Message($"  {entry.Type}: {entry.Count}");
                     }
                 }
-
                 // Store the compressed options for later use
                 CompressedPawnGenOptions = list.Select(x => x.Option).ToList();
-
                 m_CompressWork_GeneratePawns = new CompressWork(groupParms.GetHashCode(), groupParms.groupKind.workerClass, baseNum, maxPawnNum, raidFriendly);
                 return list;
             }

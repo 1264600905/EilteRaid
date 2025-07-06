@@ -925,7 +925,7 @@ namespace EliteRaid
                 int attempts = 0;
 
                 // 修改循环逻辑，确保生成足够的pawn
-                while (list.Count < parms.pawnCount && enhancePawnNumber < baseNum && attempts < maxAttempts)
+                while (list.Count < enhancePawnNumber && enhancePawnNumber < baseNum && attempts < maxAttempts)
                 {
                     attempts++;
 
