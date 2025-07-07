@@ -144,4 +144,6 @@ Provides Extreme Justice mod environment difficulty +2. Boss-level elite units w
 Provides Extreme Justice mod environment difficulty +3. Boss-level elite units will appear, with enemy enhancements +2.</Difficulty_GalaxyEmperor_Desc>
 <AllowModBionicsAndDrugs>Allow mod drugs and bionic implants (requires game restart to take effect)</AllowModBionicsAndDrugs>
 <AllowModBionicsAndDrugsDesc>Whether to allow drawing drugs and bionic implants from mods to strengthen units (requires game restart to take effect)</AllowModBionicsAndDrugsDesc>
+  <StartCompressNum>Start Compress Number</StartCompressNum>
+  <StartCompressNumDesc>Compression will only occur when the enemy count is greater than or equal to this value. Range: 0~Max Enemy Count.</StartCompressNumDesc>
 </LanguageData>
