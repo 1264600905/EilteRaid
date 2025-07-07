@@ -185,20 +185,39 @@ namespace EliteRaid
             return (float)baseNum / maxPawnNum;
         }
 
-        public static int GetenhancePawnNumber(int baseNum)
-        {
-            if (baseNum <= 0) return 0;
-            
-          // 先使用压缩率计算
-    int compressedByRatio = (int)(baseNum / EliteRaidMod.compressionRatio);
-    
-    // 取压缩率结果和最大袭击数量的较小值
-    int result = Math.Min(compressedByRatio, EliteRaidMod.maxRaidEnemy);
-    
-    // 确保至少为1，且不超过原始数量
-    int finalResult = Math.Max(1, Math.Min(result, baseNum));
-    return finalResult;
-        }
+public static int GetenhancePawnNumber(int baseNum)
+{
+    int startCompressNum = EliteRaidMod.startCompressNum;
+    float compressRate = EliteRaidMod.compressionRatio;
+    int maxRaidEnemy = EliteRaidMod.maxRaidEnemy;
+    int hardLimitNum = (int)(maxRaidEnemy*compressRate); // 如果没有可用 startCompressNum * compressRate 的结果
+
+    // 新增逻辑：如果开始压缩人数为0，直接用压缩倍率计算
+    if (startCompressNum == 0)
+    {
+        int compressed = (int)(baseNum / compressRate);
+        return Math.Min(Math.Max(1, compressed), maxRaidEnemy); // 至少为1，且不超过maxRaidEnemy
+    }
+
+    if (baseNum <= startCompressNum)
+    {
+        return baseNum;
+    }
+    else if (baseNum <= (int)(startCompressNum * compressRate))
+    {
+        return startCompressNum;
+    }
+    else if (baseNum <= hardLimitNum)
+    {
+        int compressed = (int)(baseNum / compressRate);
+        // 不能小于startCompressNum，也不能大于maxRaidEnemy
+        return Math.Max(startCompressNum, Math.Min(compressed, maxRaidEnemy));
+    }
+    else
+    {
+        return maxRaidEnemy;
+    }
+}
 
         internal static void GeneratePawns_Impl(PawnGroupMakerParms parms, List<Pawn> pawns)
         {

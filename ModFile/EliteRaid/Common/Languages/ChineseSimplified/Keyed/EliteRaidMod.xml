@@ -145,4 +145,6 @@
   
   <AllowModBionicsAndDrugs>允许模组药物和植入体(重启游戏生效)</AllowModBionicsAndDrugs>
   <AllowModBionicsAndDrugsDesc>是否允许抽取模组内的药物和植入体强化单位(重启游戏生效)</AllowModBionicsAndDrugsDesc>
+  <StartCompressNum>开始压缩人数</StartCompressNum>
+  <StartCompressNumDesc>当敌人数量大于等于此值时才会进行压缩，范围0~最大敌人数。</StartCompressNumDesc>
     </LanguageData>

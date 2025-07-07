@@ -34,6 +34,7 @@ public class EliteRaidSettings : ModSettings
         public bool isFirstLoad = true;
         public bool wasReset = false;
         public bool allowModBionicsAndDrugs = StaticVariables.DEFAULT_ALLOW_MOD_BIONICS_AND_DRUGS; // 新增
+        public int startCompressNum = StaticVariables.DEFAULT_START_COMPRESS_NUM; // 新增：开始压缩人数
         public override void ExposeData()
     {
         base.ExposeData();
@@ -63,6 +64,7 @@ public class EliteRaidSettings : ModSettings
             Scribe_Values.Look(ref raidScale, "raidScale", StaticVariables.DEFAULT_RAID_SCALE);
             // 在 ExposeData 方法中添加序列化逻辑（找到 Scribe_Values 部分）
             Scribe_Values.Look(ref allowModBionicsAndDrugs, "allowModBionicsAndDrugs", StaticVariables.DEFAULT_ALLOW_MOD_BIONICS_AND_DRUGS); // 新增
+            Scribe_Values.Look(ref startCompressNum, "startCompressNum", StaticVariables.DEFAULT_START_COMPRESS_NUM); // 新增
         }
 
     public void Reset()
@@ -90,6 +92,7 @@ public class EliteRaidSettings : ModSettings
             raidScale = StaticVariables.DEFAULT_RAID_SCALE; // 重置袭击缩放倍率
             wasReset = true;
             allowModBionicsAndDrugs = StaticVariables.DEFAULT_ALLOW_MOD_BIONICS_AND_DRUGS;
+            startCompressNum = StaticVariables.DEFAULT_START_COMPRESS_NUM; // 新增
 
             // 总难度下拉框索引重置
             currentDifficultyIndex = (int)StaticVariables.DEFAULT_TOTAL_DIFFICULTY;
@@ -123,5 +126,6 @@ public static class StaticVariables
         public const bool DEFAULT_ALLOW_DROP_POD_RAID = false; // 新增默认值
         public const float DEFAULT_RAID_SCALE=1f; // 新增：袭击缩放倍率
         public const bool DEFAULT_SHOW_RAID_MESSAGES = false; // 新增：显示袭击提示
+        public const int DEFAULT_START_COMPRESS_NUM = 20; // 新增：默认开始压缩人数
     }
 }

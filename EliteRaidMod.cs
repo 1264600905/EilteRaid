@@ -36,7 +36,7 @@ namespace EliteRaid
         public static bool useCompressionRatio=true;
         public static float compressionRatio=3f;
         public static bool enableSilverDrop=true;
-        public static int silverDropPerLevel=20;
+        public static int silverDropPerLevel=30;
         public static int maxRaidPoint = 10000; // 新增：最大袭击点数上限（默认10000）
         public static bool showDetailConfig = false;
         public static float raidScale = 1.0f;  //游戏内袭击倍率
@@ -58,7 +58,7 @@ namespace EliteRaid
         public static bool AllowPainEnhance = false;
         public static bool AllowMoveSpeedResist = true;
         public static bool AllowConsciousnessEnhance = true;
-
+        public static int startCompressNum = 20; // 新增：开始压缩人数
 
         private int lastSelectedDifficultyIndex = -1;
 
@@ -194,7 +194,7 @@ namespace EliteRaid
 
         public override string SettingsCategory()
         {
-            return "EliteRaidSettingsCategory".Translate()+"(v1.4.8)";
+            return "EliteRaidSettingsCategory".Translate()+"(v1.4.9)";
         }
         public int timer = 0;
         public void Tick()
@@ -245,6 +245,7 @@ namespace EliteRaid
                 height += ROW_HEIGHT + GAP_SMALL; // 最大精英等级
                 height += ROW_HEIGHT + GAP_SMALL; // 压缩倍率/最大敌人数量
                 height += ROW_HEIGHT + GAP_SMALL; // 最大袭击点数
+                height += ROW_HEIGHT + GAP_SMALL; // 新增：开始压缩人数
             }
 
             height += GAP_LARGE; // 底部间距
@@ -399,6 +400,13 @@ namespace EliteRaid
                     ref maxEnemyFloat, "maxRaidEnemyDesc".Translate(), 1, 200);
                 settings.maxRaidEnemy = (int)maxEnemyFloat;
 
+                // 新增：开始压缩人数
+                int maxEnemy = settings.maxRaidEnemy > 0 ? settings.maxRaidEnemy : 1;
+                float startCompressNumFloat = settings.startCompressNum;
+                DrawSlider(ref y, viewRect.width, "startCompressNum", "StartCompressNum".Translate(),
+                    ref startCompressNumFloat, "StartCompressNumDesc".Translate(), 0, maxEnemy);
+                settings.startCompressNum = (int)Math.Min(Math.Max(0, startCompressNumFloat), maxEnemy);
+
                 // 最大袭击点数
                 float maxPointsFloat = settings.maxRaidPoint;
                 DrawSlider(ref y, viewRect.width, "maxRaidPoint", "MaxRaidPoint".Translate(),
@@ -410,6 +418,8 @@ namespace EliteRaid
                 DrawSlider(ref y, viewRect.width, "raidScale", "RaidScale".Translate(),
                     ref scaleFloat, "RaidScaleDesc".Translate(), 0.5f, 20.0f, true); // 添加true参数
                 settings.raidScale = (float)Math.Round(scaleFloat, 2);
+
+
             }
 
 
@@ -687,6 +697,7 @@ namespace EliteRaid
             showDetailConfig = settings.showDetailConfig;
             EliteRaidMod.AllowModBionicsAndDrugs = settings.allowModBionicsAndDrugs;
             EliteRaidMod.raidScale = settings.raidScale;
+            EliteRaidMod.startCompressNum = Math.Min(Math.Max(0, settings.startCompressNum), EliteRaidMod.maxRaidEnemy); // 新增同步
             
             //// 添加调试日志
             //if (EliteRaidMod.displayMessageValue)
