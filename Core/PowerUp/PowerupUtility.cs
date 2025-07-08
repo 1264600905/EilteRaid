@@ -143,10 +143,10 @@ if (EliteRaidMod.displayMessageValue)
                     Log.Message($"[EliteRaid] 吞噬兽承伤提高50%");
                 }
             }
-             if(EliteRaidMod.displayMessageValue)
-                {
-                    Log.Message($"[EliteRaid] 当前被强化物种阵营是"+hediff.pawn.Faction.def.defName+"能否过判断？"+(hediff.pawn.Faction.def.defName == "TribeRoughNeanderthal")+"等级？"+eliteLevel.Level);
-                }
+            //  if(EliteRaidMod.displayMessageValue)
+            //     {
+            //         Log.Message($"[EliteRaid] 当前被强化物种阵营是"+hediff.pawn.Faction.def.defName+"能否过判断？"+(hediff.pawn.Faction.def.defName == "TribeRoughNeanderthal")+"等级？"+eliteLevel.Level);
+            //     }
             // 尼人族承伤提高30%
             if (hediff.pawn.Faction != null && hediff.pawn.Faction.def.defName == "TribeRoughNeanderthal" && eliteLevel.Level >= 3)
             {
@@ -213,12 +213,11 @@ else
                     };
                 }
             }
-            if (hediff.pawn.RaceProps.Humanlike)
+            if (hediff.pawn.RaceProps.Humanlike&&hediff.pawn.Faction!=null)
             {
                 bool cantCompress = hediff.pawn.Faction.Equals(Faction.OfHoraxCult);
                 if (eliteLevel.IsBoss && !cantCompress)
                 {
-
                     yield return new StatModifier
                     {
                         stat = StatDefOf.PsychicSensitivity,

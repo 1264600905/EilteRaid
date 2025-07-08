@@ -194,7 +194,7 @@ namespace EliteRaid
 
         public override string SettingsCategory()
         {
-            return "EliteRaidSettingsCategory".Translate()+"(v1.4.9)";
+            return "EliteRaidSettingsCategory".Translate()+"(v1.5.1)";
         }
         public int timer = 0;
         public void Tick()
@@ -397,7 +397,7 @@ namespace EliteRaid
 
                 float maxEnemyFloat = settings.maxRaidEnemy;
                 DrawSlider(ref y, viewRect.width, "maxRaidEnemy", "maxRaidEnemy".Translate(),
-                    ref maxEnemyFloat, "maxRaidEnemyDesc".Translate(), 1, 200);
+                    ref maxEnemyFloat, "maxRaidEnemyDesc".Translate(), 1, 1000);
                 settings.maxRaidEnemy = (int)maxEnemyFloat;
 
                 // 新增：开始压缩人数
@@ -410,13 +410,13 @@ namespace EliteRaid
                 // 最大袭击点数
                 float maxPointsFloat = settings.maxRaidPoint;
                 DrawSlider(ref y, viewRect.width, "maxRaidPoint", "MaxRaidPoint".Translate(),
-                    ref maxPointsFloat, "MaxRaidPointDesc".Translate(), 5000, 200000);
+                    ref maxPointsFloat, "MaxRaidPointDesc".Translate(), 5000, 400000);
                 settings.maxRaidPoint = (int)maxPointsFloat;
 
                 // 袭击缩放倍率
                 float scaleFloat = settings.raidScale;
                 DrawSlider(ref y, viewRect.width, "raidScale", "RaidScale".Translate(),
-                    ref scaleFloat, "RaidScaleDesc".Translate(), 0.5f, 20.0f, true); // 添加true参数
+                    ref scaleFloat, "RaidScaleDesc".Translate(), 0.5f, 40.0f, true); // 添加true参数
                 settings.raidScale = (float)Math.Round(scaleFloat, 2);
 
 
@@ -627,7 +627,7 @@ namespace EliteRaid
                 settings.maxAllowLevel = maxAllowLevel;
                 settings.useCompressionRatio = true;
                 settings.maxRaidEnemy = config.MaxRaidEnemy;  // 同步到设置
-
+                startCompressNum=StaticVariables.DEFAULT_START_COMPRESS_NUM;
                 if (EliteRaidMod.displayMessageValue)
                 {
                     Log.Message($"[EliteRaid] 应用难度配置: {config.Name} (系数: {config.DifficultyFactor}, 最大袭击人数: {config.MaxRaidEnemy})");

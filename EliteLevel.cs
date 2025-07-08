@@ -15,7 +15,7 @@ namespace EliteRaid
         public float ScaleFactor { get; }    // 体型系数
 
         public int MaxTraits { get; }        // 最大词条数
-        public bool IsBoss { get; }          // 是否为Boss
+        public bool IsBoss { get; set;}          // 是否为Boss
 
         //精英化词条相关开关
         //植入体强化
@@ -76,7 +76,7 @@ namespace EliteRaid
             // 直接列出全局配置映射（避免字符串匹配）
             var globalTraitMap = new Dictionary<string, Func<bool>>
     {
-        { nameof(addBioncis), () => EliteRaidMod.AllowAddBioncis },    
+        { nameof(addBioncis), () => EliteRaidMod.AllowAddBioncis },
         { nameof(addDrug), () => EliteRaidMod.AllowAddDrug },
         { nameof(refineGear), () => true },
         { nameof(armorEnhance), () => EliteRaidMod.AllowArmorEnhance },
@@ -184,6 +184,14 @@ namespace EliteRaid
                         break;
                 }
             }
+
+//40%附加boss标志
+ if (Rand.Value < 0.4f&&Level>=7)
+                    {
+IsBoss=true;
+                    }else{
+                        IsBoss=false;
+                    }
 
             // 调试输出
             //if (EliteRaidMod.displayMessageValue) 

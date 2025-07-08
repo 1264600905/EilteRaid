@@ -290,6 +290,7 @@ public static int GetenhancePawnNumber(int baseNum)
             {
                 return;
             }
+            Log.Message($"[Debug] animalKind={animalKind?.defName}, pawns.Count={pawns?.Count}");
             GenerateAnything_Impl(pawns, baseNum, maxPawnNum, raidFriendly);
         }
         // 新增：判断精英等级是否有效（等级≥1且有实际强化属性）

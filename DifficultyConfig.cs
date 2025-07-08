@@ -33,7 +33,7 @@ namespace EliteRaid
                 MaxEliteLevel = 3,
                 EliteDifficulty = EliteRaidDifficulty.Normal,
                 CompressionRatio = 2,
-                MaxRaidEnemy = 30,  // 修士
+                MaxRaidEnemy = 20,  // 修士
                 Description = "Difficulty level: Novice, with difficulty factor {0.3}. Corresponds to vanilla Lost Colony difficulty, enemy count 1-20, maximum level not exceeding 3. If you're a newcomer, this is a well-balanced difficulty"
             }},
 
@@ -46,7 +46,7 @@ namespace EliteRaid
                 MaxEliteLevel = 4,
                 EliteDifficulty = EliteRaidDifficulty.Normal,
                 CompressionRatio = 3,
-                MaxRaidEnemy = 30,  // 扈从
+                MaxRaidEnemy = 20,  // 扈从
                 Description = "Difficulty level: Retainer, with difficulty factor {0.6}. Default difficulty slightly harder than vanilla Strive to Survive, enemy count 1-25, maximum level not exceeding 4. Suitable for experienced players who enjoy a challenge"
             }},
 
@@ -111,7 +111,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 5,
-                MaxRaidEnemy = 45,  // 都督
+                MaxRaidEnemy = 60,  // 都督
                 Description = "Difficulty level: Governor, with difficulty factor {3.0}. 500%+ Blood and Dust difficulty, enemy count 1-45, with all elite levels available. May encounter psychic immune boss enemies. Most enemies are at elite level 4-5. Suitable for veteran players seeking an extreme challenge"
             }},
 
@@ -124,7 +124,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 5,
-                MaxRaidEnemy = 50,  // 专制公
+                MaxRaidEnemy = 80,  // 专制公
                 Description = "Difficulty level: Duke, with difficulty factor {3.9}. 1000% Blood and Dust difficulty, enemy count 1-50, with all elite levels available. May encounter psychic immune boss enemies. Most enemies are at elite level 4-5. Suitable for veteran players seeking an extreme challenge"
             }},
 
@@ -137,7 +137,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 6,
-                MaxRaidEnemy = 60,  // 大公
+                MaxRaidEnemy = 120,  // 大公
                 Description = "Difficulty level: Despot, with difficulty factor {6.4}. 1400% raid scale, enemy count 1-60, with all elite levels available. May encounter psychic immune boss enemies. Most enemies are at elite level 5-6. Suitable for veteran players seeking an extreme challenge"
             }},
 
@@ -150,7 +150,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 6,
-                MaxRaidEnemy = 70,  // 执政官
+                MaxRaidEnemy = 200,  // 执政官
                 Description = "Difficulty level: Grand Duke, with difficulty factor {10.0}. 2000% raid scale, enemy count 1-70, with all elite levels available. May encounter psychic immune boss enemies. Most enemies are at elite level 5-6. Suitable for veteran players seeking an extreme challenge"
             }},
 
@@ -163,7 +163,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 7,
-                MaxRaidEnemy = 80,  // 将军
+                MaxRaidEnemy = 300,  // 将军
                 Description = "Difficulty level: Consul, with difficulty factor {16.0}. 3500% raid scale, enemy count 1-80, with all elite levels available. May encounter psychic immune boss enemies. Most enemies are at elite level 6-7. Suitable for veteran players seeking an extreme challenge"
             }},
 
@@ -176,7 +176,7 @@ namespace EliteRaid
                 MaxEliteLevel = 5,
                 EliteDifficulty = EliteRaidDifficulty.Normal,
                 CompressionRatio = 3,
-                MaxRaidEnemy = 200,  // 近卫总长
+                MaxRaidEnemy = 1000,  // 近卫总长
                 Description = "Special difficulty: Compression ratio 3, difficulty factor 1.0. Enemy count 1-200. Uses compression ratio to limit raid enemy count, making it 1/3 of the original. Not limiting enemy count allows for more balanced gameplay"
             }},
 
@@ -189,7 +189,7 @@ namespace EliteRaid
                 MaxEliteLevel = 6,
                 EliteDifficulty = EliteRaidDifficulty.Hard,
                 CompressionRatio = 4,
-                MaxRaidEnemy = 200,  // 星系主宰
+                MaxRaidEnemy = 1000,  // 星系主宰
                 Description = "Special difficulty: Compression ratio 4, difficulty factor 2.0. Enemy count 1-200. Uses compression ratio to limit raid enemy count, making it 1/4 of the original. Not limiting enemy count allows for more balanced gameplay"
             }},
 
@@ -202,7 +202,7 @@ namespace EliteRaid
                 MaxEliteLevel = 7,
                 EliteDifficulty = EliteRaidDifficulty.Extreme,
                 CompressionRatio = 5,
-                MaxRaidEnemy = 200,  // 至高星主
+                MaxRaidEnemy = 1000,  // 至高星主
                 Description = "Special difficulty: Compression ratio 5, difficulty factor 3.0. Enemy count 1-200. Uses compression ratio to limit raid enemy count, making it 1/5 of the original. Not limiting enemy count allows for more balanced gameplay"
             }},
 
@@ -228,7 +228,7 @@ namespace EliteRaid
                 MaxEliteLevel = 0,
                 EliteDifficulty = EliteRaidDifficulty.Normal,
                 CompressionRatio = 1,
-                MaxRaidEnemy = 200,  // 星海皇帝
+                MaxRaidEnemy = 1000,  // 星海皇帝
                 Description = "Setting example: Using only raid scale with difficulty factor 2.0. This example shows how you can adjust the game by only modifying raid scale and raid point limit, without elite levels or compression"
             }}
             };
