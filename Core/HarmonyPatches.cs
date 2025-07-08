@@ -284,6 +284,7 @@ namespace EliteRaid
             orgType = typeof(AggressiveAnimalIncidentUtility);
             orgName = nameof(AggressiveAnimalIncidentUtility.GenerateAnimals);
             method = AccessTools.Method(orgType, orgName, new Type[] { typeof(PawnKindDef), typeof(int), typeof(float), typeof(int) });
+            General.m_CanTranspilerGenerateAnimals=true;
             if (General.m_CanTranspilerGenerateAnimals)
             {
                 try
@@ -657,7 +658,7 @@ namespace EliteRaid
 
         internal static bool GenerateAnimals_Prefix(PawnKindDef animalKind, int tile, float points, int animalCount, ref List<Pawn> __result)
         {
-            if (EliteRaidMod.modEnabled || !EliteRaidMod.allowAnimalsValue)
+            if (!EliteRaidMod.modEnabled || !EliteRaidMod.allowAnimalsValue)
             {
                 return true;
             }
@@ -691,7 +692,7 @@ namespace EliteRaid
             General.GenerateAnimals_Impl(animalKind, list);
 
             __result = list;
-            return false;
+            return true;
         }
     }
 

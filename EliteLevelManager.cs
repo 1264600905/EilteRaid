@@ -101,7 +101,7 @@ namespace EliteRaid
     new EliteLevelConfig { Level=3, DamageFactor=0.50f, MoveSpeedFactor=0.7f, ScaleFactor=1.35f, MaxTraits=3, IsBoss=false, CompressionRatio=5 },
     new EliteLevelConfig { Level=4, DamageFactor=0.40f, MoveSpeedFactor=0.7f, ScaleFactor=1.5f, MaxTraits=4, IsBoss=false, CompressionRatio=6 },
     new EliteLevelConfig { Level=5, DamageFactor=0.30f, MoveSpeedFactor=0.5f, ScaleFactor=1.7f, MaxTraits=4, IsBoss=false, CompressionRatio=7 },
-    new EliteLevelConfig { Level=6, DamageFactor=0.25f, MoveSpeedFactor=0.5f, ScaleFactor=1.8f, MaxTraits=5, IsBoss=false, CompressionRatio=9 },
+    new EliteLevelConfig { Level=6, DamageFactor=0.25f, MoveSpeedFactor=0.5f, ScaleFactor=1.8f, MaxTraits=5, IsBoss=false, CompressionRatio=8 },
     new EliteLevelConfig { Level=7, DamageFactor=0.18f, MoveSpeedFactor=0.5f, ScaleFactor=2.0f, MaxTraits=6, IsBoss=true, CompressionRatio=10 },
 };
             difficultyConfigs[EliteRaidDifficulty.Extreme] = new List<EliteLevelConfig>
