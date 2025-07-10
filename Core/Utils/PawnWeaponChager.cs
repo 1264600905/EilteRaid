@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using EliteRaid;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace RimwoldEliteRaidProject.Core
             bool combatExtendedActive = ModLister.HasActiveModWithName("Combat Extended");
             // Log.Message($"{0} Combat Extended 模组状态: {combatExtendedActive}");
 
-            if (combatExtendedActive)
+            if (combatExtendedActive&&EliteRaidMod.displayMessageValue)
             {
                 Log.Message($" 检测到 CE 模组已启用，跳过武器替换逻辑");
                 return;
